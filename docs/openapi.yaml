@@ -1,0 +1,5145 @@
+openapi: 3.1.0
+info:
+  title: SoccersAPI
+  description: >-
+    REST API for football (soccer) data: search, livescores, fixtures, leagues,
+    teams, seasons, players, coaches, referees, venues, statistics, head-to-head,
+    bookmakers, markets, broadcasts and media.
+
+
+    Authentication is required on every request via the `user` and `token`
+    query parameters.
+  version: 2.2.0
+  contact:
+    name: SoccersAPI
+    url: https://soccersapi.com
+  license:
+    name: Proprietary
+servers:
+  - url: https://api.soccersapi.com
+    description: Production
+tags:
+  - name: Search
+paths:
+  /v2.2/search/:
+    get:
+      summary: Search Match
+      deprecated: false
+      description: >-
+        Find a specific match by keyword (team names, league, etc.).  
+
+        Returns match ID and basic details for use in match endpoints.
+
+
+        **Example:**
+
+        ```bash
+
+        curl -L -g
+        "https://api.soccersapi.com/v2.2/search/?user={{USERNAME}}&token={{TOKEN}}&t=match&q=salzburg"
+      tags:
+        - Search
+      parameters:
+        - name: user
+          in: query
+          description: ''
+          required: true
+          example: '{{USERNAME}}'
+          schema:
+            type: string
+        - name: token
+          in: query
+          description: ''
+          required: true
+          example: '{{TOKEN}}'
+          schema:
+            type: string
+        - name: t
+          in: query
+          description: ''
+          required: true
+          example: match
+          schema:
+            type: string
+        - name: q
+          in: query
+          description: ''
+          required: true
+          example: salzburg
+          schema:
+            type: string
+        - name: utc
+          in: query
+          description: ''
+          required: true
+          example: '2'
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                        startdate:
+                          type: string
+                        name:
+                          type: string
+                        home:
+                          type: string
+                        away:
+                          type: string
+                        league_name:
+                          type: string
+                        country_name:
+                          type: string
+                        cc:
+                          type:
+                            - string
+                            - 'null'
+                        type:
+                          type: string
+                      required:
+                        - id
+                        - startdate
+                        - name
+                        - home
+                        - away
+                        - league_name
+                        - country_name
+                        - cc
+                        - type
+                  meta:
+                    type: object
+                    properties:
+                      requests_left:
+                        type: integer
+                      user:
+                        type: string
+                      plan:
+                        type: string
+                      pages:
+                        type: integer
+                      page:
+                        type: integer
+                      count:
+                        type: integer
+                      total:
+                        type: integer
+                      msg:
+                        type: string
+                    required:
+                      - requests_left
+                      - user
+                      - plan
+                      - pages
+                      - page
+                      - count
+                      - total
+                      - msg
+                required:
+                  - data
+                  - meta
+              example:
+                data:
+                  - id: 2411325
+                    startdate: '2025-09-28 14:30:00'
+                    name: Tirol vs Salzburg
+                    home: Tirol
+                    away: Salzburg
+                    league_name: Bundesliga
+                    country_name: Austria
+                    cc: at
+                    type: match
+                  - id: 2472985
+                    startdate: '2025-10-02 21:00:00'
+                    name: Lyon vs Salzburg
+                    home: Lyon
+                    away: Salzburg
+                    league_name: UEFA Europa League
+                    country_name: Europe
+                    cc: null
+                    type: match
+                  - id: 2417866
+                    startdate: '2025-10-03 18:00:00'
+                    name: Sudburgenland vs Fc salzburg frauen
+                    home: Sudburgenland
+                    away: Fc salzburg frauen
+                    league_name: Bundesliga, Women
+                    country_name: Austria
+                    cc: at
+                    type: match
+                  - id: 2414629
+                    startdate: '2025-10-04 14:30:00'
+                    name: Austria salzburg vs Wsc hertha
+                    home: Austria salzburg
+                    away: Wsc hertha
+                    league_name: 2. Liga
+                    country_name: Austria
+                    cc: at
+                    type: match
+                  - id: 2418587
+                    startdate: '2025-10-04 16:00:00'
+                    name: Sak salzburg vs Anif
+                    home: Sak salzburg
+                    away: Anif
+                    league_name: Regionalliga Salzburg
+                    country_name: Austria
+                    cc: at
+                    type: match
+                  - id: 2411330
+                    startdate: '2025-10-05 17:00:00'
+                    name: Salzburg vs Rapid wien
+                    home: Salzburg
+                    away: Rapid wien
+                    league_name: Bundesliga
+                    country_name: Austria
+                    cc: at
+                    type: match
+                  - id: 2417869
+                    startdate: '2025-10-11 13:00:00'
+                    name: Fc salzburg frauen vs Neulengbach
+                    home: Fc salzburg frauen
+                    away: Neulengbach
+                    league_name: Bundesliga, Women
+                    country_name: Austria
+                    cc: at
+                    type: match
+                  - id: 2419747
+                    startdate: '2025-10-12 11:00:00'
+                    name: Ufc siezenheim vs Sak salzburg
+                    home: Ufc siezenheim
+                    away: Sak salzburg
+                    league_name: Regionalliga Salzburg
+                    country_name: Austria
+                    cc: at
+                    type: match
+                  - id: 2417874
+                    startdate: '2025-10-17 18:00:00'
+                    name: Fc salzburg frauen vs Union kleinmunchen
+                    home: Fc salzburg frauen
+                    away: Union kleinmunchen
+                    league_name: Bundesliga, Women
+                    country_name: Austria
+                    cc: at
+                    type: match
+                  - id: 2419909
+                    startdate: '2025-10-17 19:00:00'
+                    name: Sak salzburg vs Sv burmoos
+                    home: Sak salzburg
+                    away: Sv burmoos
+                    league_name: Regionalliga Salzburg
+                    country_name: Austria
+                    cc: at
+                    type: match
+                  - id: 2414638
+                    startdate: '2025-10-18 20:00:00'
+                    name: Admira wacker vs Austria salzburg
+                    home: Admira wacker
+                    away: Austria salzburg
+                    league_name: 2. Liga
+                    country_name: Austria
+                    cc: at
+                    type: match
+                  - id: 2411361
+                    startdate: '2025-10-19 14:30:00'
+                    name: Salzburg vs Altach
+                    home: Salzburg
+                    away: Altach
+                    league_name: Bundesliga
+                    country_name: Austria
+                    cc: at
+                    type: match
+                  - id: 2473009
+                    startdate: '2025-10-23 18:45:00'
+                    name: Salzburg vs Ferencvarosi
+                    home: Salzburg
+                    away: Ferencvarosi
+                    league_name: UEFA Europa League
+                    country_name: Europe
+                    cc: null
+                    type: match
+                  - id: 2419923
+                    startdate: '2025-10-24 19:00:00'
+                    name: Strasswalchen vs Sak salzburg
+                    home: Strasswalchen
+                    away: Sak salzburg
+                    league_name: Regionalliga Salzburg
+                    country_name: Austria
+                    cc: at
+                    type: match
+                  - id: 2414647
+                    startdate: '2025-10-25 14:30:00'
+                    name: Austria salzburg vs Young violets austr.
+                    home: Austria salzburg
+                    away: Young violets austr.
+                    league_name: 2. Liga
+                    country_name: Austria
+                    cc: at
+                    type: match
+                  - id: 2411372
+                    startdate: '2025-10-26 18:00:00'
+                    name: Austria wien vs Salzburg
+                    home: Austria wien
+                    away: Salzburg
+                    league_name: Bundesliga
+                    country_name: Austria
+                    cc: at
+                    type: match
+                  - id: 2479192
+                    startdate: '2025-10-28 01:00:00'
+                    name: Salzburg vs Tirol
+                    home: Salzburg
+                    away: Tirol
+                    league_name: OFB Cup
+                    country_name: Austria
+                    cc: at
+                    type: match
+                  - id: 2417882
+                    startdate: '2025-10-31 18:00:00'
+                    name: Vorderland vs Fc salzburg frauen
+                    home: Vorderland
+                    away: Fc salzburg frauen
+                    league_name: Bundesliga, Women
+                    country_name: Austria
+                    cc: at
+                    type: match
+                  - id: 2414652
+                    startdate: '2025-10-31 19:00:00'
+                    name: Kapfenberger 1919 vs Austria salzburg
+                    home: Kapfenberger 1919
+                    away: Austria salzburg
+                    league_name: 2. Liga
+                    country_name: Austria
+                    cc: at
+                    type: match
+                  - id: 2419987
+                    startdate: '2025-11-02 15:00:00'
+                    name: Sak salzburg vs Neumarkt
+                    home: Sak salzburg
+                    away: Neumarkt
+                    league_name: Regionalliga Salzburg
+                    country_name: Austria
+                    cc: at
+                    type: match
+                  - id: 2411392
+                    startdate: '2025-11-02 15:30:00'
+                    name: Salzburg vs Sv ried
+                    home: Salzburg
+                    away: Sv ried
+                    league_name: Bundesliga
+                    country_name: Austria
+                    cc: at
+                    type: match
+                  - id: 2473027
+                    startdate: '2025-11-06 19:45:00'
+                    name: Salzburg vs Ga eagles
+                    home: Salzburg
+                    away: Ga eagles
+                    league_name: UEFA Europa League
+                    country_name: Europe
+                    cc: null
+                    type: match
+                  - id: 2417888
+                    startdate: '2025-11-07 18:00:00'
+                    name: Fc salzburg frauen vs Lask
+                    home: Fc salzburg frauen
+                    away: Lask
+                    league_name: Bundesliga, Women
+                    country_name: Austria
+                    cc: at
+                    type: match
+                  - id: 2414672
+                    startdate: '2025-11-08 15:30:00'
+                    name: Austria salzburg vs Sturm graz (a)
+                    home: Austria salzburg
+                    away: Sturm graz (a)
+                    league_name: 2. Liga
+                    country_name: Austria
+                    cc: at
+                    type: match
+                  - id: 2420300
+                    startdate: '2025-11-09 15:00:00'
+                    name: Schwarzach vs Sak salzburg
+                    home: Schwarzach
+                    away: Sak salzburg
+                    league_name: Regionalliga Salzburg
+                    country_name: Austria
+                    cc: at
+                    type: match
+                  - id: 2411409
+                    startdate: '2025-11-09 18:00:00'
+                    name: Sturm graz vs Salzburg
+                    home: Sturm graz
+                    away: Salzburg
+                    league_name: Bundesliga
+                    country_name: Austria
+                    cc: at
+                    type: match
+                  - id: 2417893
+                    startdate: '2025-11-21 18:00:00'
+                    name: St. polten vs Fc salzburg frauen
+                    home: St. polten
+                    away: Fc salzburg frauen
+                    league_name: Bundesliga, Women
+                    country_name: Austria
+                    cc: at
+                    type: match
+                  - id: 2414679
+                    startdate: '2025-11-22 15:30:00'
+                    name: Austria lustenau vs Austria salzburg
+                    home: Austria lustenau
+                    away: Austria salzburg
+                    league_name: 2. Liga
+                    country_name: Austria
+                    cc: at
+                    type: match
+                  - id: 2411423
+                    startdate: '2025-11-23 15:30:00'
+                    name: Salzburg vs Tirol
+                    home: Salzburg
+                    away: Tirol
+                    league_name: Bundesliga
+                    country_name: Austria
+                    cc: at
+                    type: match
+                  - id: 2473123
+                    startdate: '2025-11-27 22:00:00'
+                    name: Bologna vs Salzburg
+                    home: Bologna
+                    away: Salzburg
+                    league_name: UEFA Europa League
+                    country_name: Europe
+                    cc: null
+                    type: match
+                  - id: 2414705
+                    startdate: '2025-11-29 15:30:00'
+                    name: Austria salzburg vs Sv stripfing
+                    home: Austria salzburg
+                    away: Sv stripfing
+                    league_name: 2. Liga
+                    country_name: Austria
+                    cc: at
+                    type: match
+                  - id: 2411437
+                    startdate: '2025-11-30 15:30:00'
+                    name: Altach vs Salzburg
+                    home: Altach
+                    away: Salzburg
+                    league_name: Bundesliga
+                    country_name: Austria
+                    cc: at
+                    type: match
+                  - id: 2417896
+                    startdate: '2025-12-05 18:00:00'
+                    name: Fc salzburg frauen vs First vienna fc 1894
+                    home: Fc salzburg frauen
+                    away: First vienna fc 1894
+                    league_name: Bundesliga, Women
+                    country_name: Austria
+                    cc: at
+                    type: match
+                  - id: 2414707
+                    startdate: '2025-12-05 19:00:00'
+                    name: Austria klagenfurt vs Austria salzburg
+                    home: Austria klagenfurt
+                    away: Austria salzburg
+                    league_name: 2. Liga
+                    country_name: Austria
+                    cc: at
+                    type: match
+                  - id: 2411464
+                    startdate: '2025-12-06 18:00:00'
+                    name: Bw linz vs Salzburg
+                    home: Bw linz
+                    away: Salzburg
+                    league_name: Bundesliga
+                    country_name: Austria
+                    cc: at
+                    type: match
+                  - id: 2473148
+                    startdate: '2025-12-11 22:00:00'
+                    name: Freiburg vs Salzburg
+                    home: Freiburg
+                    away: Salzburg
+                    league_name: UEFA Europa League
+                    country_name: Europe
+                    cc: null
+                    type: match
+                  - id: 2414736
+                    startdate: '2025-12-13 15:30:00'
+                    name: Austria salzburg vs First vienna
+                    home: Austria salzburg
+                    away: First vienna
+                    league_name: 2. Liga
+                    country_name: Austria
+                    cc: at
+                    type: match
+                  - id: 2411525
+                    startdate: '2025-12-14 15:30:00'
+                    name: Salzburg vs Wac
+                    home: Salzburg
+                    away: Wac
+                    league_name: Bundesliga
+                    country_name: Austria
+                    cc: at
+                    type: match
+                  - id: 2473167
+                    startdate: '2026-01-22 22:00:00'
+                    name: Salzburg vs Basel 1893
+                    home: Salzburg
+                    away: Basel 1893
+                    league_name: UEFA Europa League
+                    country_name: Europe
+                    cc: null
+                    type: match
+                  - id: 2473169
+                    startdate: '2026-01-29 22:00:00'
+                    name: Aston villa vs Salzburg
+                    home: Aston villa
+                    away: Salzburg
+                    league_name: UEFA Europa League
+                    country_name: Europe
+                    cc: null
+                    type: match
+                  - id: 2411545
+                    startdate: '2026-02-06 18:00:00'
+                    name: Salzburg vs Austria wien
+                    home: Salzburg
+                    away: Austria wien
+                    league_name: Bundesliga
+                    country_name: Austria
+                    cc: at
+                    type: match
+                  - id: 2411649
+                    startdate: '2026-02-14 18:00:00'
+                    name: Grazer ak vs Salzburg
+                    home: Grazer ak
+                    away: Salzburg
+                    league_name: Bundesliga
+                    country_name: Austria
+                    cc: at
+                    type: match
+                  - id: 2414747
+                    startdate: '2026-02-20 16:00:00'
+                    name: Rapid  ii vs Austria salzburg
+                    home: Rapid  ii
+                    away: Austria salzburg
+                    league_name: 2. Liga
+                    country_name: Austria
+                    cc: at
+                    type: match
+                  - id: 2417902
+                    startdate: '2026-02-20 18:00:00'
+                    name: Sturm graz vs Fc salzburg frauen
+                    home: Sturm graz
+                    away: Fc salzburg frauen
+                    league_name: Bundesliga, Women
+                    country_name: Austria
+                    cc: at
+                    type: match
+                  - id: 2411671
+                    startdate: '2026-02-21 18:00:00'
+                    name: Lask vs Salzburg
+                    home: Lask
+                    away: Salzburg
+                    league_name: Bundesliga
+                    country_name: Austria
+                    cc: at
+                    type: match
+                  - id: 2414770
+                    startdate: '2026-02-27 16:00:00'
+                    name: Austria salzburg vs Floridsdorfer ac
+                    home: Austria salzburg
+                    away: Floridsdorfer ac
+                    league_name: 2. Liga
+                    country_name: Austria
+                    cc: at
+                    type: match
+                  - id: 2412123
+                    startdate: '2026-02-28 18:00:00'
+                    name: Salzburg vs Hartberg
+                    home: Salzburg
+                    away: Hartberg
+                    league_name: Bundesliga
+                    country_name: Austria
+                    cc: at
+                    type: match
+                  - id: 2416205
+                    startdate: '2026-03-06 16:00:00'
+                    name: Amstetten vs Austria salzburg
+                    home: Amstetten
+                    away: Austria salzburg
+                    league_name: 2. Liga
+                    country_name: Austria
+                    cc: at
+                    type: match
+                  - id: 2412149
+                    startdate: '2026-03-07 18:00:00'
+                    name: Rapid wien vs Salzburg
+                    home: Rapid wien
+                    away: Salzburg
+                    league_name: Bundesliga
+                    country_name: Austria
+                    cc: at
+                    type: match
+                  - id: 2416213
+                    startdate: '2026-03-13 16:00:00'
+                    name: Austria salzburg vs Liefering
+                    home: Austria salzburg
+                    away: Liefering
+                    league_name: 2. Liga
+                    country_name: Austria
+                    cc: at
+                    type: match
+                  - id: 2417907
+                    startdate: '2026-03-13 18:00:00'
+                    name: Fc salzburg frauen vs Landhaus/wien
+                    home: Fc salzburg frauen
+                    away: Landhaus/wien
+                    league_name: Bundesliga, Women
+                    country_name: Austria
+                    cc: at
+                    type: match
+                  - id: 2420354
+                    startdate: '2026-03-14 16:00:00'
+                    name: Puch vs Sak salzburg
+                    home: Puch
+                    away: Sak salzburg
+                    league_name: Regionalliga Salzburg
+                    country_name: Austria
+                    cc: at
+                    type: match
+                  - id: 2416243
+                    startdate: '2026-03-20 16:00:00'
+                    name: St. polten vs Austria salzburg
+                    home: St. polten
+                    away: Austria salzburg
+                    league_name: 2. Liga
+                    country_name: Austria
+                    cc: at
+                    type: match
+                  - id: 2417909
+                    startdate: '2026-03-20 18:00:00'
+                    name: Fc salzburg frauen vs Sudburgenland
+                    home: Fc salzburg frauen
+                    away: Sudburgenland
+                    league_name: Bundesliga, Women
+                    country_name: Austria
+                    cc: at
+                    type: match
+                  - id: 2420406
+                    startdate: '2026-03-21 16:00:00'
+                    name: Sak salzburg vs Sv grodig
+                    home: Sak salzburg
+                    away: Sv grodig
+                    league_name: Regionalliga Salzburg
+                    country_name: Austria
+                    cc: at
+                    type: match
+                  - id: 2417918
+                    startdate: '2026-03-27 18:00:00'
+                    name: Neulengbach vs Fc salzburg frauen
+                    home: Neulengbach
+                    away: Fc salzburg frauen
+                    league_name: Bundesliga, Women
+                    country_name: Austria
+                    cc: at
+                    type: match
+                  - id: 2420457
+                    startdate: '2026-03-29 15:00:00'
+                    name: Eugendorf vs Sak salzburg
+                    home: Eugendorf
+                    away: Sak salzburg
+                    league_name: Regionalliga Salzburg
+                    country_name: Austria
+                    cc: at
+                    type: match
+                  - id: 2416281
+                    startdate: '2026-04-03 16:00:00'
+                    name: Austria salzburg vs Bregenz
+                    home: Austria salzburg
+                    away: Bregenz
+                    league_name: 2. Liga
+                    country_name: Austria
+                    cc: at
+                    type: match
+                  - id: 2420497
+                    startdate: '2026-04-04 16:00:00'
+                    name: Sv anthering vs Sak salzburg
+                    home: Sv anthering
+                    away: Sak salzburg
+                    league_name: Regionalliga Salzburg
+                    country_name: Austria
+                    cc: at
+                    type: match
+                  - id: 2416314
+                    startdate: '2026-04-06 16:00:00'
+                    name: Wsc hertha vs Austria salzburg
+                    home: Wsc hertha
+                    away: Austria salzburg
+                    league_name: 2. Liga
+                    country_name: Austria
+                    cc: at
+                    type: match
+                  - id: 2416850
+                    startdate: '2026-04-10 16:00:00'
+                    name: Austria salzburg vs Admira wacker
+                    home: Austria salzburg
+                    away: Admira wacker
+                    league_name: 2. Liga
+                    country_name: Austria
+                    cc: at
+                    type: match
+                  - id: 2420577
+                    startdate: '2026-04-11 16:00:00'
+                    name: Sak salzburg vs Hallwang
+                    home: Sak salzburg
+                    away: Hallwang
+                    league_name: Regionalliga Salzburg
+                    country_name: Austria
+                    cc: at
+                    type: match
+                  - id: 2416898
+                    startdate: '2026-04-17 16:00:00'
+                    name: Young violets austr. vs Austria salzburg
+                    home: Young violets austr.
+                    away: Austria salzburg
+                    league_name: 2. Liga
+                    country_name: Austria
+                    cc: at
+                    type: match
+                  - id: 2420719
+                    startdate: '2026-04-19 16:00:00'
+                    name: Union henndorf vs Sak salzburg
+                    home: Union henndorf
+                    away: Sak salzburg
+                    league_name: Regionalliga Salzburg
+                    country_name: Austria
+                    cc: at
+                    type: match
+                  - id: 2416914
+                    startdate: '2026-04-24 16:00:00'
+                    name: Austria salzburg vs Kapfenberger 1919
+                    home: Austria salzburg
+                    away: Kapfenberger 1919
+                    league_name: 2. Liga
+                    country_name: Austria
+                    cc: at
+                    type: match
+                  - id: 2420726
+                    startdate: '2026-04-25 16:00:00'
+                    name: Sak salzburg vs Tsu bramberg
+                    home: Sak salzburg
+                    away: Tsu bramberg
+                    league_name: Regionalliga Salzburg
+                    country_name: Austria
+                    cc: at
+                    type: match
+                  - id: 2417523
+                    startdate: '2026-05-02 16:00:00'
+                    name: Sturm graz (a) vs Austria salzburg
+                    home: Sturm graz (a)
+                    away: Austria salzburg
+                    league_name: 2. Liga
+                    country_name: Austria
+                    cc: at
+                    type: match
+                  - id: 2421408
+                    startdate: '2026-05-02 17:00:00'
+                    name: Ufc hallein vs Sak salzburg
+                    home: Ufc hallein
+                    away: Sak salzburg
+                    league_name: Regionalliga Salzburg
+                    country_name: Austria
+                    cc: at
+                    type: match
+                  - id: 2417531
+                    startdate: '2026-05-08 16:00:00'
+                    name: Austria salzburg vs Austria lustenau
+                    home: Austria salzburg
+                    away: Austria lustenau
+                    league_name: 2. Liga
+                    country_name: Austria
+                    cc: at
+                    type: match
+                  - id: 2421414
+                    startdate: '2026-05-09 17:00:00'
+                    name: Sak salzburg vs Thalgau
+                    home: Sak salzburg
+                    away: Thalgau
+                    league_name: Regionalliga Salzburg
+                    country_name: Austria
+                    cc: at
+                    type: match
+                  - id: 2417538
+                    startdate: '2026-05-14 16:00:00'
+                    name: Sv stripfing vs Austria salzburg
+                    home: Sv stripfing
+                    away: Austria salzburg
+                    league_name: 2. Liga
+                    country_name: Austria
+                    cc: at
+                    type: match
+                  - id: 2421428
+                    startdate: '2026-05-17 17:00:00'
+                    name: Anif vs Sak salzburg
+                    home: Anif
+                    away: Sak salzburg
+                    league_name: Regionalliga Salzburg
+                    country_name: Austria
+                    cc: at
+                    type: match
+                  - id: 2421431
+                    startdate: '2026-05-22 17:00:00'
+                    name: Sak salzburg vs Ufc siezenheim
+                    home: Sak salzburg
+                    away: Ufc siezenheim
+                    league_name: Regionalliga Salzburg
+                    country_name: Austria
+                    cc: at
+                    type: match
+                  - id: 2421438
+                    startdate: '2026-05-31 17:00:00'
+                    name: Sv burmoos vs Sak salzburg
+                    home: Sv burmoos
+                    away: Sak salzburg
+                    league_name: Regionalliga Salzburg
+                    country_name: Austria
+                    cc: at
+                    type: match
+                  - id: 2421447
+                    startdate: '2026-06-03 18:00:00'
+                    name: Sak salzburg vs Strasswalchen
+                    home: Sak salzburg
+                    away: Strasswalchen
+                    league_name: Regionalliga Salzburg
+                    country_name: Austria
+                    cc: at
+                    type: match
+                  - id: 2421490
+                    startdate: '2026-06-06 17:00:00'
+                    name: Neumarkt vs Sak salzburg
+                    home: Neumarkt
+                    away: Sak salzburg
+                    league_name: Regionalliga Salzburg
+                    country_name: Austria
+                    cc: at
+                    type: match
+                  - id: 2421494
+                    startdate: '2026-06-13 17:00:00'
+                    name: Sak salzburg vs Schwarzach
+                    home: Sak salzburg
+                    away: Schwarzach
+                    league_name: Regionalliga Salzburg
+                    country_name: Austria
+                    cc: at
+                    type: match
+                meta:
+                  requests_left: 988930
+                  user: soccersapi2
+                  plan: Free Plan
+                  pages: 1
+                  page: 1
+                  count: 0
+                  total: 0
+                  msg: ''
+          headers: {}
+      security: []
+  /v2.2/continents/:
+    get:
+      summary: Continent by ID
+      deprecated: false
+      description: >+
+        The **Continent by ID** endpoint retrieves details for a specific
+        continent using its unique `id`.  
+
+        This is useful when you already know the continent ID and want to
+        confirm its details or use it as part of a larger workflow (e.g.,
+        continent → countries → leagues).
+
+
+        ---
+
+
+        ## Example Request
+
+        ```bash
+
+        curl -L -g
+        "https://api.soccersapi.com/v2.2/continent/?user={{USERNAME}}&token={{TOKEN}}&id=1"
+
+
+      tags: []
+      parameters:
+        - name: user
+          in: query
+          description: ''
+          required: true
+          example: '{{USERNAME}}'
+          schema:
+            type: string
+        - name: token
+          in: query
+          description: ''
+          required: true
+          example: '{{TOKEN}}'
+          schema:
+            type: string
+        - name: t
+          in: query
+          description: ''
+          required: true
+          example: info
+          schema:
+            type: string
+        - name: id
+          in: query
+          description: ''
+          required: true
+          example: '2'
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                      name:
+                        type: string
+                    required:
+                      - id
+                      - name
+                  meta:
+                    type: object
+                    properties:
+                      requests_left:
+                        type: integer
+                      user:
+                        type: string
+                      plan:
+                        type: string
+                      pages:
+                        type: integer
+                      page:
+                        type: integer
+                      msg:
+                        type: string
+                    required:
+                      - requests_left
+                      - user
+                      - plan
+                      - pages
+                      - page
+                      - msg
+                required:
+                  - data
+                  - meta
+              example:
+                data:
+                  id: 2
+                  name: Europe
+                meta:
+                  requests_left: 980858
+                  user: soccersapi2
+                  plan: Free Plan
+                  pages: 1
+                  page: 1
+                  msg: ''
+          headers: {}
+      security: []
+  /v2.2/countries/:
+    get:
+      summary: Country by ID
+      deprecated: false
+      description: >
+        The **Country by ID** endpoint retrieves detailed information about a
+        single country using its unique `id`.  
+
+        It returns the country’s name, ISO code, continent, and image flag.  
+
+
+        This endpoint is useful when you already know a `country_id` (for
+        example, from a league, team, or venue object) and want to confirm its
+        details or display localized information in your app.  
+
+
+        ### Typical Use Cases
+
+        - Show the full country profile on a team, player, or league page.  
+
+        - Validate a `country_id` before using it in another request.  
+
+        - Power country selectors with localized names and flags.  
+
+
+        Example: requesting `id=15` returns details for **Austria**.  
+
+
+        ### Example Request
+
+        ```bash
+
+        curl -L -g
+        "https://api.soccersapi.com/v2.2/countries/?user={{USERNAME}}&token={{TOKEN}}&t=info&id=15"
+      tags: []
+      parameters:
+        - name: user
+          in: query
+          description: ''
+          required: true
+          example: '{{USERNAME}}'
+          schema:
+            type: string
+        - name: token
+          in: query
+          description: ''
+          required: true
+          example: '{{TOKEN}}'
+          schema:
+            type: string
+        - name: t
+          in: query
+          description: ''
+          required: true
+          example: info
+          schema:
+            type: string
+        - name: id
+          in: query
+          description: ''
+          required: true
+          example: '4'
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                      name:
+                        type: string
+                      continent:
+                        type: string
+                      sub_region:
+                        type: 'null'
+                      long:
+                        type: 'null'
+                      lat:
+                        type: 'null'
+                      img:
+                        type: string
+                      code:
+                        type: string
+                    required:
+                      - id
+                      - name
+                      - continent
+                      - sub_region
+                      - long
+                      - lat
+                      - img
+                      - code
+                  meta:
+                    type: object
+                    properties:
+                      requests_left:
+                        type: integer
+                      user:
+                        type: string
+                      plan:
+                        type: string
+                      pages:
+                        type: integer
+                      page:
+                        type: integer
+                      msg:
+                        type: string
+                    required:
+                      - requests_left
+                      - user
+                      - plan
+                      - pages
+                      - page
+                      - msg
+                required:
+                  - data
+                  - meta
+              example:
+                data:
+                  id: 4
+                  name: Germany
+                  continent: Europe
+                  sub_region: null
+                  long: null
+                  lat: null
+                  img: https://cdn.soccersapi.com/images/countries/30/de.png
+                  code: de
+                meta:
+                  requests_left: 967809
+                  user: soccersapi2
+                  plan: Free Plan
+                  pages: 1
+                  page: 1
+                  msg: ''
+          headers: {}
+      security: []
+  /v2.2/leagues/:
+    get:
+      summary: Cup Draw (Tournament Bracket)
+      deprecated: false
+      description: ''
+      tags: []
+      parameters:
+        - name: user
+          in: query
+          description: ''
+          required: true
+          example: '{{USERNAME}}'
+          schema:
+            type: string
+        - name: token
+          in: query
+          description: ''
+          required: true
+          example: '{{TOKEN}}'
+          schema:
+            type: string
+        - name: t
+          in: query
+          description: ''
+          required: true
+          example: cup_draw
+          schema:
+            type: string
+        - name: season_id
+          in: query
+          description: ''
+          required: true
+          example: '45'
+          schema:
+            type: string
+        - name: stage_id
+          in: query
+          description: ''
+          required: true
+          example: '26'
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {}
+      security: []
+  /v2.2/teams/:
+    get:
+      summary: Team Transfers
+      deprecated: false
+      description: ''
+      tags: []
+      parameters:
+        - name: user
+          in: query
+          description: ''
+          required: true
+          example: '{{USERNAME}}'
+          schema:
+            type: string
+        - name: token
+          in: query
+          description: ''
+          required: true
+          example: '{{TOKEN}}'
+          schema:
+            type: string
+        - name: t
+          in: query
+          description: ''
+          required: true
+          example: transfers
+          schema:
+            type: string
+        - name: id
+          in: query
+          description: ''
+          required: true
+          example: '111'
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      arrivals:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            player:
+                              type: object
+                              properties:
+                                id:
+                                  type: 'null'
+                                name:
+                                  type: string
+                              required:
+                                - id
+                                - name
+                            team_left:
+                              type: object
+                              properties:
+                                id:
+                                  type: integer
+                                name:
+                                  type: string
+                              required:
+                                - id
+                                - name
+                            type:
+                              type: string
+                            date:
+                              type: 'null'
+                            fee:
+                              type: string
+                          required:
+                            - player
+                            - team_left
+                            - type
+                            - date
+                            - fee
+                      departures:
+                        type: 'null'
+                    required:
+                      - arrivals
+                      - departures
+                  meta:
+                    type: object
+                    properties:
+                      requests_left:
+                        type: integer
+                      user:
+                        type: string
+                      plan:
+                        type: string
+                      pages:
+                        type: integer
+                      page:
+                        type: integer
+                      count:
+                        type: integer
+                    required:
+                      - requests_left
+                      - user
+                      - plan
+                      - pages
+                      - page
+                      - count
+                required:
+                  - data
+                  - meta
+              example:
+                data:
+                  arrivals:
+                    - player:
+                        id: null
+                        name: Luis Díaz
+                      team_left:
+                        id: 1
+                        name: Liverpool FC
+                      type: Buy
+                      date: null
+                      fee: €70.00m
+                    - player:
+                        id: null
+                        name: Nicolas Jackson
+                      team_left:
+                        id: 20
+                        name: Chelsea FC
+                      type: Loan
+                      date: null
+                      fee: €16.50m
+                    - player:
+                        id: null
+                        name: Jonathan Tah
+                      team_left:
+                        id: 114
+                        name: Bayer 04 Leverkusen
+                      type: Buy
+                      date: null
+                      fee: €2.00m
+                    - player:
+                        id: null
+                        name: Tom Bischof
+                      team_left:
+                        id: 2818
+                        name: TSG 1899 Hoffenheim
+                      type: Buy
+                      date: null
+                      fee: €300k
+                    - player:
+                        id: null
+                        name: Jonah Kusi-Asare
+                      team_left:
+                        id: 3846
+                        name: FC Bayern Munich II
+                      type: ''
+                      date: null
+                      fee: '-'
+                    - player:
+                        id: null
+                        name: Lennart Karl
+                      team_left:
+                        id: 5225
+                        name: FC Bayern Munich U19
+                      type: ''
+                      date: null
+                      fee: '-'
+                    - player:
+                        id: null
+                        name: Mathys Tel
+                      team_left:
+                        id: 13
+                        name: Tottenham Hotspur
+                      type: ''
+                      date: null
+                      fee: '-'
+                    - player:
+                        id: null
+                        name: Paul Wanner
+                      team_left:
+                        id: 2856
+                        name: 1. FC Heidenheim 1846
+                      type: ''
+                      date: null
+                      fee: '-'
+                    - player:
+                        id: null
+                        name: Bryan Zaragoza
+                      team_left:
+                        id: 122
+                        name: CA Osasuna
+                      type: ''
+                      date: null
+                      fee: '-'
+                    - player:
+                        id: null
+                        name: Arijon Ibrahimovic
+                      team_left:
+                        id: 398
+                        name: SS Lazio Roma
+                      type: ''
+                      date: null
+                      fee: '-'
+                    - player:
+                        id: null
+                        name: Frans Krätzig
+                      team_left:
+                        id: 2856
+                        name: 1. FC Heidenheim 1846
+                      type: ''
+                      date: null
+                      fee: '-'
+                    - player:
+                        id: null
+                        name: Lovro Zvonarek
+                      team_left:
+                        id: 2874
+                        name: SK Sturm Graz
+                      type: ''
+                      date: null
+                      fee: '-'
+                  departures: null
+                meta:
+                  requests_left: 968331
+                  user: soccersapi2
+                  plan: Soccer API +1000
+                  pages: 1
+                  page: 1
+                  count: 1
+          headers: {}
+      security: []
+  /v2.2/seasons/:
+    get:
+      summary: Season by ID
+      deprecated: false
+      description: ''
+      tags: []
+      parameters:
+        - name: user
+          in: query
+          description: ''
+          required: true
+          example: '{{USERNAME}}'
+          schema:
+            type: string
+        - name: token
+          in: query
+          description: ''
+          required: true
+          example: '{{TOKEN}}'
+          schema:
+            type: string
+        - name: t
+          in: query
+          description: ''
+          required: true
+          example: info
+          schema:
+            type: string
+        - name: id
+          in: query
+          description: ''
+          required: true
+          example: '406'
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {}
+      security: []
+  /v2.2/stages/:
+    get:
+      summary: Stages by Season
+      deprecated: false
+      description: ''
+      tags: []
+      parameters:
+        - name: user
+          in: query
+          description: ''
+          required: true
+          example: '{{USERNAME}}'
+          schema:
+            type: string
+        - name: token
+          in: query
+          description: ''
+          required: true
+          example: '{{TOKEN}}'
+          schema:
+            type: string
+        - name: t
+          in: query
+          description: ''
+          required: true
+          example: byseason
+          schema:
+            type: string
+        - name: season_id
+          in: query
+          description: ''
+          required: true
+          example: '2091'
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {}
+      security: []
+  /v2.2/groups/:
+    get:
+      summary: Groups by Season
+      deprecated: false
+      description: ''
+      tags: []
+      parameters:
+        - name: user
+          in: query
+          description: ''
+          required: true
+          example: '{{USERNAME}}'
+          schema:
+            type: string
+        - name: token
+          in: query
+          description: ''
+          required: true
+          example: '{{TOKEN}}'
+          schema:
+            type: string
+        - name: t
+          in: query
+          description: ''
+          required: true
+          example: byseason
+          schema:
+            type: string
+        - name: season_id
+          in: query
+          description: ''
+          required: true
+          example: '7011'
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {}
+      security: []
+  /v2.2/rounds/:
+    get:
+      summary: Rounds by Season
+      deprecated: false
+      description: ''
+      tags: []
+      parameters:
+        - name: user
+          in: query
+          description: ''
+          required: true
+          example: '{{USERNAME}}'
+          schema:
+            type: string
+        - name: token
+          in: query
+          description: ''
+          required: true
+          example: '{{TOKEN}}'
+          schema:
+            type: string
+        - name: t
+          in: query
+          description: ''
+          required: true
+          example: byseason
+          schema:
+            type: string
+        - name: season_id
+          in: query
+          description: ''
+          required: true
+          example: '406'
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {}
+      security: []
+  /v2.2/livescores/:
+    get:
+      summary: Ended
+      deprecated: false
+      description: ''
+      tags: []
+      parameters:
+        - name: user
+          in: query
+          description: ''
+          required: true
+          example: '{{USERNAME}}'
+          schema:
+            type: string
+        - name: token
+          in: query
+          description: ''
+          required: true
+          example: '{{TOKEN}}'
+          schema:
+            type: string
+        - name: t
+          in: query
+          description: ''
+          required: true
+          example: ended
+          schema:
+            type: string
+        - name: include
+          in: query
+          description: ''
+          required: false
+          example: odds_prematch, odds_inplay
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {}
+      security: []
+  /v2.2/fixtures/:
+    get:
+      summary: In-Play Odds
+      deprecated: false
+      description: ''
+      tags: []
+      parameters:
+        - name: user
+          in: query
+          description: ''
+          required: true
+          example: '{{USERNAME}}'
+          schema:
+            type: string
+        - name: token
+          in: query
+          description: ''
+          required: true
+          example: '{{TOKEN}}'
+          schema:
+            type: string
+        - name: t
+          in: query
+          description: ''
+          required: true
+          example: match_oddsinplay
+          schema:
+            type: string
+        - name: id
+          in: query
+          description: ''
+          required: true
+          example: '1536526'
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {}
+      security: []
+  /v2.2/stats/:
+    get:
+      summary: Player Stats by Match ID
+      deprecated: false
+      description: ''
+      tags: []
+      parameters:
+        - name: user
+          in: query
+          description: ''
+          required: true
+          example: '{{USERNAME}}'
+          schema:
+            type: string
+        - name: token
+          in: query
+          description: ''
+          required: true
+          example: '{{TOKEN}}'
+          schema:
+            type: string
+        - name: t
+          in: query
+          description: ''
+          required: true
+          example: player
+          schema:
+            type: string
+        - name: player_id
+          in: query
+          description: ''
+          required: true
+          example: '11306'
+          schema:
+            type: string
+        - name: match_id
+          in: query
+          description: ''
+          required: true
+          example: '1531916'
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {}
+      security: []
+  /v2.2/h2h/:
+    get:
+      summary: H2H Team vs Team
+      deprecated: false
+      description: ''
+      tags: []
+      parameters:
+        - name: user
+          in: query
+          description: ''
+          required: true
+          example: '{{USERNAME}}'
+          schema:
+            type: string
+        - name: token
+          in: query
+          description: ''
+          required: true
+          example: '{{TOKEN}}'
+          schema:
+            type: string
+        - name: t
+          in: query
+          description: ''
+          required: true
+          example: teams
+          schema:
+            type: string
+        - name: team1
+          in: query
+          description: ''
+          required: true
+          example: '99'
+          schema:
+            type: string
+        - name: team2
+          in: query
+          description: ''
+          required: true
+          example: '113'
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {}
+      security: []
+  /v2.2/leaders/:
+    get:
+      summary: Topassists
+      deprecated: false
+      description: ''
+      tags: []
+      parameters:
+        - name: user
+          in: query
+          description: ''
+          required: true
+          example: '{{USERNAME}}'
+          schema:
+            type: string
+        - name: token
+          in: query
+          description: ''
+          required: true
+          example: '{{TOKEN}}'
+          schema:
+            type: string
+        - name: t
+          in: query
+          description: ''
+          required: true
+          example: topassists
+          schema:
+            type: string
+        - name: season_id
+          in: query
+          description: ''
+          required: true
+          example: '12516'
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {}
+      security: []
+  /v2.2/bookmakers/:
+    get:
+      summary: Bookmaker by ID
+      deprecated: false
+      description: ''
+      tags: []
+      parameters:
+        - name: user
+          in: query
+          description: ''
+          required: true
+          example: '{{USERNAME}}'
+          schema:
+            type: string
+        - name: token
+          in: query
+          description: ''
+          required: true
+          example: '{{TOKEN}}'
+          schema:
+            type: string
+        - name: t
+          in: query
+          description: ''
+          required: true
+          example: info
+          schema:
+            type: string
+        - name: id
+          in: query
+          description: ''
+          required: true
+          example: '2'
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {}
+      security: []
+  /v2.2/markets/:
+    get:
+      summary: Market by ID
+      deprecated: false
+      description: ''
+      tags: []
+      parameters:
+        - name: user
+          in: query
+          description: ''
+          required: true
+          example: '{{USERNAME}}'
+          schema:
+            type: string
+        - name: token
+          in: query
+          description: ''
+          required: true
+          example: '{{TOKEN}}'
+          schema:
+            type: string
+        - name: t
+          in: query
+          description: ''
+          required: true
+          example: info
+          schema:
+            type: string
+        - name: id
+          in: query
+          description: ''
+          required: true
+          example: '1'
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {}
+      security: []
+  /v2.2/broadcast/:
+    get:
+      summary: Matches on TV by Date
+      deprecated: false
+      description: Get Schedule by Date
+      tags: []
+      parameters:
+        - name: user
+          in: query
+          description: ''
+          required: true
+          example: '{{USERNAME}}'
+          schema:
+            type: string
+        - name: token
+          in: query
+          description: ''
+          required: true
+          example: '{{TOKEN}}'
+          schema:
+            type: string
+        - name: t
+          in: query
+          description: ''
+          required: true
+          example: schedule
+          schema:
+            type: string
+        - name: d
+          in: query
+          description: ''
+          required: true
+          example: '2022-09-01'
+          schema:
+            type: string
+        - name: include
+          in: query
+          description: ''
+          required: true
+          example: tvs
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {}
+      security: []
+  /v2.2/players/:
+    get:
+      summary: Players by Country
+      deprecated: false
+      description: ''
+      tags: []
+      parameters:
+        - name: user
+          in: query
+          description: ''
+          required: true
+          example: '{{USERNAME}}'
+          schema:
+            type: string
+        - name: token
+          in: query
+          description: ''
+          required: true
+          example: '{{TOKEN}}'
+          schema:
+            type: string
+        - name: t
+          in: query
+          description: ''
+          required: true
+          example: list
+          schema:
+            type: string
+        - name: country_id
+          in: query
+          description: ''
+          required: true
+          example: '4'
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {}
+      security: []
+  /v2.2/coaches/:
+    get:
+      summary: Coaches by Country
+      deprecated: false
+      description: ''
+      tags: []
+      parameters:
+        - name: user
+          in: query
+          description: ''
+          required: true
+          example: '{{USERNAME}}'
+          schema:
+            type: string
+        - name: token
+          in: query
+          description: ''
+          required: true
+          example: '{{TOKEN}}'
+          schema:
+            type: string
+        - name: t
+          in: query
+          description: ''
+          required: true
+          example: list
+          schema:
+            type: string
+        - name: country_id
+          in: query
+          description: ''
+          required: true
+          example: '25'
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {}
+      security: []
+  /v2.2/referees/:
+    get:
+      summary: Referee by ID
+      deprecated: false
+      description: ''
+      tags: []
+      parameters:
+        - name: user
+          in: query
+          description: ''
+          required: true
+          example: '{{USERNAME}}'
+          schema:
+            type: string
+        - name: token
+          in: query
+          description: ''
+          required: true
+          example: '{{TOKEN}}'
+          schema:
+            type: string
+        - name: t
+          in: query
+          description: ''
+          required: true
+          example: info
+          schema:
+            type: string
+        - name: id
+          in: query
+          description: ''
+          required: true
+          example: '372'
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                      name:
+                        type: string
+                      common_name:
+                        type: string
+                      firstname:
+                        type: string
+                      lastname:
+                        type: string
+                      birthdate:
+                        type: string
+                      img:
+                        type: string
+                      country:
+                        type: object
+                        properties:
+                          id:
+                            type: integer
+                          name:
+                            type: string
+                          cc:
+                            type: string
+                        required:
+                          - id
+                          - name
+                          - cc
+                    required:
+                      - id
+                      - name
+                      - common_name
+                      - firstname
+                      - lastname
+                      - birthdate
+                      - img
+                      - country
+                  meta:
+                    type: object
+                    properties:
+                      requests_left:
+                        type: integer
+                      user:
+                        type: string
+                      plan:
+                        type: string
+                      pages:
+                        type: integer
+                      page:
+                        type: integer
+                      count:
+                        type: integer
+                      total:
+                        type: integer
+                    required:
+                      - requests_left
+                      - user
+                      - plan
+                      - pages
+                      - page
+                      - count
+                      - total
+                required:
+                  - data
+                  - meta
+              example:
+                data:
+                  id: '372'
+                  name: Deniz Aytekin
+                  common_name: Aytekin, Deniz
+                  firstname: Deniz
+                  lastname: Aytekin
+                  birthdate: 21/07/78
+                  img: https://cdn.soccersapi.com/images/soccer/referees/50/372.png
+                  country:
+                    id: 4
+                    name: Germany
+                    cc: de
+                meta:
+                  requests_left: 752743
+                  user: soccersapi2
+                  plan: Soccer 800 (M)
+                  pages: 1
+                  page: 1
+                  count: 1
+                  total: 1
+      security: []
+  /v2.2/venues/:
+    get:
+      summary: Venues by Country
+      deprecated: false
+      description: ''
+      tags: []
+      parameters:
+        - name: user
+          in: query
+          description: ''
+          required: true
+          example: '{{USERNAME}}'
+          schema:
+            type: string
+        - name: token
+          in: query
+          description: ''
+          required: true
+          example: '{{TOKEN}}'
+          schema:
+            type: string
+        - name: t
+          in: query
+          description: ''
+          required: true
+          example: list
+          schema:
+            type: string
+        - name: country_id
+          in: query
+          description: ''
+          required: true
+          example: '15'
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                        name:
+                          type: string
+                        capacity:
+                          type:
+                            - integer
+                            - 'null'
+                        city:
+                          type: string
+                        address:
+                          type:
+                            - string
+                            - 'null'
+                        img:
+                          type: string
+                        coordinates:
+                          type:
+                            - object
+                            - 'null'
+                          properties:
+                            lat:
+                              type: string
+                            long:
+                              type: string
+                          required:
+                            - lat
+                            - long
+                        country:
+                          type: object
+                          properties:
+                            id:
+                              type: integer
+                            name:
+                              type: string
+                            continent:
+                              type: string
+                            sub_region:
+                              type: 'null'
+                            long:
+                              type: 'null'
+                            lat:
+                              type: 'null'
+                            img:
+                              type: string
+                            code:
+                              type: string
+                            cc:
+                              type: string
+                          required:
+                            - id
+                            - name
+                            - continent
+                            - sub_region
+                            - long
+                            - lat
+                            - img
+                            - code
+                            - cc
+                      required:
+                        - id
+                        - name
+                        - capacity
+                        - city
+                        - address
+                        - img
+                        - coordinates
+                        - country
+                  meta:
+                    type: object
+                    properties:
+                      requests_left:
+                        type: integer
+                      user:
+                        type: string
+                      plan:
+                        type: string
+                      pages:
+                        type: integer
+                      page:
+                        type: integer
+                      count:
+                        type: integer
+                      total:
+                        type: integer
+                      msg:
+                        type: string
+                    required:
+                      - requests_left
+                      - user
+                      - plan
+                      - pages
+                      - page
+                      - count
+                      - total
+                      - msg
+                required:
+                  - data
+                  - meta
+              example:
+                data:
+                  - id: 191
+                    name: Cashpoint Arena
+                    capacity: 8500
+                    city: Altach
+                    address: null
+                    img: https://cdn.soccersapi.com/images/soccer/venues/191.png
+                    coordinates:
+                      lat: '47.353889'
+                      long: '9.636667'
+                    country:
+                      id: 15
+                      name: Austria
+                      continent: Europe
+                      sub_region: null
+                      long: null
+                      lat: null
+                      img: https://cdn.soccersapi.com/images/countries/30/at.png
+                      code: at
+                      cc: at
+                  - id: 192
+                    name: Lavanttal-Arena
+                    capacity: 7300
+                    city: Wolfsberg
+                    address: null
+                    img: https://cdn.soccersapi.com/images/soccer/venues/192.png
+                    coordinates:
+                      lat: '46.826258'
+                      long: '14.851989'
+                    country:
+                      id: 15
+                      name: Austria
+                      continent: Europe
+                      sub_region: null
+                      long: null
+                      lat: null
+                      img: https://cdn.soccersapi.com/images/countries/30/at.png
+                      code: at
+                      cc: at
+                  - id: 321
+                    name: Stadion Birkenwiese
+                    capacity: 12000
+                    city: Dornbirn
+                    address: Hochsterstrasse 78a
+                    img: https://cdn.soccersapi.com/images/soccer/venues/321.png
+                    coordinates:
+                      lat: '47.416498'
+                      long: '9.724090'
+                    country:
+                      id: 15
+                      name: Austria
+                      continent: Europe
+                      sub_region: null
+                      long: null
+                      lat: null
+                      img: https://cdn.soccersapi.com/images/countries/30/at.png
+                      code: at
+                      cc: at
+                  - id: 792
+                    name: Merkur Arena
+                    capacity: 16764
+                    city: Graz
+                    address: Stadionplatz 1, A-8010 Graz
+                    img: https://cdn.soccersapi.com/images/soccer/venues/792.png
+                    coordinates:
+                      lat: '47.046111'
+                      long: '15.454444'
+                    country:
+                      id: 15
+                      name: Austria
+                      continent: Europe
+                      sub_region: null
+                      long: null
+                      lat: null
+                      img: https://cdn.soccersapi.com/images/countries/30/at.png
+                      code: at
+                      cc: at
+                  - id: 793
+                    name: NV Arena
+                    capacity: 8000
+                    city: Sankt Polten
+                    address: null
+                    img: https://cdn.soccersapi.com/images/soccer/venues/793.png
+                    coordinates:
+                      lat: '48.219297'
+                      long: '15.650882'
+                    country:
+                      id: 15
+                      name: Austria
+                      continent: Europe
+                      sub_region: null
+                      long: null
+                      lat: null
+                      img: https://cdn.soccersapi.com/images/countries/30/at.png
+                      code: at
+                      cc: at
+                  - id: 794
+                    name: Allianz Stadion
+                    capacity: 28345
+                    city: Vienna
+                    address: null
+                    img: https://cdn.soccersapi.com/images/soccer/venues/794.png
+                    coordinates:
+                      lat: '48.198056'
+                      long: '16.265278'
+                    country:
+                      id: 15
+                      name: Austria
+                      continent: Europe
+                      sub_region: null
+                      long: null
+                      lat: null
+                      img: https://cdn.soccersapi.com/images/countries/30/at.png
+                      code: at
+                      cc: at
+                  - id: 1425
+                    name: Tivoli Stadion Tirol
+                    capacity: 17400
+                    city: Innsbruck
+                    address: null
+                    img: https://cdn.soccersapi.com/images/soccer/venues/1425.png
+                    coordinates:
+                      lat: '47.256024'
+                      long: '11.411162'
+                    country:
+                      id: 15
+                      name: Austria
+                      continent: Europe
+                      sub_region: null
+                      long: null
+                      lat: null
+                      img: https://cdn.soccersapi.com/images/countries/30/at.png
+                      code: at
+                      cc: at
+                  - id: 1426
+                    name: Sportzentrum Graz-Weinzodl
+                    capacity: 2500
+                    city: Graz
+                    address: null
+                    img: https://cdn.soccersapi.com/images/soccer/venues/1426.png
+                    coordinates:
+                      lat: '47.107469'
+                      long: '15.401434'
+                    country:
+                      id: 15
+                      name: Austria
+                      continent: Europe
+                      sub_region: null
+                      long: null
+                      lat: null
+                      img: https://cdn.soccersapi.com/images/countries/30/at.png
+                      code: at
+                      cc: at
+                  - id: 1427
+                    name: Waldviertler Volksbank Arena
+                    capacity: 3913
+                    city: Horn
+                    address: Altbachweg 10
+                    img: https://cdn.soccersapi.com/images/soccer/venues/1427.png
+                    coordinates:
+                      lat: '48.668646'
+                      long: '15.663064'
+                    country:
+                      id: 15
+                      name: Austria
+                      continent: Europe
+                      sub_region: null
+                      long: null
+                      lat: null
+                      img: https://cdn.soccersapi.com/images/countries/30/at.png
+                      code: at
+                      cc: at
+                  - id: 1428
+                    name: Ertl Glas-Stadion
+                    capacity: 3000
+                    city: Amstetten
+                    address: null
+                    img: https://cdn.soccersapi.com/images/soccer/venues/1428.png
+                    coordinates:
+                      lat: '48.115286'
+                      long: '14.872462'
+                    country:
+                      id: 15
+                      name: Austria
+                      continent: Europe
+                      sub_region: null
+                      long: null
+                      lat: null
+                      img: https://cdn.soccersapi.com/images/countries/30/at.png
+                      code: at
+                      cc: at
+                  - id: 1429
+                    name: Karawankenblick-Stadion
+                    capacity: 2000
+                    city: Klagenfurt
+                    address: null
+                    img: https://cdn.soccersapi.com/images/soccer/venues/1429.png
+                    coordinates:
+                      lat: '46.6093153'
+                      long: '14.2751445'
+                    country:
+                      id: 15
+                      name: Austria
+                      continent: Europe
+                      sub_region: null
+                      long: null
+                      lat: null
+                      img: https://cdn.soccersapi.com/images/countries/30/at.png
+                      code: at
+                      cc: at
+                  - id: 1430
+                    name: Raiffeisen Arena
+                    capacity: 6009
+                    city: Pasching
+                    address: null
+                    img: https://cdn.soccersapi.com/images/soccer/venues/1430.png
+                    coordinates:
+                      lat: '48.236208'
+                      long: '14.228302'
+                    country:
+                      id: 15
+                      name: Austria
+                      continent: Europe
+                      sub_region: null
+                      long: null
+                      lat: null
+                      img: https://cdn.soccersapi.com/images/countries/30/at.png
+                      code: at
+                      cc: at
+                  - id: 1431
+                    name: Franz-Fekete-Stadion
+                    capacity: 9640
+                    city: Kapfenberg
+                    address: null
+                    img: https://cdn.soccersapi.com/images/soccer/venues/1431.png
+                    coordinates:
+                      lat: '47.443889'
+                      long: '15.300556'
+                    country:
+                      id: 15
+                      name: Austria
+                      continent: Europe
+                      sub_region: null
+                      long: null
+                      lat: null
+                      img: https://cdn.soccersapi.com/images/countries/30/at.png
+                      code: at
+                      cc: at
+                  - id: 1432
+                    name: Planet Pure Stadion
+                    capacity: 8800
+                    city: Lustenau
+                    address: null
+                    img: https://cdn.soccersapi.com/images/soccer/venues/1432.png
+                    coordinates:
+                      lat: '47.421111'
+                      long: '9.652778'
+                    country:
+                      id: 15
+                      name: Austria
+                      continent: Europe
+                      sub_region: null
+                      long: null
+                      lat: null
+                      img: https://cdn.soccersapi.com/images/countries/30/at.png
+                      code: at
+                      cc: at
+                  - id: 1639
+                    name: Pappelstadion
+                    capacity: 15700
+                    city: Mattersburg
+                    address: null
+                    img: https://cdn.soccersapi.com/images/soccer/venues/1639.png
+                    coordinates:
+                      lat: '47.739167'
+                      long: '16.406389'
+                    country:
+                      id: 15
+                      name: Austria
+                      continent: Europe
+                      sub_region: null
+                      long: null
+                      lat: null
+                      img: https://cdn.soccersapi.com/images/countries/30/at.png
+                      code: at
+                      cc: at
+                  - id: 1640
+                    name: BSFZ-Arena
+                    capacity: 12000
+                    city: Maria Enzersdorf
+                    address: null
+                    img: https://cdn.soccersapi.com/images/soccer/venues/1640.png
+                    coordinates:
+                      lat: '48.097500'
+                      long: '16.310833'
+                    country:
+                      id: 15
+                      name: Austria
+                      continent: Europe
+                      sub_region: null
+                      long: null
+                      lat: null
+                      img: https://cdn.soccersapi.com/images/countries/30/at.png
+                      code: at
+                      cc: at
+                  - id: 1956
+                    name: Profertil Arena Hartberg
+                    capacity: 4635
+                    city: Hartberg
+                    address: null
+                    img: https://cdn.soccersapi.com/images/soccer/venues/1956.png
+                    coordinates:
+                      lat: '47.28091'
+                      long: '15.977381'
+                    country:
+                      id: 15
+                      name: Austria
+                      continent: Europe
+                      sub_region: null
+                      long: null
+                      lat: null
+                      img: https://cdn.soccersapi.com/images/countries/30/at.png
+                      code: at
+                      cc: at
+                  - id: 1957
+                    name: Generali Arena
+                    capacity: 17500
+                    city: Vienna
+                    address: null
+                    img: https://cdn.soccersapi.com/images/soccer/venues/1957.png
+                    coordinates:
+                      lat: '48.162306'
+                      long: '16.386714'
+                    country:
+                      id: 15
+                      name: Austria
+                      continent: Europe
+                      sub_region: null
+                      long: null
+                      lat: null
+                      img: https://cdn.soccersapi.com/images/countries/30/at.png
+                      code: at
+                      cc: at
+                  - id: 2423
+                    name: Stadion der Stadt Linz
+                    capacity: 21005
+                    city: Linz
+                    address: null
+                    img: https://cdn.soccersapi.com/images/soccer/venues/2423.png
+                    coordinates:
+                      lat: '48.293693'
+                      long: '14.276570'
+                    country:
+                      id: 15
+                      name: Austria
+                      continent: Europe
+                      sub_region: null
+                      long: null
+                      lat: null
+                      img: https://cdn.soccersapi.com/images/countries/30/at.png
+                      code: at
+                      cc: at
+                  - id: 2424
+                    name: Red Bull Arena
+                    capacity: 30188
+                    city: Salzburg
+                    address: null
+                    img: https://cdn.soccersapi.com/images/soccer/venues/2424.png
+                    coordinates:
+                      lat: '47.816264'
+                      long: '12.998228'
+                    country:
+                      id: 15
+                      name: Austria
+                      continent: Europe
+                      sub_region: null
+                      long: null
+                      lat: null
+                      img: https://cdn.soccersapi.com/images/countries/30/at.png
+                      code: at
+                      cc: at
+                  - id: 2443
+                    name: Josko Arena
+                    capacity: 7300
+                    city: Ried im Innkreis
+                    address: null
+                    img: https://cdn.soccersapi.com/images/soccer/venues/2443.png
+                    coordinates:
+                      lat: '48.207778'
+                      long: '13.478333'
+                    country:
+                      id: 15
+                      name: Austria
+                      continent: Europe
+                      sub_region: null
+                      long: null
+                      lat: null
+                      img: https://cdn.soccersapi.com/images/countries/30/at.png
+                      code: at
+                      cc: at
+                  - id: 2444
+                    name: FAC-Platz
+                    capacity: 3000
+                    city: Vienna
+                    address: null
+                    img: https://cdn.soccersapi.com/images/soccer/venues/2444.png
+                    coordinates:
+                      lat: '48.269858'
+                      long: '16.393756'
+                    country:
+                      id: 15
+                      name: Austria
+                      continent: Europe
+                      sub_region: null
+                      long: null
+                      lat: null
+                      img: https://cdn.soccersapi.com/images/countries/30/at.png
+                      code: at
+                      cc: at
+                  - id: 2445
+                    name: DAS.GOLDBERG Stadion
+                    capacity: 4330
+                    city: Grodig
+                    address: null
+                    img: https://cdn.soccersapi.com/images/soccer/venues/2445.png
+                    coordinates:
+                      lat: '47.743302'
+                      long: '13.04753'
+                    country:
+                      id: 15
+                      name: Austria
+                      continent: Europe
+                      sub_region: null
+                      long: null
+                      lat: null
+                      img: https://cdn.soccersapi.com/images/countries/30/at.png
+                      code: at
+                      cc: at
+                  - id: 2446
+                    name: Fußballarena Lafnitz
+                    capacity: 3000
+                    city: Lafnitz
+                    address: null
+                    img: https://cdn.soccersapi.com/images/soccer/venues/2446.png
+                    coordinates:
+                      lat: '47.373339'
+                      long: '16.011468'
+                    country:
+                      id: 15
+                      name: Austria
+                      continent: Europe
+                      sub_region: null
+                      long: null
+                      lat: null
+                      img: https://cdn.soccersapi.com/images/countries/30/at.png
+                      code: at
+                      cc: at
+                  - id: 2447
+                    name: S.I.S. Arena
+                    capacity: 6000
+                    city: Steyr
+                    address: Volksstraße, Steyr
+                    img: https://cdn.soccersapi.com/images/soccer/venues/2447.png
+                    coordinates:
+                      lat: '48.037754'
+                      long: '14.410516'
+                    country:
+                      id: 15
+                      name: Austria
+                      continent: Europe
+                      sub_region: null
+                      long: null
+                      lat: null
+                      img: https://cdn.soccersapi.com/images/countries/30/at.png
+                      code: at
+                      cc: at
+                  - id: 2455
+                    name: Park Stadium
+                    capacity: 1500
+                    city: Bruckneudorf, Austria
+                    address: Bruck an der Leitha, 2460, Austria
+                    img: https://cdn.soccersapi.com/images/soccer/venues/2455.png
+                    coordinates:
+                      lat: '48.0216699'
+                      long: '16.7936063'
+                    country:
+                      id: 15
+                      name: Austria
+                      continent: Europe
+                      sub_region: null
+                      long: null
+                      lat: null
+                      img: https://cdn.soccersapi.com/images/countries/30/at.png
+                      code: at
+                      cc: at
+                  - id: 2456
+                    name: Wiener Neustadter Stadion
+                    capacity: 4290
+                    city: Wiener Neustadt
+                    address: null
+                    img: https://cdn.soccersapi.com/images/soccer/venues/2456.png
+                    coordinates:
+                      lat: '47.822778'
+                      long: '16.255278'
+                    country:
+                      id: 15
+                      name: Austria
+                      continent: Europe
+                      sub_region: null
+                      long: null
+                      lat: null
+                      img: https://cdn.soccersapi.com/images/countries/30/at.png
+                      code: at
+                      cc: at
+                  - id: 2457
+                    name: Sportzentrum Drassburg
+                    capacity: 1000
+                    city: Mattersburg
+                    address: 7021 Gemeinde Draßburg, Österreich
+                    img: https://cdn.soccersapi.com/images/soccer/venues/2457.png
+                    coordinates:
+                      lat: '47.7481035'
+                      long: '16.4793098'
+                    country:
+                      id: 15
+                      name: Austria
+                      continent: Europe
+                      sub_region: null
+                      long: null
+                      lat: null
+                      img: https://cdn.soccersapi.com/images/countries/30/at.png
+                      code: at
+                      cc: at
+                  - id: 2458
+                    name: Sportzentrum Ebreichsdorf
+                    capacity: 1000
+                    city: Ebreichsdorf
+                    address: null
+                    img: https://cdn.soccersapi.com/images/soccer/venues/2458.png
+                    coordinates:
+                      lat: '47.952997'
+                      long: '16.414179'
+                    country:
+                      id: 15
+                      name: Austria
+                      continent: Europe
+                      sub_region: null
+                      long: null
+                      lat: null
+                      img: https://cdn.soccersapi.com/images/countries/30/at.png
+                      code: at
+                      cc: at
+                  - id: 2459
+                    name: Rudolf-Tonn-Stadion
+                    capacity: 10000
+                    city: Schwechat
+                    address: Franz-Schuster-Strasse 1-3
+                    img: https://cdn.soccersapi.com/images/soccer/venues/2459.png
+                    coordinates:
+                      lat: '48.129341'
+                      long: '16.468664'
+                    country:
+                      id: 15
+                      name: Austria
+                      continent: Europe
+                      sub_region: null
+                      long: null
+                      lat: null
+                      img: https://cdn.soccersapi.com/images/countries/30/at.png
+                      code: at
+                      cc: at
+                  - id: 2569
+                    name: Aulandstadion
+                    capacity: 1000
+                    city: Mannsdorf
+                    address: null
+                    img: https://cdn.soccersapi.com/images/soccer/venues/2569.png
+                    coordinates:
+                      lat: '48.149997'
+                      long: '16.663171'
+                    country:
+                      id: 15
+                      name: Austria
+                      continent: Europe
+                      sub_region: null
+                      long: null
+                      lat: null
+                      img: https://cdn.soccersapi.com/images/countries/30/at.png
+                      code: at
+                      cc: at
+                  - id: 2570
+                    name: Sportplatz Wiener Viktoria
+                    capacity: 1000
+                    city: Vienna
+                    address: null
+                    img: https://cdn.soccersapi.com/images/soccer/venues/2570.png
+                    coordinates:
+                      lat: '48.167839'
+                      long: '16.324021'
+                    country:
+                      id: 15
+                      name: Austria
+                      continent: Europe
+                      sub_region: null
+                      long: null
+                      lat: null
+                      img: https://cdn.soccersapi.com/images/countries/30/at.png
+                      code: at
+                      cc: at
+                  - id: 2962
+                    name: Sportzentrum Neusiedl
+                    capacity: 3000
+                    city: Neusiedl am See
+                    address: null
+                    img: https://cdn.soccersapi.com/images/soccer/venues/2962.png
+                    coordinates:
+                      lat: '47.9404'
+                      long: '16.84211'
+                    country:
+                      id: 15
+                      name: Austria
+                      continent: Europe
+                      sub_region: null
+                      long: null
+                      lat: null
+                      img: https://cdn.soccersapi.com/images/countries/30/at.png
+                      code: at
+                      cc: at
+                  - id: 2963
+                    name: Fussballakademie Burgenland
+                    capacity: 2500
+                    city: Mattersburg
+                    address: Dr. Fred Sinowatz Straße 32
+                    img: https://cdn.soccersapi.com/images/soccer/venues/2963.png
+                    coordinates:
+                      lat: '47.74358'
+                      long: '16.381449'
+                    country:
+                      id: 15
+                      name: Austria
+                      continent: Europe
+                      sub_region: null
+                      long: null
+                      lat: null
+                      img: https://cdn.soccersapi.com/images/countries/30/at.png
+                      code: at
+                      cc: at
+                  - id: 2964
+                    name: Sportzentrum Traiskirchen
+                    capacity: 3500
+                    city: Traiskirchen
+                    address: null
+                    img: https://cdn.soccersapi.com/images/soccer/venues/2964.png
+                    coordinates:
+                      lat: '48.016992'
+                      long: '16.303813'
+                    country:
+                      id: 15
+                      name: Austria
+                      continent: Europe
+                      sub_region: null
+                      long: null
+                      lat: null
+                      img: https://cdn.soccersapi.com/images/countries/30/at.png
+                      code: at
+                      cc: at
+                  - id: 2965
+                    name: Sportclub-Platz
+                    capacity: 8700
+                    city: Vienna
+                    address: Alszeile 19
+                    img: https://cdn.soccersapi.com/images/soccer/venues/2965.png
+                    coordinates:
+                      lat: '48.226116'
+                      long: '16.311344'
+                    country:
+                      id: 15
+                      name: Austria
+                      continent: Europe
+                      sub_region: null
+                      long: null
+                      lat: null
+                      img: https://cdn.soccersapi.com/images/countries/30/at.png
+                      code: at
+                      cc: at
+                  - id: 2999
+                    name: Siemens Energy Stadion
+                    capacity: 3000
+                    city: Weiz
+                    address: null
+                    img: https://cdn.soccersapi.com/images/soccer/venues/2999.png
+                    coordinates:
+                      lat: '47.222887'
+                      long: '15.624959'
+                    country:
+                      id: 15
+                      name: Austria
+                      continent: Europe
+                      sub_region: null
+                      long: null
+                      lat: null
+                      img: https://cdn.soccersapi.com/images/countries/30/at.png
+                      code: at
+                      cc: at
+                  - id: 3000
+                    name: Sportzentrum Union Volksbank Vöcklamarkt
+                    capacity: 2500
+                    city: Vöcklamarkt
+                    address: null
+                    img: https://cdn.soccersapi.com/images/soccer/venues/3000.png
+                    coordinates:
+                      lat: '48.003828'
+                      long: '13.480320'
+                    country:
+                      id: 15
+                      name: Austria
+                      continent: Europe
+                      sub_region: null
+                      long: null
+                      lat: null
+                      img: https://cdn.soccersapi.com/images/countries/30/at.png
+                      code: at
+                      cc: at
+                  - id: 3027
+                    name: Sportanlage Raxplatz
+                    capacity: 1000
+                    city: Vienna
+                    address: Raxstrasse 3, 1100 Wien, Austria
+                    img: https://cdn.soccersapi.com/images/soccer/venues/3027.png
+                    coordinates:
+                      lat: '48.1648285'
+                      long: '16.3644411'
+                    country:
+                      id: 15
+                      name: Austria
+                      continent: Europe
+                      sub_region: null
+                      long: null
+                      lat: null
+                      img: https://cdn.soccersapi.com/images/countries/30/at.png
+                      code: at
+                      cc: at
+                  - id: 3028
+                    name: Sportplatz Stripfing
+                    capacity: 500
+                    city: Weikendorf, Austria
+                    address: Stripfing 5, 2253 Weikendorf, Österreich
+                    img: https://cdn.soccersapi.com/images/soccer/venues/3028.png
+                    coordinates:
+                      lat: '48.3416525'
+                      long: '16.7960701'
+                    country:
+                      id: 15
+                      name: Austria
+                      continent: Europe
+                      sub_region: null
+                      long: null
+                      lat: null
+                      img: https://cdn.soccersapi.com/images/countries/30/at.png
+                      code: at
+                      cc: at
+                  - id: 3029
+                    name: Solarstadion
+                    capacity: 700
+                    city: Gleisdorf
+                    address: null
+                    img: https://cdn.soccersapi.com/images/soccer/venues/3029.png
+                    coordinates:
+                      lat: '47.0975872'
+                      long: '15.7020824'
+                    country:
+                      id: 15
+                      name: Austria
+                      continent: Europe
+                      sub_region: null
+                      long: null
+                      lat: null
+                      img: https://cdn.soccersapi.com/images/countries/30/at.png
+                      code: at
+                      cc: at
+                  - id: 3030
+                    name: Maximilian-Pagl-Stadion
+                    capacity: 2000
+                    city: Stadl-Paura
+                    address: null
+                    img: https://cdn.soccersapi.com/images/soccer/venues/3030.png
+                    coordinates: null
+                    country:
+                      id: 15
+                      name: Austria
+                      continent: Europe
+                      sub_region: null
+                      long: null
+                      lat: null
+                      img: https://cdn.soccersapi.com/images/countries/30/at.png
+                      code: at
+                      cc: at
+                  - id: 3031
+                    name: Bad Gleichenberg Arena
+                    capacity: 2500
+                    city: Bad Gleichenberg
+                    address: null
+                    img: https://cdn.soccersapi.com/images/soccer/venues/3031.png
+                    coordinates: null
+                    country:
+                      id: 15
+                      name: Austria
+                      continent: Europe
+                      sub_region: null
+                      long: null
+                      lat: null
+                      img: https://cdn.soccersapi.com/images/countries/30/at.png
+                      code: at
+                      cc: at
+                  - id: 3032
+                    name: HOGO Arena
+                    capacity: 2000
+                    city: Wels
+                    address: null
+                    img: https://cdn.soccersapi.com/images/soccer/venues/3032.png
+                    coordinates: null
+                    country:
+                      id: 15
+                      name: Austria
+                      continent: Europe
+                      sub_region: null
+                      long: null
+                      lat: null
+                      img: https://cdn.soccersapi.com/images/countries/30/at.png
+                      code: at
+                      cc: at
+                  - id: 3354
+                    name: Koralmstadion
+                    capacity: 3500
+                    city: Deutschlandsberg
+                    address: null
+                    img: https://cdn.soccersapi.com/images/soccer/venues/3354.png
+                    coordinates: null
+                    country:
+                      id: 15
+                      name: Austria
+                      continent: Europe
+                      sub_region: null
+                      long: null
+                      lat: null
+                      img: https://cdn.soccersapi.com/images/countries/30/at.png
+                      code: at
+                      cc: at
+                  - id: 3379
+                    name: Sportzentrum Mitte
+                    capacity: 3000
+                    city: Salzburg
+                    address: null
+                    img: https://cdn.soccersapi.com/images/soccer/venues/3379.png
+                    coordinates:
+                      lat: '47.793216'
+                      long: '13.055419'
+                    country:
+                      id: 15
+                      name: Austria
+                      continent: Europe
+                      sub_region: null
+                      long: null
+                      lat: null
+                      img: https://cdn.soccersapi.com/images/countries/30/at.png
+                      code: at
+                      cc: at
+                  - id: 3380
+                    name: Sportplatz Haselstauden
+                    capacity: 1000
+                    city: Dornbirn
+                    address: null
+                    img: https://cdn.soccersapi.com/images/soccer/venues/3380.png
+                    coordinates:
+                      lat: '47.432047'
+                      long: '9.746765'
+                    country:
+                      id: 15
+                      name: Austria
+                      continent: Europe
+                      sub_region: null
+                      long: null
+                      lat: null
+                      img: https://cdn.soccersapi.com/images/countries/30/at.png
+                      code: at
+                      cc: at
+                  - id: 3381
+                    name: Sportstadion Wörgl
+                    capacity: 3500
+                    city: Wörgl
+                    address: null
+                    img: https://cdn.soccersapi.com/images/soccer/venues/3381.png
+                    coordinates:
+                      lat: '47.487463'
+                      long: '12.056709'
+                    country:
+                      id: 15
+                      name: Austria
+                      continent: Europe
+                      sub_region: null
+                      long: null
+                      lat: null
+                      img: https://cdn.soccersapi.com/images/countries/30/at.png
+                      code: at
+                      cc: at
+                  - id: 3382
+                    name: Messendorf Trainingszentrum
+                    capacity: 1500
+                    city: Graz
+                    address: Sternäckerweg 118
+                    img: https://cdn.soccersapi.com/images/soccer/venues/3382.png
+                    coordinates:
+                      lat: '47.046733'
+                      long: '15.480100'
+                    country:
+                      id: 15
+                      name: Austria
+                      continent: Europe
+                      sub_region: null
+                      long: null
+                      lat: null
+                      img: https://cdn.soccersapi.com/images/countries/30/at.png
+                      code: at
+                      cc: at
+                  - id: 3383
+                    name: Park21-Arena
+                    capacity: null
+                    city: Gurten
+                    address: null
+                    img: https://cdn.soccersapi.com/images/soccer/venues/3383.png
+                    coordinates:
+                      lat: '48.240067'
+                      long: '13.342377'
+                    country:
+                      id: 15
+                      name: Austria
+                      continent: Europe
+                      sub_region: null
+                      long: null
+                      lat: null
+                      img: https://cdn.soccersapi.com/images/countries/30/at.png
+                      code: at
+                      cc: at
+                  - id: 3384
+                    name: ASKÖ-Stadion Wels
+                    capacity: 3000
+                    city: Wels
+                    address: Sauerbruchstrasse 62
+                    img: https://cdn.soccersapi.com/images/soccer/venues/3384.png
+                    coordinates:
+                      lat: '48.158766'
+                      long: '13.994519'
+                    country:
+                      id: 15
+                      name: Austria
+                      continent: Europe
+                      sub_region: null
+                      long: null
+                      lat: null
+                      img: https://cdn.soccersapi.com/images/countries/30/at.png
+                      code: at
+                      cc: at
+                  - id: 3385
+                    name: Sportzentrum Kalsdorf
+                    capacity: 3000
+                    city: Kalsdorf
+                    address: null
+                    img: https://cdn.soccersapi.com/images/soccer/venues/3385.png
+                    coordinates:
+                      lat: '46.961904'
+                      long: '15.476967'
+                    country:
+                      id: 15
+                      name: Austria
+                      continent: Europe
+                      sub_region: null
+                      long: null
+                      lat: null
+                      img: https://cdn.soccersapi.com/images/countries/30/at.png
+                      code: at
+                      cc: at
+                  - id: 3386
+                    name: Stahlbau Müller Arena
+                    capacity: 3000
+                    city: Sankt Anna am Aigen
+                    address: null
+                    img: https://cdn.soccersapi.com/images/soccer/venues/3386.png
+                    coordinates: null
+                    country:
+                      id: 15
+                      name: Austria
+                      continent: Europe
+                      sub_region: null
+                      long: null
+                      lat: null
+                      img: https://cdn.soccersapi.com/images/countries/30/at.png
+                      code: at
+                      cc: at
+                  - id: 3387
+                    name: ATSV Arena
+                    capacity: 1500
+                    city: Wolfsberg
+                    address: null
+                    img: https://cdn.soccersapi.com/images/soccer/venues/3387.png
+                    coordinates:
+                      lat: '46.832874'
+                      long: '14.841699'
+                    country:
+                      id: 15
+                      name: Austria
+                      continent: Europe
+                      sub_region: null
+                      long: null
+                      lat: null
+                      img: https://cdn.soccersapi.com/images/countries/30/at.png
+                      code: at
+                      cc: at
+                  - id: 3388
+                    name: Sportplatz Allerheiligen
+                    capacity: 1500
+                    city: Allerheiligen bei Wildon
+                    address: null
+                    img: https://cdn.soccersapi.com/images/soccer/venues/3388.png
+                    coordinates:
+                      lat: '46.911864'
+                      long: '15.552369'
+                    country:
+                      id: 15
+                      name: Austria
+                      continent: Europe
+                      sub_region: null
+                      long: null
+                      lat: null
+                      img: https://cdn.soccersapi.com/images/countries/30/at.png
+                      code: at
+                      cc: at
+                  - id: 3594
+                    name: Sparkassen Stadion
+                    capacity: 1200
+                    city: Leobendorf, Austria
+                    address: Burggasse, 2100 Leobendorf
+                    img: https://cdn.soccersapi.com/images/soccer/venues/3594.png
+                    coordinates:
+                      lat: '48.3799664'
+                      long: '16.3112054'
+                    country:
+                      id: 15
+                      name: Austria
+                      continent: Europe
+                      sub_region: null
+                      long: null
+                      lat: null
+                      img: https://cdn.soccersapi.com/images/countries/30/at.png
+                      code: at
+                      cc: at
+                  - id: 3610
+                    name: Stadion Hohe Warte
+                    capacity: 5500
+                    city: Vienna
+                    address: null
+                    img: https://cdn.soccersapi.com/images/soccer/venues/3610.png
+                    coordinates:
+                      lat: '48.248776'
+                      long: '16.359656'
+                    country:
+                      id: 15
+                      name: Austria
+                      continent: Europe
+                      sub_region: null
+                      long: null
+                      lat: null
+                      img: https://cdn.soccersapi.com/images/countries/30/at.png
+                      code: at
+                      cc: at
+                  - id: 3611
+                    name: Sportstadion Gratkorn
+                    capacity: 3000
+                    city: Gratkorn
+                    address: Sportplatzgasse 7, 8101 Gratkorn
+                    img: https://cdn.soccersapi.com/images/soccer/venues/3611.png
+                    coordinates:
+                      lat: '47.130006'
+                      long: '15.33856'
+                    country:
+                      id: 15
+                      name: Austria
+                      continent: Europe
+                      sub_region: null
+                      long: null
+                      lat: null
+                      img: https://cdn.soccersapi.com/images/countries/30/at.png
+                      code: at
+                      cc: at
+                  - id: 3678
+                    name: Sportplatz Zirl
+                    capacity: 2000
+                    city: Zirl
+                    address: null
+                    img: https://cdn.soccersapi.com/images/soccer/venues/3678.png
+                    coordinates:
+                      lat: '47.266664'
+                      long: '11.234978'
+                    country:
+                      id: 15
+                      name: Austria
+                      continent: Europe
+                      sub_region: null
+                      long: null
+                      lat: null
+                      img: https://cdn.soccersapi.com/images/countries/30/at.png
+                      code: at
+                      cc: at
+                  - id: 3685
+                    name: Sportanlage Bürgerau
+                    capacity: 1250
+                    city: Saalfelden
+                    address: null
+                    img: https://cdn.soccersapi.com/images/soccer/venues/3685.png
+                    coordinates:
+                      lat: '47.436092'
+                      long: '12.854786'
+                    country:
+                      id: 15
+                      name: Austria
+                      continent: Europe
+                      sub_region: null
+                      long: null
+                      lat: null
+                      img: https://cdn.soccersapi.com/images/countries/30/at.png
+                      code: at
+                      cc: at
+                  - id: 3686
+                    name: Silberstadt-Arena Schwaz
+                    capacity: 3000
+                    city: Schwaz
+                    address: null
+                    img: https://cdn.soccersapi.com/images/soccer/venues/3686.png
+                    coordinates:
+                      lat: '47.3365402'
+                      long: '11.7046177'
+                    country:
+                      id: 15
+                      name: Austria
+                      continent: Europe
+                      sub_region: null
+                      long: null
+                      lat: null
+                      img: https://cdn.soccersapi.com/images/countries/30/at.png
+                      code: at
+                      cc: at
+                  - id: 3722
+                    name: Sportzentrum Anif
+                    capacity: 2500
+                    city: Anif
+                    address: Schulweg 43, Anif
+                    img: https://cdn.soccersapi.com/images/soccer/venues/3722.png
+                    coordinates:
+                      lat: '47.741019'
+                      long: '13.064969'
+                    country:
+                      id: 15
+                      name: Austria
+                      continent: Europe
+                      sub_region: null
+                      long: null
+                      lat: null
+                      img: https://cdn.soccersapi.com/images/countries/30/at.png
+                      code: at
+                      cc: at
+                  - id: 3723
+                    name: Kuchl
+                    capacity: 1000
+                    city: Kuchl
+                    address: null
+                    img: https://cdn.soccersapi.com/images/soccer/venues/3723.png
+                    coordinates:
+                      lat: '47.622718'
+                      long: '13.142962'
+                    country:
+                      id: 15
+                      name: Austria
+                      continent: Europe
+                      sub_region: null
+                      long: null
+                      lat: null
+                      img: https://cdn.soccersapi.com/images/countries/30/at.png
+                      code: at
+                      cc: at
+                  - id: 3724
+                    name: Hermann Wielander Halle
+                    capacity: 1000
+                    city: Bischofshofen
+                    address: null
+                    img: https://cdn.soccersapi.com/images/soccer/venues/3724.png
+                    coordinates:
+                      lat: '47.426182'
+                      long: '13.215555'
+                    country:
+                      id: 15
+                      name: Austria
+                      continent: Europe
+                      sub_region: null
+                      long: null
+                      lat: null
+                      img: https://cdn.soccersapi.com/images/countries/30/at.png
+                      code: at
+                      cc: at
+                  - id: 3725
+                    name: MyPhone Austria Stadion
+                    capacity: 2320
+                    city: Salzburg
+                    address: Eichetstraße 29-31, Maxglan
+                    img: https://cdn.soccersapi.com/images/soccer/venues/3725.png
+                    coordinates:
+                      lat: '47.791611'
+                      long: '13.014217'
+                    country:
+                      id: 15
+                      name: Austria
+                      continent: Europe
+                      sub_region: null
+                      long: null
+                      lat: null
+                      img: https://cdn.soccersapi.com/images/countries/30/at.png
+                      code: at
+                      cc: at
+                  - id: 3731
+                    name: Stadion Lend
+                    capacity: 3000
+                    city: Hall in Tirol
+                    address: Untere Lend 12a, Hall in Tirol
+                    img: https://cdn.soccersapi.com/images/soccer/venues/3731.png
+                    coordinates:
+                      lat: '47.277675'
+                      long: '11.511364'
+                    country:
+                      id: 15
+                      name: Austria
+                      continent: Europe
+                      sub_region: null
+                      long: null
+                      lat: null
+                      img: https://cdn.soccersapi.com/images/countries/30/at.png
+                      code: at
+                      cc: at
+                  - id: 3732
+                    name: Casino-Stadion
+                    capacity: 12000
+                    city: Bregenz
+                    address: Sägergasse 1, 6900 Bregenz, Austria
+                    img: https://cdn.soccersapi.com/images/soccer/venues/3732.png
+                    coordinates:
+                      lat: '47.503899'
+                      long: '9.733403'
+                    country:
+                      id: 15
+                      name: Austria
+                      continent: Europe
+                      sub_region: null
+                      long: null
+                      lat: null
+                      img: https://cdn.soccersapi.com/images/countries/30/at.png
+                      code: at
+                      cc: at
+                  - id: 3733
+                    name: Cashpoint Arena Kunstrasen
+                    capacity: 1000
+                    city: Altach
+                    address: Schnabelholz 1
+                    img: https://cdn.soccersapi.com/images/soccer/venues/3733.png
+                    coordinates:
+                      lat: '47.353903'
+                      long: '9.638166'
+                    country:
+                      id: 15
+                      name: Austria
+                      continent: Europe
+                      sub_region: null
+                      long: null
+                      lat: null
+                      img: https://cdn.soccersapi.com/images/countries/30/at.png
+                      code: at
+                      cc: at
+                  - id: 3734
+                    name: Sportplatz an der Ratz
+                    capacity: 2000
+                    city: Roethis
+                    address: null
+                    img: https://cdn.soccersapi.com/images/soccer/venues/3734.png
+                    coordinates:
+                      lat: '47.297588'
+                      long: '9.642443'
+                    country:
+                      id: 15
+                      name: Austria
+                      continent: Europe
+                      sub_region: null
+                      long: null
+                      lat: null
+                      img: https://cdn.soccersapi.com/images/countries/30/at.png
+                      code: at
+                      cc: at
+                  - id: 3772
+                    name: Stadion Oberwart
+                    capacity: null
+                    city: Oberwart
+                    address: null
+                    img: https://cdn.soccersapi.com/images/soccer/venues/3772.png
+                    coordinates:
+                      lat: '47.281980'
+                      long: '16.209618'
+                    country:
+                      id: 15
+                      name: Austria
+                      continent: Europe
+                      sub_region: null
+                      long: null
+                      lat: null
+                      img: https://cdn.soccersapi.com/images/countries/30/at.png
+                      code: at
+                      cc: at
+                  - id: 3773
+                    name: Sportplatz Bergheim
+                    capacity: 1500
+                    city: Bergheim
+                    address: null
+                    img: https://cdn.soccersapi.com/images/soccer/venues/3773.png
+                    coordinates:
+                      lat: '47.846741'
+                      long: '13.018908'
+                    country:
+                      id: 15
+                      name: Austria
+                      continent: Europe
+                      sub_region: null
+                      long: null
+                      lat: null
+                      img: https://cdn.soccersapi.com/images/countries/30/at.png
+                      code: at
+                      cc: at
+                  - id: 3774
+                    name: Voithplatz
+                    capacity: 10000
+                    city: Sankt Polten
+                    address: null
+                    img: https://cdn.soccersapi.com/images/soccer/venues/3774.png
+                    coordinates:
+                      lat: '48.192387'
+                      long: '15.626721'
+                    country:
+                      id: 15
+                      name: Austria
+                      continent: Europe
+                      sub_region: null
+                      long: null
+                      lat: null
+                      img: https://cdn.soccersapi.com/images/countries/30/at.png
+                      code: at
+                      cc: at
+                  - id: 3775
+                    name: Sportplatz Stattegg
+                    capacity: 1300
+                    city: Stattegg
+                    address: null
+                    img: https://cdn.soccersapi.com/images/soccer/venues/3775.png
+                    coordinates:
+                      lat: '47.138904'
+                      long: '15.421799'
+                    country:
+                      id: 15
+                      name: Austria
+                      continent: Europe
+                      sub_region: null
+                      long: null
+                      lat: null
+                      img: https://cdn.soccersapi.com/images/countries/30/at.png
+                      code: at
+                      cc: at
+                  - id: 3776
+                    name: Tivoli Stadion
+                    capacity: 15200
+                    city: Innsbruck
+                    address: null
+                    img: https://cdn.soccersapi.com/images/soccer/venues/3776.png
+                    coordinates:
+                      lat: '47.255754'
+                      long: '11.408915'
+                    country:
+                      id: 15
+                      name: Austria
+                      continent: Europe
+                      sub_region: null
+                      long: null
+                      lat: null
+                      img: https://cdn.soccersapi.com/images/countries/30/at.png
+                      code: at
+                      cc: at
+                  - id: 3779
+                    name: Sportanlage Reichenau
+                    capacity: 800
+                    city: Innsbruck
+                    address: null
+                    img: https://cdn.soccersapi.com/images/soccer/venues/3779.png
+                    coordinates:
+                      lat: '47.269029'
+                      long: '11.4161818'
+                    country:
+                      id: 15
+                      name: Austria
+                      continent: Europe
+                      sub_region: null
+                      long: null
+                      lat: null
+                      img: https://cdn.soccersapi.com/images/countries/30/at.png
+                      code: at
+                      cc: at
+                  - id: 3834
+                    name: Hans-Ludwig Stadion
+                    capacity: null
+                    city: Wals
+                    address: null
+                    img: https://cdn.soccersapi.com/images/soccer/venues/3834.png
+                    coordinates:
+                      lat: '47.789803'
+                      long: '12.955353'
+                    country:
+                      id: 15
+                      name: Austria
+                      continent: Europe
+                      sub_region: null
+                      long: null
+                      lat: null
+                      img: https://cdn.soccersapi.com/images/countries/30/at.png
+                      code: at
+                      cc: at
+                  - id: 3839
+                    name: Herrenriedstadion
+                    capacity: 5000
+                    city: Hohenems
+                    address: null
+                    img: https://cdn.soccersapi.com/images/soccer/venues/3839.png
+                    coordinates:
+                      lat: '47.369574'
+                      long: '9.680024'
+                    country:
+                      id: 15
+                      name: Austria
+                      continent: Europe
+                      sub_region: null
+                      long: null
+                      lat: null
+                      img: https://cdn.soccersapi.com/images/countries/30/at.png
+                      code: at
+                      cc: at
+                  - id: 3860
+                    name: Sportzentrum Seekirchen
+                    capacity: 2000
+                    city: Seekirchen am Wallersee
+                    address: null
+                    img: https://cdn.soccersapi.com/images/soccer/venues/3860.png
+                    coordinates:
+                      lat: '47.902737'
+                      long: '13.123970'
+                    country:
+                      id: 15
+                      name: Austria
+                      continent: Europe
+                      sub_region: null
+                      long: null
+                      lat: null
+                      img: https://cdn.soccersapi.com/images/countries/30/at.png
+                      code: at
+                      cc: at
+                  - id: 3866
+                    name: Kufstein Arena
+                    capacity: 5000
+                    city: Kufstein
+                    address: Fischergries, Kufstein
+                    img: https://cdn.soccersapi.com/images/soccer/venues/3866.png
+                    coordinates:
+                      lat: '47.587200'
+                      long: '12.169342'
+                    country:
+                      id: 15
+                      name: Austria
+                      continent: Europe
+                      sub_region: null
+                      long: null
+                      lat: null
+                      img: https://cdn.soccersapi.com/images/countries/30/at.png
+                      code: at
+                      cc: at
+                  - id: 3867
+                    name: Sportplatz Emat
+                    capacity: 1000
+                    city: Telfs
+                    address: null
+                    img: https://cdn.soccersapi.com/images/soccer/venues/3867.png
+                    coordinates:
+                      lat: '47.313203'
+                      long: '11.066379'
+                    country:
+                      id: 15
+                      name: Austria
+                      continent: Europe
+                      sub_region: null
+                      long: null
+                      lat: null
+                      img: https://cdn.soccersapi.com/images/countries/30/at.png
+                      code: at
+                      cc: at
+                  - id: 3868
+                    name: Sportanlage Bruno Pezzey
+                    capacity: 800
+                    city: Wolfurt
+                    address: null
+                    img: https://cdn.soccersapi.com/images/soccer/venues/3868.png
+                    coordinates:
+                      lat: '47.484505'
+                      long: '9.727162'
+                    country:
+                      id: 15
+                      name: Austria
+                      continent: Europe
+                      sub_region: null
+                      long: null
+                      lat: null
+                      img: https://cdn.soccersapi.com/images/countries/30/at.png
+                      code: at
+                      cc: at
+                  - id: 3869
+                    name: Sports field Langenegg
+                    capacity: 1000
+                    city: Langenegg, Austria
+                    address: Rotenberg 96, 6941 Langenegg, Österreich
+                    img: https://cdn.soccersapi.com/images/soccer/venues/3869.png
+                    coordinates:
+                      lat: '47.467253'
+                      long: '9.8895049'
+                    country:
+                      id: 15
+                      name: Austria
+                      continent: Europe
+                      sub_region: null
+                      long: null
+                      lat: null
+                      img: https://cdn.soccersapi.com/images/countries/30/at.png
+                      code: at
+                      cc: at
+                  - id: 3870
+                    name: Sportplatz an der Ach
+                    capacity: 1000
+                    city: Wolfurt
+                    address: null
+                    img: https://cdn.soccersapi.com/images/soccer/venues/3870.png
+                    coordinates:
+                      lat: '47.477514'
+                      long: '9.759099'
+                    country:
+                      id: 15
+                      name: Austria
+                      continent: Europe
+                      sub_region: null
+                      long: null
+                      lat: null
+                      img: https://cdn.soccersapi.com/images/countries/30/at.png
+                      code: at
+                      cc: at
+                  - id: 3890
+                    name: Sportplatz Jochbergengasse
+                    capacity: 1500
+                    city: Wien
+                    address: null
+                    img: https://cdn.soccersapi.com/images/soccer/venues/3890.png
+                    coordinates:
+                      lat: '48.280037'
+                      long: '16.403491'
+                    country:
+                      id: 15
+                      name: Austria
+                      continent: Europe
+                      sub_region: null
+                      long: null
+                      lat: null
+                      img: https://cdn.soccersapi.com/images/countries/30/at.png
+                      code: at
+                      cc: at
+                  - id: 3891
+                    name: Wienerwaldstadion
+                    capacity: 300
+                    city: Neulengbach
+                    address: null
+                    img: https://cdn.soccersapi.com/images/soccer/venues/3891.png
+                    coordinates:
+                      lat: '48.195278'
+                      long: '15.900556'
+                    country:
+                      id: 15
+                      name: Austria
+                      continent: Europe
+                      sub_region: null
+                      long: null
+                      lat: null
+                      img: https://cdn.soccersapi.com/images/countries/30/at.png
+                      code: at
+                      cc: at
+                  - id: 3892
+                    name: Velly Arena Imst
+                    capacity: 2550
+                    city: Tyrol
+                    address: null
+                    img: https://cdn.soccersapi.com/images/soccer/venues/3892.png
+                    coordinates:
+                      lat: '47.240686'
+                      long: '10.750089'
+                    country:
+                      id: 15
+                      name: Austria
+                      continent: Europe
+                      sub_region: null
+                      long: null
+                      lat: null
+                      img: https://cdn.soccersapi.com/images/countries/30/at.png
+                      code: at
+                      cc: at
+                  - id: 3905
+                    name: Ernst Happel Stadion
+                    capacity: 53008
+                    city: Vienna
+                    address: null
+                    img: https://cdn.soccersapi.com/images/soccer/venues/3905.png
+                    coordinates:
+                      lat: '48.206944'
+                      long: '16.420556'
+                    country:
+                      id: 15
+                      name: Austria
+                      continent: Europe
+                      sub_region: null
+                      long: null
+                      lat: null
+                      img: https://cdn.soccersapi.com/images/countries/30/at.png
+                      code: at
+                      cc: at
+                  - id: 3924
+                    name: Sportplatz St. Johann
+                    capacity: 2000
+                    city: Sankt Johann im Pongau
+                    address: null
+                    img: https://cdn.soccersapi.com/images/soccer/venues/3924.png
+                    coordinates:
+                      lat: '47.360350'
+                      long: '13.201945'
+                    country:
+                      id: 15
+                      name: Austria
+                      continent: Europe
+                      sub_region: null
+                      long: null
+                      lat: null
+                      img: https://cdn.soccersapi.com/images/countries/30/at.png
+                      code: at
+                      cc: at
+                  - id: 3927
+                    name: Sportplatz Langau
+                    capacity: 1200
+                    city: Kitzbuhel
+                    address: null
+                    img: https://cdn.soccersapi.com/images/soccer/venues/3927.png
+                    coordinates:
+                      lat: '47.434792'
+                      long: '12.405003'
+                    country:
+                      id: 15
+                      name: Austria
+                      continent: Europe
+                      sub_region: null
+                      long: null
+                      lat: null
+                      img: https://cdn.soccersapi.com/images/countries/30/at.png
+                      code: at
+                      cc: at
+                  - id: 3928
+                    name: Gastra-Stadion
+                    capacity: 5000
+                    city: Rankweil
+                    address: null
+                    img: https://cdn.soccersapi.com/images/soccer/venues/3928.png
+                    coordinates:
+                      lat: '47.271375'
+                      long: '9.649912'
+                    country:
+                      id: 15
+                      name: Austria
+                      continent: Europe
+                      sub_region: null
+                      long: null
+                      lat: null
+                      img: https://cdn.soccersapi.com/images/countries/30/at.png
+                      code: at
+                      cc: at
+                  - id: 3983
+                    name: Sportplatz Altenmarkt
+                    capacity: 1000
+                    city: Altenmarkt an der Triesting
+                    address: null
+                    img: https://cdn.soccersapi.com/images/soccer/venues/3983.png
+                    coordinates:
+                      lat: '48.014482'
+                      long: '15.999683'
+                    country:
+                      id: 15
+                      name: Austria
+                      continent: Europe
+                      sub_region: null
+                      long: null
+                      lat: null
+                      img: https://cdn.soccersapi.com/images/countries/30/at.png
+                      code: at
+                      cc: at
+                  - id: 4518
+                    name: Sonnensee Stadion
+                    capacity: 5000
+                    city: Ritzing
+                    address: Am Sportplatz 1, 7323 Gemeinde Ritzing, Austria
+                    img: https://cdn.soccersapi.com/images/soccer/venues/4518.png
+                    coordinates:
+                      lat: '47.6029693'
+                      long: '16.4916184'
+                    country:
+                      id: 15
+                      name: Austria
+                      continent: Europe
+                      sub_region: null
+                      long: null
+                      lat: null
+                      img: https://cdn.soccersapi.com/images/countries/30/at.png
+                      code: at
+                      cc: at
+                  - id: 4569
+                    name: Worthersee Stadion
+                    capacity: 32000
+                    city: Klagenfurt
+                    address: null
+                    img: https://cdn.soccersapi.com/images/soccer/venues/4569.png
+                    coordinates:
+                      lat: '46.608847'
+                      long: '14.278281'
+                    country:
+                      id: 15
+                      name: Austria
+                      continent: Europe
+                      sub_region: null
+                      long: null
+                      lat: null
+                      img: https://cdn.soccersapi.com/images/countries/30/at.png
+                      code: at
+                      cc: at
+                  - id: 4701
+                    name: Gernot-Langes-Stadion
+                    capacity: 5200
+                    city: Wattens
+                    address: Doktor.-Karl-Stainer-Straße 30, Wattens
+                    img: https://cdn.soccersapi.com/images/soccer/venues/4701.png
+                    coordinates:
+                      lat: '47.295276'
+                      long: '11.582459'
+                    country:
+                      id: 15
+                      name: Austria
+                      continent: Europe
+                      sub_region: null
+                      long: null
+                      lat: null
+                      img: https://cdn.soccersapi.com/images/countries/30/at.png
+                      code: at
+                      cc: at
+                  - id: 4709
+                    name: Sportplatz Pinkafeld
+                    capacity: 1000
+                    city: Pinkafeld
+                    address: null
+                    img: https://cdn.soccersapi.com/images/soccer/venues/4709.png
+                    coordinates: null
+                    country:
+                      id: 15
+                      name: Austria
+                      continent: Europe
+                      sub_region: null
+                      long: null
+                      lat: null
+                      img: https://cdn.soccersapi.com/images/countries/30/at.png
+                      code: at
+                      cc: at
+                  - id: 4710
+                    name: SAK-Stadion
+                    capacity: 2000
+                    city: Klagenfurt
+                    address: Reichenberger Straße 28
+                    img: https://cdn.soccersapi.com/images/soccer/venues/4710.png
+                    coordinates:
+                      lat: '46.622496'
+                      long: '14.322968'
+                    country:
+                      id: 15
+                      name: Austria
+                      continent: Europe
+                      sub_region: null
+                      long: null
+                      lat: null
+                      img: https://cdn.soccersapi.com/images/countries/30/at.png
+                      code: at
+                      cc: at
+                  - id: 4714
+                    name: Sportanlage Stadlau
+                    capacity: 5000
+                    city: Wien
+                    address: null
+                    img: https://cdn.soccersapi.com/images/soccer/venues/4714.png
+                    coordinates:
+                      lat: '48.228498'
+                      long: '16.450941'
+                    country:
+                      id: 15
+                      name: Austria
+                      continent: Europe
+                      sub_region: null
+                      long: null
+                      lat: null
+                      img: https://cdn.soccersapi.com/images/countries/30/at.png
+                      code: at
+                      cc: at
+                  - id: 4788
+                    name: Sportanlage Kleinmunchen
+                    capacity: 1000
+                    city: Linz
+                    address: null
+                    img: https://cdn.soccersapi.com/images/soccer/venues/4788.png
+                    coordinates:
+                      lat: '48.256000'
+                      long: '14.313698'
+                    country:
+                      id: 15
+                      name: Austria
+                      continent: Europe
+                      sub_region: null
+                      long: null
+                      lat: null
+                      img: https://cdn.soccersapi.com/images/countries/30/at.png
+                      code: at
+                      cc: at
+                  - id: 4796
+                    name: Sportplatz Ober-Grafendorf
+                    capacity: 2000
+                    city: Ober-Grafendorf
+                    address: null
+                    img: https://cdn.soccersapi.com/images/soccer/venues/4796.png
+                    coordinates:
+                      lat: '48.157127'
+                      long: '15.554844'
+                    country:
+                      id: 15
+                      name: Austria
+                      continent: Europe
+                      sub_region: null
+                      long: null
+                      lat: null
+                      img: https://cdn.soccersapi.com/images/countries/30/at.png
+                      code: at
+                      cc: at
+                  - id: 4801
+                    name: Hauptfeld Akademie Austria Wien
+                    capacity: 1100
+                    city: Vienna
+                    address: null
+                    img: https://cdn.soccersapi.com/images/soccer/venues/4801.png
+                    coordinates: null
+                    country:
+                      id: 15
+                      name: Austria
+                      continent: Europe
+                      sub_region: null
+                      long: null
+                      lat: null
+                      img: https://cdn.soccersapi.com/images/countries/30/at.png
+                      code: at
+                      cc: at
+                meta:
+                  requests_left: 976751
+                  user: soccersapi2
+                  plan: Free Plan
+                  pages: 2
+                  page: 1
+                  count: 100
+                  total: 147
+                  msg: ''
+          headers: {}
+      security: []
+  /v2.2/media/:
+    get:
+      summary: Media Highlights
+      deprecated: false
+      description: Fetch video highlights by league, team, event, date
+      tags: []
+      parameters:
+        - name: user
+          in: query
+          description: username
+          required: false
+          example: '{{USERNAME}}'
+          schema:
+            type: string
+        - name: token
+          in: query
+          description: token
+          required: false
+          example: '{{TOKEN}}'
+          schema:
+            type: string
+        - name: id
+          in: query
+          description: ID
+          required: false
+          example: '637'
+          schema:
+            type: string
+        - name: t
+          in: query
+          description: type
+          required: false
+          example: league
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          id:
+                            type: integer
+                          league_id:
+                            type: integer
+                          season_id:
+                            type: integer
+                          home_id:
+                            type: integer
+                          away_id:
+                            type: integer
+                          round_id:
+                            type: integer
+                          stage_id:
+                            type: integer
+                          group_id:
+                            type: integer
+                          startdate:
+                            type: string
+                          title:
+                            type: string
+                          image:
+                            type: string
+                          url:
+                            type: string
+                          source:
+                            type: string
+                        required:
+                          - id
+                          - league_id
+                          - season_id
+                          - home_id
+                          - away_id
+                          - round_id
+                          - stage_id
+                          - group_id
+                          - startdate
+                          - title
+                          - image
+                          - url
+                          - source
+                  meta:
+                    type: object
+                    properties:
+                      requests_left:
+                        type: integer
+                      user:
+                        type: string
+                      plan:
+                        type: string
+                      pages:
+                        type: integer
+                      page:
+                        type: integer
+                      total:
+                        type: integer
+                      msg:
+                        type: string
+                    required:
+                      - requests_left
+                      - user
+                      - plan
+                      - pages
+                      - page
+                      - total
+                      - msg
+                required:
+                  - data
+                  - meta
+              example:
+                data:
+                  - - id: 1843815
+                      league_id: 637
+                      season_id: 14341
+                      home_id: 116
+                      away_id: 118
+                      round_id: 182349
+                      stage_id: 207
+                      group_id: 1
+                      startdate: '2024-11-24 20:00:00'
+                      title: >-
+                        ATHLETIC CLUB 1 - 0 REAL SOCIEDAD I RESUMEN LALIGA EA
+                        SPORTS
+                      image: https://i.ytimg.com/vi/aVy9O_x1Fe8/maxresdefault.jpg
+                      url: https://www.youtube.com/watch?v=aVy9O_x1Fe8
+                      source: www.youtube.com
+                    - id: 1843819
+                      league_id: 637
+                      season_id: 14341
+                      home_id: 121
+                      away_id: 113
+                      round_id: 182349
+                      stage_id: 207
+                      group_id: 1
+                      startdate: '2024-11-24 17:30:00'
+                      title: CD LEGANÉS 0 - 3 REAL MADRID I RESUMEN LALIGA EA SPORTS
+                      image: https://i.ytimg.com/vi/pQVtyVtkGfM/maxresdefault.jpg
+                      url: https://www.youtube.com/watch?v=pQVtyVtkGfM
+                      source: www.youtube.com
+                    - id: 1843819
+                      league_id: 637
+                      season_id: 14341
+                      home_id: 121
+                      away_id: 113
+                      round_id: 182349
+                      stage_id: 207
+                      group_id: 1
+                      startdate: '2024-11-24 17:30:00'
+                      title: CD LEGANÉS 0 - 3 REAL MADRID I RESUMEN LALIGA EA SPORTS
+                      image: https://i.ytimg.com/vi/9lStg3L28xQ/maxresdefault.jpg
+                      url: https://www.youtube.com/watch?v=9lStg3L28xQ
+                      source: www.youtube.com
+                    - id: 1843822
+                      league_id: 637
+                      season_id: 14341
+                      home_id: 128
+                      away_id: 2403
+                      round_id: 182349
+                      stage_id: 207
+                      group_id: 1
+                      startdate: '2024-11-24 15:15:00'
+                      title: >-
+                        SEVILLA FC 1 - 0 RAYO VALLECANO I RESUMEN LALIGA EA
+                        SPORTS
+                      image: https://i.ytimg.com/vi/ifvjaz3IKac/maxresdefault.jpg
+                      url: https://www.youtube.com/watch?v=ifvjaz3IKac
+                      source: www.youtube.com
+                    - id: 1843817
+                      league_id: 637
+                      season_id: 14341
+                      home_id: 122
+                      away_id: 123
+                      round_id: 182349
+                      stage_id: 207
+                      group_id: 1
+                      startdate: '2024-11-24 13:00:00'
+                      title: >-
+                        CA OSASUNA 2 - 2 VILLARREAL CF I RESUMEN LALIGA EA
+                        SPORTS
+                      image: https://i.ytimg.com/vi/AeC3b16VEJg/maxresdefault.jpg
+                      url: https://www.youtube.com/watch?v=AeC3b16VEJg
+                      source: www.youtube.com
+                    - id: 1843820
+                      league_id: 637
+                      season_id: 14341
+                      home_id: 117
+                      away_id: 99
+                      round_id: 182349
+                      stage_id: 207
+                      group_id: 1
+                      startdate: '2024-11-23 20:00:00'
+                      title: RC CELTA 2 - 2 FC BARCELONA I RESUMEN LALIGA EA SPORTS
+                      image: https://i.ytimg.com/vi/RZcxiLaf2cw/maxresdefault.jpg
+                      url: https://www.youtube.com/watch?v=RZcxiLaf2cw
+                      source: www.youtube.com
+                    - id: 1843824
+                      league_id: 637
+                      season_id: 14341
+                      home_id: 2459
+                      away_id: 127
+                      round_id: 182349
+                      stage_id: 207
+                      group_id: 1
+                      startdate: '2024-11-23 17:30:00'
+                      title: GIRONA FC 4 - 1 RCD ESPANYOL I RESUMEN LALIGA EA SPORTS
+                      image: https://i.ytimg.com/vi/YliAbza3oSQ/maxresdefault.jpg
+                      url: https://www.youtube.com/watch?v=YliAbza3oSQ
+                      source: www.youtube.com
+                    - id: 1843818
+                      league_id: 637
+                      season_id: 14341
+                      home_id: 2395
+                      away_id: 119
+                      round_id: 182349
+                      stage_id: 207
+                      group_id: 1
+                      startdate: '2024-11-23 17:30:00'
+                      title: >-
+                        UD LAS PALMAS 2 - 3 RCD MALLORCA I RESUMEN LALIGA EA
+                        SPORTS
+                      image: https://i.ytimg.com/vi/RuoNPjfSNoM/maxresdefault.jpg
+                      url: https://www.youtube.com/watch?v=RuoNPjfSNoM
+                      source: www.youtube.com
+                    - id: 1843823
+                      league_id: 637
+                      season_id: 14341
+                      home_id: 107
+                      away_id: 125
+                      round_id: 182349
+                      stage_id: 207
+                      group_id: 1
+                      startdate: '2024-11-23 15:15:00'
+                      title: >-
+                        ATLÉTICO DE MADRID 2 - 1 DEPORTIVO ALAVÉS I RESUMEN
+                        LALIGA EA SPORTS
+                      image: https://i.ytimg.com/vi/D1HhHY6bKZI/maxresdefault.jpg
+                      url: https://www.youtube.com/watch?v=D1HhHY6bKZI
+                      source: www.youtube.com
+                    - id: 1843816
+                      league_id: 637
+                      season_id: 14341
+                      home_id: 131
+                      away_id: 130
+                      round_id: 182349
+                      stage_id: 207
+                      group_id: 1
+                      startdate: '2024-11-22 20:00:00'
+                      title: >-
+                        GETAFE CF 2 - 0 REAL VALLADOLID CF I RESUMEN LALIGA EA
+                        SPORTS
+                      image: https://i.ytimg.com/vi/4BvoDhx-5VA/maxresdefault.jpg
+                      url: https://www.youtube.com/watch?v=4BvoDhx-5VA
+                      source: www.youtube.com
+                    - id: 1843787
+                      league_id: 637
+                      season_id: 14341
+                      home_id: 119
+                      away_id: 116
+                      round_id: 182346
+                      stage_id: 207
+                      group_id: 1
+                      startdate: '2024-10-28 20:00:00'
+                      title: >-
+                        RCD MALLORCA 0 - 0 ATHLETIC CLUB I RESUMEN LALIGA EA
+                        SPORTS
+                      image: https://i.ytimg.com/vi/9to040_wcSw/maxresdefault.jpg
+                      url: https://www.youtube.com/watch?v=9to040_wcSw
+                      source: www.youtube.com
+                    - id: 1843787
+                      league_id: 637
+                      season_id: 14341
+                      home_id: 119
+                      away_id: 116
+                      round_id: 182346
+                      stage_id: 207
+                      group_id: 1
+                      startdate: '2024-10-28 20:00:00'
+                      title: >-
+                        RCD MALLORCA 0 - 0 ATHLETIC CLUB I RESUMEN LALIGA EA
+                        SPORTS
+                      image: https://i.ytimg.com/vi/o20eeAdfOvQ/maxresdefault.jpg
+                      url: https://www.youtube.com/watch?v=o20eeAdfOvQ
+                      source: www.youtube.com
+                    - id: 1843792
+                      league_id: 637
+                      season_id: 14341
+                      home_id: 118
+                      away_id: 122
+                      round_id: 182346
+                      stage_id: 207
+                      group_id: 1
+                      startdate: '2024-10-27 20:00:00'
+                      title: >-
+                        REAL SOCIEDAD 0 - 2 CA OSASUNA I RESUMEN LALIGA EA
+                        SPORTS
+                      image: https://i.ytimg.com/vi/c6PlWK-Eg0g/maxresdefault.jpg
+                      url: https://www.youtube.com/watch?v=c6PlWK-Eg0g
+                      source: www.youtube.com
+                    - id: 1843788
+                      league_id: 637
+                      season_id: 14341
+                      home_id: 129
+                      away_id: 107
+                      round_id: 182346
+                      stage_id: 207
+                      group_id: 1
+                      startdate: '2024-10-27 17:30:00'
+                      title: >-
+                        REAL BETIS 1 - 0 ATLÉTICO DE MADRID I RESUMEN LALIGA EA
+                        SPORTS
+                      image: https://i.ytimg.com/vi/GWGPXovGeTo/maxresdefault.jpg
+                      url: https://www.youtube.com/watch?v=GWGPXovGeTo
+                      source: www.youtube.com
+                    - id: 1843785
+                      league_id: 637
+                      season_id: 14341
+                      home_id: 131
+                      away_id: 103
+                      round_id: 182346
+                      stage_id: 207
+                      group_id: 1
+                      startdate: '2024-10-27 15:15:00'
+                      title: GETAFE CF 1 - 1 VALENCIA CF I RESUMEN LALIGA EA SPORTS
+                      image: https://i.ytimg.com/vi/toxiq86advk/maxresdefault.jpg
+                      url: https://www.youtube.com/watch?v=toxiq86advk
+                      source: www.youtube.com
+                    - id: 1843789
+                      league_id: 637
+                      season_id: 14341
+                      home_id: 113
+                      away_id: 99
+                      round_id: 182346
+                      stage_id: 207
+                      group_id: 1
+                      startdate: '2024-10-26 19:00:00'
+                      title: >-
+                        REAL MADRID 0 - 4 FC BARCELONA | RESUMEN LALIGA EA
+                        SPORTS
+                      image: https://i.ytimg.com/vi/Hf9pXbnWIK8/maxresdefault.jpg
+                      url: https://www.youtube.com/watch?v=Hf9pXbnWIK8
+                      source: www.youtube.com
+                    - id: 1843791
+                      league_id: 637
+                      season_id: 14341
+                      home_id: 2395
+                      away_id: 2459
+                      round_id: 182346
+                      stage_id: 207
+                      group_id: 1
+                      startdate: '2024-10-26 16:30:00'
+                      title: UD LAS PALMAS 1 - 0 GIRONA FC I RESUMEN LALIGA EA SPORTS
+                      image: https://i.ytimg.com/vi/_ahplOJd6kc/maxresdefault.jpg
+                      url: https://www.youtube.com/watch?v=_ahplOJd6kc
+                      source: www.youtube.com
+                    - id: 1843786
+                      league_id: 637
+                      season_id: 14341
+                      home_id: 127
+                      away_id: 128
+                      round_id: 182346
+                      stage_id: 207
+                      group_id: 1
+                      startdate: '2024-10-25 19:00:00'
+                      title: RCD ESPANYOL 0 - 2 SEVILLA FC | RESUMEN LALIGA EA SPORTS
+                      image: https://i.ytimg.com/vi/oC5UzxR_UwQ/maxresdefault.jpg
+                      url: https://www.youtube.com/watch?v=oC5UzxR_UwQ
+                      source: www.youtube.com
+                    - id: 1843783
+                      league_id: 637
+                      season_id: 14341
+                      home_id: 103
+                      away_id: 2395
+                      round_id: 182345
+                      stage_id: 207
+                      group_id: 1
+                      startdate: '2024-10-21 19:00:00'
+                      title: >-
+                        VALENCIAL CF 2 - 3 UD LAS PALMAS I RESUMEN LALIGA EA
+                        SPORTS
+                      image: https://i.ytimg.com/vi/Ez1eRO1a5BE/maxresdefault.jpg
+                      url: https://www.youtube.com/watch?v=Ez1eRO1a5BE
+                      source: www.youtube.com
+                    - id: 1843776
+                      league_id: 637
+                      season_id: 14341
+                      home_id: 99
+                      away_id: 128
+                      round_id: 182345
+                      stage_id: 207
+                      group_id: 1
+                      startdate: '2024-10-20 19:00:00'
+                      title: FC BARCELONA 5 - 1 SEVILLA FC I RESUMEN LALIGA EA SPORTS
+                      image: https://i.ytimg.com/vi/8f-c70YbdW0/maxresdefault.jpg
+                      url: https://www.youtube.com/watch?v=8f-c70YbdW0
+                      source: www.youtube.com
+                    - id: 1843782
+                      league_id: 637
+                      season_id: 14341
+                      home_id: 123
+                      away_id: 131
+                      round_id: 182345
+                      stage_id: 207
+                      group_id: 1
+                      startdate: '2024-10-20 16:30:00'
+                      title: VILLARREAL CF 1 - 1 GETAFE CF I RESUMEN LALIGA EA SPORTS
+                      image: https://i.ytimg.com/vi/x7m9nv6d6KM/maxresdefault.jpg
+                      url: https://www.youtube.com/watch?v=x7m9nv6d6KM
+                      source: www.youtube.com
+                    - id: 1843777
+                      league_id: 637
+                      season_id: 14341
+                      home_id: 117
+                      away_id: 113
+                      round_id: 182345
+                      stage_id: 207
+                      group_id: 1
+                      startdate: '2024-10-19 19:00:00'
+                      title: RC CELTA 1 - 2 REAL MADRID | RESUMEN LALIGA EA SPORTS
+                      image: https://i.ytimg.com/vi/bAM2LfHRNiM/maxresdefault.jpg
+                      url: https://www.youtube.com/watch?v=bAM2LfHRNiM
+                      source: www.youtube.com
+                    - id: 1843778
+                      league_id: 637
+                      season_id: 14341
+                      home_id: 2459
+                      away_id: 118
+                      round_id: 182345
+                      stage_id: 207
+                      group_id: 1
+                      startdate: '2024-10-19 16:30:00'
+                      title: GIRONA FC 0 - 1 REAL SOCIEDAD I RESUMEN LALIGA EA SPORTS
+                      image: https://i.ytimg.com/vi/NTgiE1N9yk8/maxresdefault.jpg
+                      url: https://www.youtube.com/watch?v=NTgiE1N9yk8
+                      source: www.youtube.com
+                    - id: 1843780
+                      league_id: 637
+                      season_id: 14341
+                      home_id: 125
+                      away_id: 130
+                      round_id: 182345
+                      stage_id: 207
+                      group_id: 1
+                      startdate: '2024-10-18 19:00:00'
+                      title: >-
+                        DEPORTIVO ALAVÉS 2 - 3 REAL VALLADOLID CF | RESUMEN
+                        LALIGA EA SPORTS
+                      image: https://i.ytimg.com/vi/LF3jsSKC1c8/maxresdefault.jpg
+                      url: https://www.youtube.com/watch?v=LF3jsSKC1c8
+                      source: www.youtube.com
+                    - id: 1843771
+                      league_id: 637
+                      season_id: 14341
+                      home_id: 118
+                      away_id: 107
+                      round_id: 182344
+                      stage_id: 207
+                      group_id: 1
+                      startdate: '2024-10-06 19:00:00'
+                      title: >-
+                        REAL SOCIEDAD 1 - 1 ATLÉTICO DE MADRID | RESUMEN LALIGA
+                        EA SPORTS
+                      image: https://i.ytimg.com/vi/IEJHp2Mi0XE/maxresdefault.jpg
+                      url: https://www.youtube.com/watch?v=IEJHp2Mi0XE
+                      source: www.youtube.com
+                    - id: 1843772
+                      league_id: 637
+                      season_id: 14341
+                      home_id: 128
+                      away_id: 129
+                      round_id: 182344
+                      stage_id: 207
+                      group_id: 1
+                      startdate: '2024-10-06 16:30:00'
+                      title: SEVILLA FC 1 - 0 REAL BETIS | RESUMEN LALIGA EA SPORTS
+                      image: https://i.ytimg.com/vi/Xq9VSimq74c/maxresdefault.jpg
+                      url: https://www.youtube.com/watch?v=Xq9VSimq74c
+                      source: www.youtube.com
+                    - id: 1843766
+                      league_id: 637
+                      season_id: 14341
+                      home_id: 113
+                      away_id: 123
+                      round_id: 182344
+                      stage_id: 207
+                      group_id: 1
+                      startdate: '2024-10-05 19:00:00'
+                      title: >-
+                        REAL MADRID 2 - 0 VILLARREAL CF | RESUMEN LALIGA EA
+                        SPORTS
+                      image: https://i.ytimg.com/vi/9dfvcUemoFg/maxresdefault.jpg
+                      url: https://www.youtube.com/watch?v=9dfvcUemoFg
+                      source: www.youtube.com
+                    - id: 1843773
+                      league_id: 637
+                      season_id: 14341
+                      home_id: 2395
+                      away_id: 117
+                      round_id: 182344
+                      stage_id: 207
+                      group_id: 1
+                      startdate: '2024-10-05 16:30:00'
+                      title: UD LAS PALMAS 0 - 1 RC CELTA | RESUMEN LALIGA EA SPORTS
+                      image: https://i.ytimg.com/vi/u8cVxAIlFoo/maxresdefault.jpg
+                      url: https://www.youtube.com/watch?v=u8cVxAIlFoo
+                      source: www.youtube.com
+                    - id: 1843774
+                      league_id: 637
+                      season_id: 14341
+                      home_id: 130
+                      away_id: 2403
+                      round_id: 182344
+                      stage_id: 207
+                      group_id: 1
+                      startdate: '2024-10-05 16:30:00'
+                      title: >-
+                        REAL VALLADOLID CF 1 - 2 RAYO VALLECANO | RESUMEN LALIGA
+                        EA SPORTS
+                      image: https://i.ytimg.com/vi/rHtmvQxnS9I/maxresdefault.jpg
+                      url: https://www.youtube.com/watch?v=rHtmvQxnS9I
+                      source: www.youtube.com
+                    - id: 1843761
+                      league_id: 637
+                      season_id: 14341
+                      home_id: 123
+                      away_id: 2395
+                      round_id: 182343
+                      stage_id: 207
+                      group_id: 1
+                      startdate: '2024-09-30 19:00:00'
+                      title: >-
+                        VILLARREAL CF 3 - 1 UD LAS PALMAS | RESUMEN LALIGA EA
+                        SPORTS
+                      image: https://i.ytimg.com/vi/w8NYkQ-fqP8/maxresdefault.jpg
+                      url: https://www.youtube.com/watch?v=w8NYkQ-fqP8
+                      source: www.youtube.com
+                    - id: 1843756
+                      league_id: 637
+                      season_id: 14341
+                      home_id: 107
+                      away_id: 113
+                      round_id: 182343
+                      stage_id: 207
+                      group_id: 1
+                      startdate: '2024-09-29 19:00:00'
+                      title: >-
+                        ATLÉTICO DE MADRID 1 - 1 REAL MADRID | RESUMEN LALIGA EA
+                        SPORTS
+                      image: https://i.ytimg.com/vi/OfdmY2N--ts/maxresdefault.jpg
+                      url: https://www.youtube.com/watch?v=OfdmY2N--ts
+                      source: www.youtube.com
+                    - id: 1843759
+                      league_id: 637
+                      season_id: 14341
+                      home_id: 122
+                      away_id: 99
+                      round_id: 182343
+                      stage_id: 207
+                      group_id: 1
+                      startdate: '2024-09-28 19:00:00'
+                      title: CA OSASUNA 4 - 2 FC BARCELONA | RESUMEN LALIGA EA SPORTS
+                      image: https://i.ytimg.com/vi/q82KAc8EUSs/maxresdefault.jpg
+                      url: https://www.youtube.com/watch?v=q82KAc8EUSs
+                      source: www.youtube.com
+                    - id: 1843758
+                      league_id: 637
+                      season_id: 14341
+                      home_id: 118
+                      away_id: 103
+                      round_id: 182343
+                      stage_id: 207
+                      group_id: 1
+                      startdate: '2024-09-28 16:30:00'
+                      title: >-
+                        REAL SOCIEDAD 3 - 0 VALENCIA CF | RESUMEN LALIGA EA
+                        SPORTS
+                      image: https://i.ytimg.com/vi/vihWWHf5q0w/maxresdefault.jpg
+                      url: https://www.youtube.com/watch?v=vihWWHf5q0w
+                      source: www.youtube.com
+                    - id: 1843760
+                      league_id: 637
+                      season_id: 14341
+                      home_id: 130
+                      away_id: 119
+                      round_id: 182343
+                      stage_id: 207
+                      group_id: 1
+                      startdate: '2024-09-27 19:00:00'
+                      title: >-
+                        REAL VALLADOLID CF 1 - 2 RCD MALLORCA | RESUMEN LALIGA
+                        EA SPORTS
+                      image: https://i.ytimg.com/vi/KaIwFBTN_2s/maxresdefault.jpg
+                      url: https://www.youtube.com/watch?v=KaIwFBTN_2s
+                      source: www.youtube.com
+                    - id: 1843751
+                      league_id: 637
+                      season_id: 14341
+                      home_id: 117
+                      away_id: 107
+                      round_id: 182342
+                      stage_id: 207
+                      group_id: 1
+                      startdate: '2024-09-26 19:00:00'
+                      title: >-
+                        RC CELTA 0 - 1 ATLÉTICO DE MADRID | RESUMEN LALIGA EA
+                        SPORTS
+                      image: https://i.ytimg.com/vi/7PvIJdUuXXM/maxresdefault.jpg
+                      url: https://www.youtube.com/watch?v=7PvIJdUuXXM
+                      source: www.youtube.com
+                    - id: 1843749
+                      league_id: 637
+                      season_id: 14341
+                      home_id: 127
+                      away_id: 123
+                      round_id: 182342
+                      stage_id: 207
+                      group_id: 1
+                      startdate: '2024-09-26 17:00:00'
+                      title: >-
+                        RCD ESPANYOL 1 - 2 VILLARREAL CF | RESUMEN LALIGA EA
+                        SPORTS
+                      image: https://i.ytimg.com/vi/9knZvynUYds/maxresdefault.jpg
+                      url: https://www.youtube.com/watch?v=9knZvynUYds
+                      source: www.youtube.com
+                    - id: 1843752
+                      league_id: 637
+                      season_id: 14341
+                      home_id: 2395
+                      away_id: 129
+                      round_id: 182342
+                      stage_id: 207
+                      group_id: 1
+                      startdate: '2024-09-26 17:00:00'
+                      title: >-
+                        UD LAS PALMAS 1 - 1 REAL BETIS | RESUMEN LALIGA EA
+                        SPORTS
+                      image: https://i.ytimg.com/vi/MLTYl5orG4A/maxresdefault.jpg
+                      url: https://www.youtube.com/watch?v=MLTYl5orG4A
+                      source: www.youtube.com
+                    - id: 1843745
+                      league_id: 637
+                      season_id: 14341
+                      home_id: 99
+                      away_id: 131
+                      round_id: 182342
+                      stage_id: 207
+                      group_id: 1
+                      startdate: '2024-09-25 19:00:00'
+                      title: FC BARCELONA 1 - 0 GETAFE CF | RESUMEN LALIGA EA SPORTS
+                      image: https://i.ytimg.com/vi/IJ6Mn7pQNtI/maxresdefault.jpg
+                      url: https://www.youtube.com/watch?v=IJ6Mn7pQNtI
+                      source: www.youtube.com
+                    - id: 1843746
+                      league_id: 637
+                      season_id: 14341
+                      home_id: 2459
+                      away_id: 2403
+                      round_id: 182342
+                      stage_id: 207
+                      group_id: 1
+                      startdate: '2024-09-25 17:00:00'
+                      title: >-
+                        GIRONA FC 0 - 0 RAYO VALLECANO | RESUMEN LALIGA EA
+                        SPORTS
+                      image: https://i.ytimg.com/vi/Hw37gVtJxV0/maxresdefault.jpg
+                      url: https://www.youtube.com/watch?v=Hw37gVtJxV0
+                      source: www.youtube.com
+                    - id: 1843754
+                      league_id: 637
+                      season_id: 14341
+                      home_id: 113
+                      away_id: 125
+                      round_id: 182342
+                      stage_id: 207
+                      group_id: 1
+                      startdate: '2024-09-24 19:00:00'
+                      title: >-
+                        REAL MADRID 3 - 2 DEPORTIVO ALAVÉS | RESUMEN LALIGA EA
+                        SPORTS
+                      image: https://i.ytimg.com/vi/OO4UzUf7o9E/maxresdefault.jpg
+                      url: https://www.youtube.com/watch?v=OO4UzUf7o9E
+                      source: www.youtube.com
+                    - id: 1843748
+                      league_id: 637
+                      season_id: 14341
+                      home_id: 128
+                      away_id: 130
+                      round_id: 182342
+                      stage_id: 207
+                      group_id: 1
+                      startdate: '2024-09-24 17:00:00'
+                      title: >-
+                        SEVILLA FC 2 - 1 REAL VALLADOLID CF | RESUMEN LALIGA EA
+                        SPORTS
+                      image: https://i.ytimg.com/vi/3Vwunn9W3uo/maxresdefault.jpg
+                      url: https://www.youtube.com/watch?v=3Vwunn9W3uo
+                      source: www.youtube.com
+                    - id: 1843753
+                      league_id: 637
+                      season_id: 14341
+                      home_id: 103
+                      away_id: 122
+                      round_id: 182342
+                      stage_id: 207
+                      group_id: 1
+                      startdate: '2024-09-24 17:00:00'
+                      title: VALENCIA CF 0 - 0 CA OSASUNA | RESUMEN LALIGA EA SPORTS
+                      image: https://i.ytimg.com/vi/AE2bzd4XLS8/maxresdefault.jpg
+                      url: https://www.youtube.com/watch?v=AE2bzd4XLS8
+                      source: www.youtube.com
+                    - id: 1843736
+                      league_id: 637
+                      season_id: 14341
+                      home_id: 129
+                      away_id: 119
+                      round_id: 182341
+                      stage_id: 207
+                      group_id: 1
+                      startdate: '2024-09-23 19:00:00'
+                      title: REAL BETIS 1 - 2 RCD MALLORCA | RESUMEN LALIGA EA SPORTS
+                      image: https://i.ytimg.com/vi/G1marIk1xTg/maxresdefault.jpg
+                      url: https://www.youtube.com/watch?v=G1marIk1xTg
+                      source: www.youtube.com
+                    - id: 1843739
+                      league_id: 637
+                      season_id: 14341
+                      home_id: 2403
+                      away_id: 107
+                      round_id: 182341
+                      stage_id: 207
+                      group_id: 1
+                      startdate: '2024-09-22 19:00:00'
+                      title: >-
+                        RAYO VALLECANO 1 - 1 ATLÉTICO DE MADRID | RESUMEN LALIGA
+                        EA SPORTS
+                      image: https://i.ytimg.com/vi/ixLvXyiFFVg/maxresdefault.jpg
+                      url: https://www.youtube.com/watch?v=ixLvXyiFFVg
+                      source: www.youtube.com
+                    - id: 1843744
+                      league_id: 637
+                      season_id: 14341
+                      home_id: 113
+                      away_id: 127
+                      round_id: 182341
+                      stage_id: 207
+                      group_id: 1
+                      startdate: '2024-09-21 19:00:00'
+                      title: >-
+                        REAL MADRID 4 - 1 RCD ESPANYOL | RESUMEN LALIGA EA
+                        SPORTS
+                      image: https://i.ytimg.com/vi/65SBBDnXGp4/maxresdefault.jpg
+                      url: https://www.youtube.com/watch?v=65SBBDnXGp4
+                      source: www.youtube.com
+                    - id: 1843741
+                      league_id: 637
+                      season_id: 14341
+                      home_id: 103
+                      away_id: 2459
+                      round_id: 182341
+                      stage_id: 207
+                      group_id: 1
+                      startdate: '2024-09-21 16:30:00'
+                      title: VALENCIA CF 2 - 0 GIRONA FC | RESUMEN LALIGA EA SPORTS
+                      image: https://i.ytimg.com/vi/Ykho0jdbBNE/maxresdefault.jpg
+                      url: https://www.youtube.com/watch?v=Ykho0jdbBNE
+                      source: www.youtube.com
+                    - id: 1843738
+                      league_id: 637
+                      season_id: 14341
+                      home_id: 125
+                      away_id: 128
+                      round_id: 182341
+                      stage_id: 207
+                      group_id: 1
+                      startdate: '2024-09-20 19:00:00'
+                      title: >-
+                        DEPORTIVO ALAVÉS 2 - 1 SEVILLA FC | RESUMEN LALIGA EA
+                        SPORTS
+                      image: https://i.ytimg.com/vi/WjeQI_cQMCw/maxresdefault.jpg
+                      url: https://www.youtube.com/watch?v=WjeQI_cQMCw
+                      source: www.youtube.com
+                    - id: 1843750
+                      league_id: 637
+                      season_id: 14341
+                      home_id: 121
+                      away_id: 116
+                      round_id: 182342
+                      stage_id: 207
+                      group_id: 1
+                      startdate: '2024-09-19 17:00:00'
+                      title: >-
+                        CD LEGANÉS 0 - 2 ATHLETIC CLUB | RESUMEN LALIGA EA
+                        SPORTS
+                      image: https://i.ytimg.com/vi/GniuXtIQ8sU/maxresdefault.jpg
+                      url: https://www.youtube.com/watch?v=GniuXtIQ8sU
+                      source: www.youtube.com
+                    - id: 1913139
+                      league_id: 637
+                      season_id: 14341
+                      home_id: 129
+                      away_id: 131
+                      round_id: 182338
+                      stage_id: 207
+                      group_id: 1
+                      startdate: '2024-09-18 17:00:00'
+                      title: REAL BETIS 2 - 1 GETAFE CF | RESUMEN LALIGA EA SPORTS
+                      image: https://i.ytimg.com/vi/XiYGtjSdcAY/maxresdefault.jpg
+                      url: https://www.youtube.com/watch?v=XiYGtjSdcAY
+                      source: www.youtube.com
+                    - id: 1843747
+                      league_id: 637
+                      season_id: 14341
+                      home_id: 119
+                      away_id: 118
+                      round_id: 182342
+                      stage_id: 207
+                      group_id: 1
+                      startdate: '2024-09-17 17:00:00'
+                      title: >-
+                        RCD MALLORCA 1 - 0 REAL SOCIEDAD | RESUMEN LALIGA EA
+                        SPORTS
+                      image: https://i.ytimg.com/vi/XZacILNojos/maxresdefault.jpg
+                      url: https://www.youtube.com/watch?v=XZacILNojos
+                      source: www.youtube.com
+                    - id: 1843732
+                      league_id: 637
+                      season_id: 14341
+                      home_id: 2403
+                      away_id: 122
+                      round_id: 182340
+                      stage_id: 207
+                      group_id: 1
+                      startdate: '2024-09-16 19:00:00'
+                      title: >-
+                        RAYO VALLECANO 3 - 1 CA OSASUNA | RESUMEN LALIGA EA
+                        SPORTS
+                      image: https://i.ytimg.com/vi/vXghLUx71Mg/maxresdefault.jpg
+                      url: https://www.youtube.com/watch?v=vXghLUx71Mg
+                      source: www.youtube.com
+                    - id: 1843725
+                      league_id: 637
+                      season_id: 14341
+                      home_id: 107
+                      away_id: 103
+                      round_id: 182340
+                      stage_id: 207
+                      group_id: 1
+                      startdate: '2024-09-15 19:00:00'
+                      title: >-
+                        ATLÉTICO DE MADRID 3 - 0 VALENCIA CF | RESUMEN LALIGA EA
+                        SPORTS
+                      image: https://i.ytimg.com/vi/MhCMfdTI23I/maxresdefault.jpg
+                      url: https://www.youtube.com/watch?v=MhCMfdTI23I
+                      source: www.youtube.com
+                    - id: 1843729
+                      league_id: 637
+                      season_id: 14341
+                      home_id: 2395
+                      away_id: 116
+                      round_id: 182340
+                      stage_id: 207
+                      group_id: 1
+                      startdate: '2024-09-15 16:30:00'
+                      title: >-
+                        UD LAS PALMAS 2 - 3 ATHLETIC CLUB | RESUMEN LALIGA EA
+                        SPORTS
+                      image: https://i.ytimg.com/vi/trT9x8AP2v4/maxresdefault.jpg
+                      url: https://www.youtube.com/watch?v=trT9x8AP2v4
+                      source: www.youtube.com
+                    - id: 1843733
+                      league_id: 637
+                      season_id: 14341
+                      home_id: 118
+                      away_id: 113
+                      round_id: 182340
+                      stage_id: 207
+                      group_id: 1
+                      startdate: '2024-09-14 19:00:00'
+                      title: >-
+                        REAL SOCIEDAD 0 - 2 REAL MADRID | RESUMEN LALIGA EA
+                        SPORTS
+                      image: https://i.ytimg.com/vi/eOsI-JxMNQ4/maxresdefault.jpg
+                      url: https://www.youtube.com/watch?v=eOsI-JxMNQ4
+                      source: www.youtube.com
+                    - id: 1843731
+                      league_id: 637
+                      season_id: 14341
+                      home_id: 128
+                      away_id: 131
+                      round_id: 182340
+                      stage_id: 207
+                      group_id: 1
+                      startdate: '2024-09-14 16:30:00'
+                      title: SEVILLA FC 1 - 0 GETAFE CF | RESUMEN LALIGA EA SPORTS
+                      image: https://i.ytimg.com/vi/Z-rknDR7lTs/maxresdefault.jpg
+                      url: https://www.youtube.com/watch?v=Z-rknDR7lTs
+                      source: www.youtube.com
+                    - id: 1843726
+                      league_id: 637
+                      season_id: 14341
+                      home_id: 129
+                      away_id: 121
+                      round_id: 182340
+                      stage_id: 207
+                      group_id: 1
+                      startdate: '2024-09-13 19:00:00'
+                      title: REAL BETIS 2 - 0 CD LEGANÉS | RESUMEN LALIGA EA SPORTS
+                      image: https://i.ytimg.com/vi/I6z4EVCuQIM/maxresdefault.jpg
+                      url: https://www.youtube.com/watch?v=I6z4EVCuQIM
+                      source: www.youtube.com
+                meta:
+                  requests_left: 991055
+                  user: soccersapi2
+                  plan: Soccer API +1000
+                  pages: 1
+                  page: 1
+                  total: 56
+                  msg: ''
+          headers: {}
+      security: []
+webhooks: {}
+components:
+  schemas: {}
+  responses: {}
+  securitySchemes: {}
+security: []

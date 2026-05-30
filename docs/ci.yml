@@ -1,0 +1,40 @@
+name: CI — lint & sync spec
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  lint:
+    name: Spectral lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - name: Lint spec (report everything)
+        run: npm run lint
+      - name: Enforce (fail only on errors)
+        run: npm run lint:ci
+
+  # Push the spec to Postman after lint passes — only on merges to main,
+  # never on PRs. git is the source of truth; Postman is a consumer.
+  sync-postman:
+    name: Push spec to Postman
+    needs: lint
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Push OpenAPI to Postman Spec
+        uses: postmanlabs/push-openapi-to-postman-spec@v1
+        with:
+          path-to-definition: ./openapi.yaml
+          postman-api-key: ${{ secrets.POSTMAN_API_KEY }}
+          spec-id: ${{ vars.POSTMAN_SPEC_ID }}
+          api-path-to-file-name: index.yaml
