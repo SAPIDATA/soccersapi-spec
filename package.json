@@ -1,0 +1,17 @@
+{
+  "name": "soccersapi-spec",
+  "version": "2.2.0",
+  "description": "Source-of-truth OpenAPI contract for the SoccersAPI football data API.",
+  "private": true,
+  "scripts": {
+    "lint": "spectral lint openapi.yaml --ruleset .spectral.yaml",
+    "lint:ci": "spectral lint openapi.yaml --ruleset .spectral.yaml --fail-severity=error",
+    "bundle": "redocly bundle openapi.yaml -o dist/openapi.bundled.yaml",
+    "preview": "redocly preview-docs openapi.yaml",
+    "build:docs": "redocly build-docs openapi.yaml -o dist/index.html"
+  },
+  "devDependencies": {
+    "@stoplight/spectral-cli": "^6.16.0",
+    "@redocly/cli": "^1.34.0"
+  }
+}
