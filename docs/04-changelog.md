@@ -4,6 +4,11 @@
 > Use the &include= parameter to embed related datasets in one call (for example &include=match_events,match_stats) and reduce round trips.
 >Use the &utc= parameter to get date/time values in your preferred timezone (for example &utc=4 or &utc=4.5).
 
+## ⚡ Performance & Team Kit Colors (2026-06-15)
+- **Performance improvements** — optimized API response times and improved overall request handling for a faster experience.
+- **Team kit colors** — added `kit` colors to the **Teams by ID** endpoint for richer team visual data.
+- **Minor updates** — applied small fixes, refinements, and stability improvements across the API.
+
 ## 🛡️ API Token Usage (2025-11-04)
 - **API Token usage tracking** — monitor token consumption, see usage by endpoint, and review historical trends.
 - **Token dashboard** — quick overview of all tokens and their activity.
