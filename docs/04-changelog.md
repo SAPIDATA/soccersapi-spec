@@ -10,7 +10,7 @@
 
 **Example**
 ```txt
-GET /v2.2/venues/?user=USER&token=TOKEN&t=byseason&season_id=1
+GET /v2.2/venues/?user=USER&token=TOKEN&t=byseason&season_id=14192
 ```
 
 ## ⚡ Performance & Team Kit Colors
