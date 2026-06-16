@@ -4,6 +4,15 @@
 > Use the &include= parameter to embed related datasets in one call (for example &include=match_events,match_stats) and reduce round trips.
 >Use the &utc= parameter to get date/time values in your preferred timezone (for example &utc=4 or &utc=4.5).
 
+## 🏟️ Venues by Season
+- **Venues by Season** — added `t=byseason` to the **Venues** endpoint to return the venues linked to a specific season.
+- **Season venue data** — use `season_id` to fetch the basic venue information from the season venue list.
+
+**Example**
+```txt
+GET /v2.2/venues/?user=USER&token=TOKEN&t=byseason&season_id=1
+```
+
 ## ⚡ Performance & Team Kit Colors
 - **Performance improvements** — optimized API response times and improved overall request handling for a faster experience.
 - **Team kit colors** — added `kit` colors to the **Teams by ID** endpoint for richer team visual data.

@@ -2165,9 +2165,11 @@ paths:
       security: []
   /v2.2/venues/:
     get:
-      summary: Venues by Country
+      summary: Venues by Country / Season
       deprecated: false
-      description: ''
+      description: >-
+        Use `t=list&country_id=COUNTRY_ID` to get venues by country. Use
+        `t=byseason&season_id=SEASON_ID` to get the venues linked to a season.
       tags: []
       parameters:
         - name: user
@@ -2186,16 +2188,27 @@ paths:
             type: string
         - name: t
           in: query
-          description: ''
+          description: '`list` returns venues by country. `byseason` returns venues by season.'
           required: true
           example: list
           schema:
             type: string
+            enum:
+              - list
+              - byseason
+              - season
         - name: country_id
           in: query
-          description: ''
-          required: true
+          description: Required when `t=list`.
+          required: false
           example: '15'
+          schema:
+            type: string
+        - name: season_id
+          in: query
+          description: Required when `t=byseason`.
+          required: false
+          example: '1'
           schema:
             type: string
       responses:
