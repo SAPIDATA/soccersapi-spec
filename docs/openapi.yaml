@@ -9,6 +9,21 @@ info:
 
     Authentication is required on every request via the `user` and `token`
     query parameters.
+
+
+    ## Release notes
+
+    ### Venues by Season
+    - Added `t=byseason` to the Venues endpoint to return the venues linked to a specific season.
+    - Use `season_id` to fetch the basic venue information from the season venue list.
+
+    Example:
+    `GET /v2.2/venues/?user=USER&token=TOKEN&t=byseason&season_id=1`
+
+    ### Performance & Team Kit Colors
+    - Performance improvements across API response handling.
+    - Added `kit` colors to the Teams by ID endpoint.
+    - Applied minor fixes, refinements, and stability improvements across the API.
   version: 2.2.0
   contact:
     name: SoccersAPI
@@ -2165,11 +2180,9 @@ paths:
       security: []
   /v2.2/venues/:
     get:
-      summary: Venues by Country / Season
+      summary: Venues by Country
       deprecated: false
-      description: >-
-        Use `t=list&country_id=COUNTRY_ID` to get venues by country. Use
-        `t=byseason&season_id=SEASON_ID` to get the venues linked to a season.
+      description: ''
       tags: []
       parameters:
         - name: user
@@ -2188,27 +2201,16 @@ paths:
             type: string
         - name: t
           in: query
-          description: '`list` returns venues by country. `byseason` returns venues by season.'
+          description: ''
           required: true
           example: list
           schema:
             type: string
-            enum:
-              - list
-              - byseason
-              - season
         - name: country_id
           in: query
-          description: Required when `t=list`.
-          required: false
+          description: ''
+          required: true
           example: '15'
-          schema:
-            type: string
-        - name: season_id
-          in: query
-          description: Required when `t=byseason`.
-          required: false
-          example: '1'
           schema:
             type: string
       responses:
@@ -4219,6 +4221,74 @@ paths:
                   page: 1
                   count: 100
                   total: 147
+                  msg: ''
+          headers: {}
+      security: []
+  /v2.2/venues/?t=byseason:
+    get:
+      summary: Venues by Season
+      deprecated: false
+      description: Returns the venues linked to a specific season.
+      tags: []
+      parameters:
+        - name: user
+          in: query
+          description: ''
+          required: true
+          example: '{{USERNAME}}'
+          schema:
+            type: string
+        - name: token
+          in: query
+          description: ''
+          required: true
+          example: '{{TOKEN}}'
+          schema:
+            type: string
+        - name: season_id
+          in: query
+          description: ''
+          required: true
+          example: '1'
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {}
+              example:
+                data:
+                  - id: 2333
+                    name: Anfield
+                    capacity: 54074
+                    city: Liverpool
+                    address: null
+                    img: https://cdn.soccersapi.com/images/soccer/venues/2333.png
+                    coordinates:
+                      lat: '53.430622'
+                      long: '-2.960919'
+                    country:
+                      id: 3
+                      name: England
+                      continent: Europe
+                      sub_region: null
+                      long: null
+                      lat: null
+                      img: https://cdn.soccersapi.com/images/countries/30/en.png
+                      code: en
+                      cc: en
+                meta:
+                  requests_left: 991055
+                  user: soccersapi2
+                  plan: Soccer API +1000
+                  pages: 1
+                  page: 1
+                  count: 20
+                  total: 20
                   msg: ''
           headers: {}
       security: []
