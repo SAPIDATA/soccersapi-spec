@@ -4,6 +4,7 @@
   "description": "Source-of-truth OpenAPI contract for the SoccersAPI football data API.",
   "private": true,
   "scripts": {
+    "sync:changelog": "node scripts/sync-changelog.js",
     "lint": "spectral lint openapi.yaml --ruleset .spectral.yaml",
     "lint:ci": "spectral lint openapi.yaml --ruleset .spectral.yaml --fail-severity=error",
     "bundle": "redocly bundle openapi.yaml -o dist/openapi.bundled.yaml",
