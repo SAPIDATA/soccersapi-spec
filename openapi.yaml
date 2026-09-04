@@ -8386,13 +8386,13 @@ paths:
           $ref: '#/components/responses/ClientError'
   /v2.2/media/:
     get:
-      summary: Media highlights
+      summary: Media highlights (coming soon)
       operationId: getMedia
       tags:
         - Media
       description: |
-        **Beta operation.**
-        Video highlights by league, season, team, round, match or date. **Beta**: the route is documented from the v2.2 changelog and public reference; at the time of writing it answers `404 Endpoint not found` on production, so treat it as not generally available. The response shape can still change. `data` is an array of highlight groups, each an array of highlight objects with title, thumbnail, URL and source.
+        **Coming soon.** This route is not available yet on production.
+        Video highlights by league, season, team, round, match or date. The route is documented ahead of its release: it is not available yet and currently answers `404 Endpoint not found`. Operations, parameters and the response shape can change before launch. `data` is an array of highlight groups, each an array of highlight objects with title, thumbnail, URL and source.
 
         ## Operations
 
@@ -8444,7 +8444,7 @@ paths:
         ```http
         GET /v2.2/media/?user=USER&token=TOKEN&t=date&d=2026-08-30
         ```
-      x-beta: true
+      x-status: coming-soon
       x-operations:
         - t: league
           title: Highlights by league

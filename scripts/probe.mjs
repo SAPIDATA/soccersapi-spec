@@ -8,6 +8,9 @@
 //   node scripts/probe.mjs --delay=500     # ms between requests (default 250)
 //   node scripts/probe.mjs --ops=my.json   # custom operation list (same format)
 //
+// An operation may carry `expect` (default 200) for routes announced ahead of
+// release, and `auth: false` to send the request without credentials.
+//
 // Credentials come from .env.local or .env (SOCCERSAPI_USER, SOCCERSAPI_TOKEN).
 // Responses are written to tmp/probe/<id>.json (git-ignored) together with
 // summary.json and summary.md. The token is never printed.
@@ -125,8 +128,8 @@ async function main() {
     md.push(`| ${r.id} | \`${r.request}\` | ${r.status ?? 'ERR'} | ${r.ms} | ${r.shape?.dataType ?? ''} | ${r.shape?.count ?? ''} | ${r.shape?.msg ?? r.error ?? ''} |`);
   }
   writeFileSync(resolve(outDir, 'summary.md'), md.join('\n') + '\n');
-  const ok = results.filter((r) => r.status === 200).length;
-  console.log(`\n${ok}/${results.length} operations returned 200. Details in tmp/probe/summary.md`);
+  const ok = results.filter((r) => r.status === (ops.find((o) => o.id === r.id)?.expect ?? 200)).length;
+  console.log(`\n${ok}/${results.length} operations returned the expected status. Details in tmp/probe/summary.md`);
 }
 
 main().catch((err) => {

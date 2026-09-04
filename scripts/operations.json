@@ -750,7 +750,8 @@
     "query": {
       "t": "league",
       "id": "637"
-    }
+    },
+    "expect": 404
   },
   {
     "id": "media.season",
@@ -760,7 +761,7 @@
       "t": "season",
       "id": "14341"
     },
-    "verify": true
+    "expect": 404
   },
   {
     "id": "media.team",
@@ -770,7 +771,7 @@
       "t": "team",
       "id": "116"
     },
-    "verify": true
+    "expect": 404
   },
   {
     "id": "media.round",
@@ -780,7 +781,7 @@
       "t": "round",
       "id": "182349"
     },
-    "verify": true
+    "expect": 404
   },
   {
     "id": "media.event",
@@ -790,7 +791,7 @@
       "t": "event",
       "id": "1843815"
     },
-    "verify": true
+    "expect": 404
   },
   {
     "id": "media.date",
@@ -800,6 +801,6 @@
       "t": "date",
       "d": "2026-08-30"
     },
-    "verify": true
+    "expect": 404
   }
 ]
