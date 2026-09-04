@@ -14,3 +14,4 @@ These are the source of truth for the prose docs; edit them here.
 | 7 | Interactive API Explorer | [`07-interactive-api-explorer.md`](./07-interactive-api-explorer.md) |
 | 8 | Statuses | [`08-statuses.md`](./08-statuses.md) |
 | 9 | Match Events and Dataset Includes | [`09-match-events-and-includes.md`](./09-match-events-and-includes.md) |
+| 10 | Plans and Data Access | [`10-plans-and-access.md`](./10-plans-and-access.md) |
