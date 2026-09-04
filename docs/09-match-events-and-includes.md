@@ -66,6 +66,11 @@ curl -G "https://api.soccersapi.com/v2.2/fixtures/" \
 
 Do not put spaces in a comma-separated `include` value.
 
+Other datasets can be embedded the same way. On fixture operations `broadcast`
+adds the TV channels showing each match; on livescores and fixtures
+`odds_prematch` and `odds_inplay` add odds by market and bookmaker where the
+plan and coverage provide them. Livescores feeds do not support `broadcast`.
+
 ## Included response
 
 With `include=events`, each match has an `events` array:

@@ -12,8 +12,20 @@
 - **429 Too Many Requests** — request limit exceeded.
 - **5xx** — temporary upstream or internal error.
 
-Error bodies can contain `msg` directly or under `meta.msg`. Do not infer success
-from a JSON body alone; always check the HTTP status, then inspect `meta.msg`.
+## Error bodies
+
+The body shape depends on where the request failed:
+
+| Status | Body | Example |
+| --- | --- | --- |
+| 401 | `{"ok": false, "message": "…"}` | `{"ok":false,"message":"User or token incorrect!"}` |
+| 400 | Normal envelope with an empty `data` and the reason in `meta.msg` | `{"data":[],"meta":{"…":"…","msg":"Invalid 't' parameter value"}}` |
+| 404 (unknown resource) | Normal envelope with an empty `data` object and `meta.msg` | `{"data":{},"meta":{"…":"…","msg":"League not found"}}` |
+| 404 (unknown route) | `{"msg": "Endpoint not found"}` | |
+
+Do not infer success from a JSON body alone; always check the HTTP status, then
+inspect `meta.msg`. A `200` with an empty `data` array is a valid empty result,
+not an error.
 
 ### Backoff guidance
 On **429** or a retryable **5xx**, use exponential backoff with jitter (for
