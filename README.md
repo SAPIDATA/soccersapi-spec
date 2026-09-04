@@ -6,8 +6,10 @@ teams, seasons, players, coaches, referees, venues, statistics, head-to-head,
 bookmakers, markets, broadcasts and media.
 
 The file [`openapi.yaml`](./openapi.yaml) is the machine-readable API contract.
-SoccersAPI v2.2 uses a query operation selector (`t`) on resource routes, so the
-accepted `t` values and conditional parameters are documented on each route.
+SoccersAPI v2.2 uses a query operation selector (`t`) on resource routes. Each
+route documents every accepted `t` value with its required and optional
+parameters in an operations table, and repeats the same list in a machine-readable
+`x-operations` extension. Narrative guides live under [`docs/`](./docs/docs-README.md).
 
 ## Using the spec
 
@@ -42,6 +44,29 @@ Get your credentials from your [SoccersAPI account](https://soccersapi.com).
 
 This spec tracks the **v2.2** API. Endpoint paths are prefixed accordingly
 (e.g. `/v2.2/fixtures/`).
+
+## Working on the spec
+
+```bash
+npm install
+npm run lint          # Spectral, full report
+npm run lint:redocly  # Redocly validation
+npm run preview       # local Redoc preview
+```
+
+To exercise every documented operation against the live API, copy
+[`.env.example`](./.env.example) to `.env`, fill in the credentials of a
+development account and run:
+
+```bash
+npm run probe
+```
+
+The probe reads [`scripts/operations.json`](./scripts/operations.json), calls
+each operation once and writes the responses and a status summary under
+`tmp/probe/` (git-ignored). Add `--only=fixtures` to restrict it to one route,
+or `--dry` to print the requests without calling the API. Never commit `.env`
+or the captured responses.
 
 ## Match events
 

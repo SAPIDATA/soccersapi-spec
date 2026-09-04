@@ -1,0 +1,762 @@
+[
+  {
+    "id": "search.match",
+    "title": "Search matches",
+    "route": "/v2.2/search/",
+    "query": {
+      "t": "match",
+      "q": "salzburg"
+    }
+  },
+  {
+    "id": "search.league",
+    "title": "Search leagues",
+    "route": "/v2.2/search/",
+    "query": {
+      "t": "league",
+      "q": "bundesliga"
+    }
+  },
+  {
+    "id": "search.team",
+    "title": "Search teams",
+    "route": "/v2.2/search/",
+    "query": {
+      "t": "team",
+      "q": "barcelona"
+    }
+  },
+  {
+    "id": "search.player",
+    "title": "Search players",
+    "route": "/v2.2/search/",
+    "query": {
+      "t": "player",
+      "q": "ronaldo"
+    }
+  },
+  {
+    "id": "search.referee",
+    "title": "Search referees",
+    "route": "/v2.2/search/",
+    "query": {
+      "t": "referee",
+      "q": "clattenburg"
+    }
+  },
+  {
+    "id": "search.country",
+    "title": "Search countries",
+    "route": "/v2.2/search/",
+    "query": {
+      "t": "country",
+      "q": "austria"
+    }
+  },
+  {
+    "id": "search.continent",
+    "title": "Search continents",
+    "route": "/v2.2/search/",
+    "query": {
+      "t": "continent",
+      "q": "europe"
+    }
+  },
+  {
+    "id": "search.tv",
+    "title": "Search TV channels",
+    "route": "/v2.2/search/",
+    "query": {
+      "t": "tv",
+      "q": "dazn"
+    }
+  },
+  {
+    "id": "continents.list",
+    "title": "All continents",
+    "route": "/v2.2/continents/",
+    "query": {
+      "t": "list"
+    },
+    "verify": true
+  },
+  {
+    "id": "continents.info",
+    "title": "Continent by ID",
+    "route": "/v2.2/continents/",
+    "query": {
+      "t": "info",
+      "id": "2"
+    }
+  },
+  {
+    "id": "countries.list",
+    "title": "All countries",
+    "route": "/v2.2/countries/",
+    "query": {
+      "t": "list",
+      "page": "1"
+    }
+  },
+  {
+    "id": "countries.info",
+    "title": "Country by ID",
+    "route": "/v2.2/countries/",
+    "query": {
+      "t": "info",
+      "id": "4"
+    }
+  },
+  {
+    "id": "leagues.list",
+    "title": "Leagues",
+    "route": "/v2.2/leagues/",
+    "query": {
+      "t": "list",
+      "country_id": "4"
+    }
+  },
+  {
+    "id": "leagues.info",
+    "title": "League by ID",
+    "route": "/v2.2/leagues/",
+    "query": {
+      "t": "info",
+      "id": "1005"
+    }
+  },
+  {
+    "id": "leagues.sort",
+    "title": "Leagues by multiple IDs",
+    "route": "/v2.2/leagues/",
+    "query": {
+      "t": "sort",
+      "ids": "974,1005,1609"
+    }
+  },
+  {
+    "id": "leagues.standings",
+    "title": "Standings",
+    "route": "/v2.2/leagues/",
+    "query": {
+      "t": "standings",
+      "season_id": "406"
+    }
+  },
+  {
+    "id": "leagues.standings_live",
+    "title": "Live standings",
+    "route": "/v2.2/leagues/",
+    "query": {
+      "t": "standings_live",
+      "season_id": "406"
+    }
+  },
+  {
+    "id": "leagues.cup_draw",
+    "title": "Cup draw (tournament bracket)",
+    "route": "/v2.2/leagues/",
+    "query": {
+      "t": "cup_draw",
+      "season_id": "45",
+      "stage_id": "26"
+    }
+  },
+  {
+    "id": "teams.info",
+    "title": "Team by ID",
+    "route": "/v2.2/teams/",
+    "query": {
+      "t": "info",
+      "id": "111"
+    },
+    "verify": true
+  },
+  {
+    "id": "teams.list",
+    "title": "Teams by country",
+    "route": "/v2.2/teams/",
+    "query": {
+      "t": "list",
+      "country_id": "4"
+    }
+  },
+  {
+    "id": "teams.sort",
+    "title": "Teams by multiple IDs",
+    "route": "/v2.2/teams/",
+    "query": {
+      "t": "sort",
+      "ids": "19,99,108"
+    }
+  },
+  {
+    "id": "teams.byseason",
+    "title": "Teams by season",
+    "route": "/v2.2/teams/",
+    "query": {
+      "t": "byseason",
+      "season_id": "13480"
+    }
+  },
+  {
+    "id": "teams.national",
+    "title": "National teams",
+    "route": "/v2.2/teams/",
+    "query": {
+      "t": "national"
+    }
+  },
+  {
+    "id": "teams.squad",
+    "title": "Team squad",
+    "route": "/v2.2/teams/",
+    "query": {
+      "t": "squad",
+      "id": "2868"
+    }
+  },
+  {
+    "id": "teams.transfers",
+    "title": "Team transfers",
+    "route": "/v2.2/teams/",
+    "query": {
+      "t": "transfers",
+      "id": "111"
+    }
+  },
+  {
+    "id": "teams.sidelined",
+    "title": "Team sidelined players",
+    "route": "/v2.2/teams/",
+    "query": {
+      "t": "sidelined",
+      "id": "111"
+    }
+  },
+  {
+    "id": "teams.trophies",
+    "title": "Team trophies",
+    "route": "/v2.2/teams/",
+    "query": {
+      "t": "trophies",
+      "id": "111"
+    }
+  },
+  {
+    "id": "seasons.info",
+    "title": "Season by ID",
+    "route": "/v2.2/seasons/",
+    "query": {
+      "t": "info",
+      "id": "406"
+    }
+  },
+  {
+    "id": "stages.byseason",
+    "title": "Stages by season",
+    "route": "/v2.2/stages/",
+    "query": {
+      "t": "byseason",
+      "season_id": "2091"
+    }
+  },
+  {
+    "id": "stages.info",
+    "title": "Stage by ID",
+    "route": "/v2.2/stages/",
+    "query": {
+      "t": "info",
+      "id": "26"
+    },
+    "verify": true
+  },
+  {
+    "id": "groups.byseason",
+    "title": "Groups by season",
+    "route": "/v2.2/groups/",
+    "query": {
+      "t": "byseason",
+      "season_id": "7011"
+    }
+  },
+  {
+    "id": "groups.info",
+    "title": "Group by ID",
+    "route": "/v2.2/groups/",
+    "query": {
+      "t": "info",
+      "id": "5108"
+    },
+    "verify": true
+  },
+  {
+    "id": "rounds.byseason",
+    "title": "Rounds by season",
+    "route": "/v2.2/rounds/",
+    "query": {
+      "t": "byseason",
+      "season_id": "406"
+    }
+  },
+  {
+    "id": "livescores.live",
+    "title": "Matches in play",
+    "route": "/v2.2/livescores/",
+    "query": {
+      "t": "live",
+      "include": "events,stats"
+    }
+  },
+  {
+    "id": "livescores.today",
+    "title": "Today's matches",
+    "route": "/v2.2/livescores/",
+    "query": {
+      "t": "today",
+      "utc": "2"
+    },
+    "verify": true
+  },
+  {
+    "id": "livescores.tomorrow",
+    "title": "Tomorrow's matches",
+    "route": "/v2.2/livescores/",
+    "query": {
+      "t": "tomorrow"
+    }
+  },
+  {
+    "id": "livescores.yesterday",
+    "title": "Yesterday's matches",
+    "route": "/v2.2/livescores/",
+    "query": {
+      "t": "yesterday"
+    }
+  },
+  {
+    "id": "livescores.notstarted",
+    "title": "Today's matches not started",
+    "route": "/v2.2/livescores/",
+    "query": {
+      "t": "notstarted"
+    }
+  },
+  {
+    "id": "livescores.ended",
+    "title": "Today's matches ended",
+    "route": "/v2.2/livescores/",
+    "query": {
+      "t": "ended"
+    }
+  },
+  {
+    "id": "fixtures.schedule",
+    "title": "Fixtures by date",
+    "route": "/v2.2/fixtures/",
+    "query": {
+      "t": "schedule",
+      "d": "2026-08-30",
+      "include": "broadcast",
+      "utc": "2"
+    }
+  },
+  {
+    "id": "fixtures.season",
+    "title": "Fixtures by season",
+    "route": "/v2.2/fixtures/",
+    "query": {
+      "t": "season",
+      "season_id": "7194",
+      "team_id": "111",
+      "order": "asc"
+    }
+  },
+  {
+    "id": "fixtures.round",
+    "title": "Fixtures by round",
+    "route": "/v2.2/fixtures/",
+    "query": {
+      "t": "round",
+      "round_id": "1994"
+    }
+  },
+  {
+    "id": "fixtures.last_next",
+    "title": "Team last and next fixtures",
+    "route": "/v2.2/fixtures/",
+    "query": {
+      "t": "last_next",
+      "team_id": "99"
+    }
+  },
+  {
+    "id": "fixtures.tv",
+    "title": "Fixtures by TV channel",
+    "route": "/v2.2/fixtures/",
+    "query": {
+      "t": "tv",
+      "tv_id": "30"
+    }
+  },
+  {
+    "id": "fixtures.info",
+    "title": "Match by ID",
+    "route": "/v2.2/fixtures/",
+    "query": {
+      "t": "info",
+      "id": "2589310",
+      "include": "events,stats"
+    }
+  },
+  {
+    "id": "fixtures.sort",
+    "title": "Matches by multiple IDs",
+    "route": "/v2.2/fixtures/",
+    "query": {
+      "t": "sort",
+      "ids": "2589310,2589313",
+      "include": "events"
+    }
+  },
+  {
+    "id": "fixtures.match_events",
+    "title": "Match events",
+    "route": "/v2.2/fixtures/",
+    "query": {
+      "t": "match_events",
+      "id": "2589310"
+    }
+  },
+  {
+    "id": "fixtures.match_lineups",
+    "title": "Match lineups",
+    "route": "/v2.2/fixtures/",
+    "query": {
+      "t": "match_lineups",
+      "id": "2589310",
+      "include": "stats"
+    }
+  },
+  {
+    "id": "fixtures.match_bench",
+    "title": "Match bench",
+    "route": "/v2.2/fixtures/",
+    "query": {
+      "t": "match_bench",
+      "id": "2589310"
+    }
+  },
+  {
+    "id": "fixtures.match_comments",
+    "title": "Match commentary",
+    "route": "/v2.2/fixtures/",
+    "query": {
+      "t": "match_comments",
+      "id": "2589310"
+    },
+    "verify": true
+  },
+  {
+    "id": "fixtures.match_sidelined",
+    "title": "Match sidelined players",
+    "route": "/v2.2/fixtures/",
+    "query": {
+      "t": "match_sidelined",
+      "id": "2589310"
+    }
+  },
+  {
+    "id": "fixtures.match_odds",
+    "title": "Pre-match odds",
+    "route": "/v2.2/fixtures/",
+    "query": {
+      "t": "match_odds",
+      "id": "2589310"
+    }
+  },
+  {
+    "id": "fixtures.match_oddsinplay",
+    "title": "In-play odds",
+    "route": "/v2.2/fixtures/",
+    "query": {
+      "t": "match_oddsinplay",
+      "id": "2589310"
+    }
+  },
+  {
+    "id": "fixtures.match_odds_info",
+    "title": "Match odds by bookmaker",
+    "route": "/v2.2/fixtures/",
+    "query": {
+      "t": "match_odds_info",
+      "id": "2589310",
+      "bookmaker_id": "1"
+    }
+  },
+  {
+    "id": "stats.league",
+    "title": "League statistics, current season",
+    "route": "/v2.2/stats/",
+    "query": {
+      "t": "league",
+      "id": "1005"
+    }
+  },
+  {
+    "id": "stats.season",
+    "title": "League statistics by season",
+    "route": "/v2.2/stats/",
+    "query": {
+      "t": "season",
+      "id": "12588"
+    }
+  },
+  {
+    "id": "stats.team",
+    "title": "Team statistics by season",
+    "route": "/v2.2/stats/",
+    "query": {
+      "t": "team",
+      "id": "98",
+      "season_id": "406"
+    }
+  },
+  {
+    "id": "stats.player",
+    "title": "Player statistics",
+    "route": "/v2.2/stats/",
+    "query": {
+      "t": "player",
+      "id": "18103",
+      "season_id": "12516"
+    }
+  },
+  {
+    "id": "stats.match",
+    "title": "Match statistics",
+    "route": "/v2.2/stats/",
+    "query": {
+      "t": "match",
+      "id": "2589310"
+    },
+    "verify": true
+  },
+  {
+    "id": "h2h.teams",
+    "title": "Team vs team",
+    "route": "/v2.2/h2h/",
+    "query": {
+      "t": "teams",
+      "team1": "99",
+      "team2": "113"
+    }
+  },
+  {
+    "id": "h2h.match",
+    "title": "Match head to head",
+    "route": "/v2.2/h2h/",
+    "query": {
+      "t": "match",
+      "id": "2589310"
+    },
+    "verify": true
+  },
+  {
+    "id": "leaders.topscorers",
+    "title": "Top scorers",
+    "route": "/v2.2/leaders/",
+    "query": {
+      "t": "topscorers",
+      "season_id": "12516"
+    }
+  },
+  {
+    "id": "leaders.topassists",
+    "title": "Top assists",
+    "route": "/v2.2/leaders/",
+    "query": {
+      "t": "topassists",
+      "season_id": "12516"
+    }
+  },
+  {
+    "id": "bookmakers.info",
+    "title": "Bookmaker by ID",
+    "route": "/v2.2/bookmakers/",
+    "query": {
+      "t": "info",
+      "id": "2"
+    }
+  },
+  {
+    "id": "markets.info",
+    "title": "Market by ID",
+    "route": "/v2.2/markets/",
+    "query": {
+      "t": "info",
+      "id": "1"
+    }
+  },
+  {
+    "id": "broadcast.schedule",
+    "title": "Matches on TV by date",
+    "route": "/v2.2/broadcast/",
+    "query": {
+      "t": "schedule",
+      "d": "2026-08-30",
+      "include": "tvs",
+      "utc": "2"
+    }
+  },
+  {
+    "id": "broadcast.match_tvs",
+    "title": "TV channels of a match",
+    "route": "/v2.2/broadcast/",
+    "query": {
+      "t": "match_tvs",
+      "id": "2589310"
+    }
+  },
+  {
+    "id": "broadcast.list",
+    "title": "TV channels",
+    "route": "/v2.2/broadcast/",
+    "query": {
+      "t": "list",
+      "country_id": "15"
+    }
+  },
+  {
+    "id": "broadcast.info",
+    "title": "TV channel by ID",
+    "route": "/v2.2/broadcast/",
+    "query": {
+      "t": "info",
+      "id": "2"
+    }
+  },
+  {
+    "id": "players.info",
+    "title": "Player by ID",
+    "route": "/v2.2/players/",
+    "query": {
+      "t": "info",
+      "id": "11306"
+    },
+    "verify": true
+  },
+  {
+    "id": "players.list",
+    "title": "Players by country",
+    "route": "/v2.2/players/",
+    "query": {
+      "t": "list",
+      "country_id": "4"
+    }
+  },
+  {
+    "id": "coaches.info",
+    "title": "Coach by ID",
+    "route": "/v2.2/coaches/",
+    "query": {
+      "t": "info",
+      "id": "662"
+    }
+  },
+  {
+    "id": "coaches.list",
+    "title": "Coaches",
+    "route": "/v2.2/coaches/",
+    "query": {
+      "t": "list",
+      "country_id": "25"
+    }
+  },
+  {
+    "id": "referees.info",
+    "title": "Referee by ID",
+    "route": "/v2.2/referees/",
+    "query": {
+      "t": "info",
+      "id": "372"
+    }
+  },
+  {
+    "id": "venues.list",
+    "title": "Venues",
+    "route": "/v2.2/venues/",
+    "query": {
+      "t": "list",
+      "country_id": "15"
+    }
+  },
+  {
+    "id": "venues.byseason",
+    "title": "Venues by season",
+    "route": "/v2.2/venues/",
+    "query": {
+      "t": "byseason",
+      "season_id": "14192"
+    }
+  },
+  {
+    "id": "media.league",
+    "title": "Highlights by league",
+    "route": "/v2.2/media/",
+    "query": {
+      "t": "league",
+      "id": "637"
+    }
+  },
+  {
+    "id": "media.season",
+    "title": "Highlights by season",
+    "route": "/v2.2/media/",
+    "query": {
+      "t": "season",
+      "id": "14341"
+    },
+    "verify": true
+  },
+  {
+    "id": "media.team",
+    "title": "Highlights by team",
+    "route": "/v2.2/media/",
+    "query": {
+      "t": "team",
+      "id": "116"
+    },
+    "verify": true
+  },
+  {
+    "id": "media.round",
+    "title": "Highlights by round",
+    "route": "/v2.2/media/",
+    "query": {
+      "t": "round",
+      "id": "182349"
+    },
+    "verify": true
+  },
+  {
+    "id": "media.event",
+    "title": "Highlights by match",
+    "route": "/v2.2/media/",
+    "query": {
+      "t": "event",
+      "id": "1843815"
+    },
+    "verify": true
+  },
+  {
+    "id": "media.date",
+    "title": "Highlights by date",
+    "route": "/v2.2/media/",
+    "query": {
+      "t": "date",
+      "d": "2026-08-30"
+    },
+    "verify": true
+  }
+]
