@@ -50,7 +50,7 @@ These parameters apply across endpoints (where supported):
 | `utc` | number | No | `2`, `4.5`, `-3` | UTC offset for supported date/time values |
 | `include` | string | No | `events,stats` | Comma-separated datasets; support depends on the operation |
 | `page` | integer | No | `1…` | Pagination (where supported) |
-| `per_page` | integer | No | `20` default, max varies | Pagination (where supported) |
+| `odds_format` | string | No | `decimal`, `fractional`, `american` | Odds format on odds datasets |
 
 > Match-event include values and examples are documented in [Match Events and Dataset Includes](./09-match-events-and-includes.md). Use `include=events`; `t=match_events` is the separate event-only operation.
 

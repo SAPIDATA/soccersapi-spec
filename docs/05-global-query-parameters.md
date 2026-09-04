@@ -10,8 +10,8 @@ apply only where the endpoint reference lists them.
 | `lang` | string | No | `en` | Localizes supported names/labels. Availability varies by dataset. |
 | `utc` | number | No | `2`, `4.5`, `-3` | UTC offset applied to supported date/time values. Decimal offsets are accepted. |
 | `include` | string | No | `events,stats` | Comma-separated datasets, with no spaces. Values and support depend on the operation. |
-| `page` | integer | No | `1` | Page number on paginated operations. |
-| `per_page` | integer | No | `20` | Page size where supported; the maximum varies by operation. |
+| `page` | integer | No | `1` | Page number on paginated operations; the response reports `meta.page` and `meta.pages`. |
+| `odds_format` | string | No | `decimal` | Odds format on odds datasets: `decimal` (default), `fractional` or `american`. |
 
 ## Dataset includes
 
@@ -23,7 +23,8 @@ The most common match datasets are:
 | `stats` | `stats` | Livescores, fixture schedules, `fixtures?t=info`, `fixtures?t=sort`. |
 | `odds_prematch` | `odds_prematch` | Livescores/fixtures where the plan and match coverage provide odds. |
 | `odds_inplay` | `odds_inplay` | Live matches where the plan and match coverage provide in-play odds. |
-| `broadcast` | `broadcast` | Match details where broadcast coverage is available. |
+| `broadcast` | `broadcast` | Fixture lists and match details where broadcast coverage is available. |
+| `tvs` | `tvs` | `broadcast?t=schedule`: embeds the channel details in each match. |
 
 Use dataset names in `include`; do not use standalone operation values. For
 example, `include=events` embeds the timeline, while `t=match_events` calls the

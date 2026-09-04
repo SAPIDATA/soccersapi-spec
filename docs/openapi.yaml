@@ -51,996 +51,1350 @@ tags:
 paths:
   /v2.2/search/:
     get:
-      summary: Search Match
-      operationId: searchResources
-      deprecated: false
-      description: >-
-        Find a specific match by keyword (team names, league, etc.).  
-
-        Returns match ID and basic details for use in match endpoints.
-
-
-        **Example:**
-
-        ```bash
-
-        curl -L -g
-        "https://api.soccersapi.com/v2.2/search/?user={{USERNAME}}&token={{TOKEN}}&t=match&q=salzburg"
-        ```
+      summary: Search
+      operationId: search
       tags:
         - Search
+      description: |
+        Find matches and football entities by keyword. Results are lightweight: they carry the ID and the display name needed to call the resource endpoints, plus a `type` discriminator.
+
+        ## Operations
+
+        The `t` query parameter selects the operation. Parameters not listed for an operation are ignored. The theme column marks datasets that themed plans (Odds, Broadcast) include only for their own theme; Free and Standard plans include every theme for their leagues.
+
+        | `t` | Operation | Required | Optional | Theme |
+        | --- | --- | --- | --- | --- |
+        | `match` | Search matches. Upcoming and recent matches whose teams or competition match `q`, with kickoff date, teams and league. | `q` | `utc` | core |
+        | `league` | Search leagues. Leagues matching `q`, with country. | `q` | — | core |
+        | `team` | Search teams. | `q` | — | core |
+        | `player` | Search players. | `q` | — | core |
+        | `referee` | Search referees. | `q` | — | core |
+        | `country` | Search countries. | `q` | — | core |
+        | `continent` | Search continents. | `q` | — | core |
+        | `tv` | Search TV channels. TV channels matching `q`, for use with broadcast operations. | `q` | — | broadcast |
+
+        ## Examples
+
+        Search matches:
+
+        ```http
+        GET /v2.2/search/?user=USER&token=TOKEN&t=match&q=salzburg
+        ```
+
+        Search leagues:
+
+        ```http
+        GET /v2.2/search/?user=USER&token=TOKEN&t=league&q=bundesliga
+        ```
+
+        Search teams:
+
+        ```http
+        GET /v2.2/search/?user=USER&token=TOKEN&t=team&q=barcelona
+        ```
+
+        Search players:
+
+        ```http
+        GET /v2.2/search/?user=USER&token=TOKEN&t=player&q=ronaldo
+        ```
+
+        Search referees:
+
+        ```http
+        GET /v2.2/search/?user=USER&token=TOKEN&t=referee&q=clattenburg
+        ```
+
+        Search countries:
+
+        ```http
+        GET /v2.2/search/?user=USER&token=TOKEN&t=country&q=austria
+        ```
+
+        Search continents:
+
+        ```http
+        GET /v2.2/search/?user=USER&token=TOKEN&t=continent&q=europe
+        ```
+
+        Search TV channels:
+
+        ```http
+        GET /v2.2/search/?user=USER&token=TOKEN&t=tv&q=dazn
+        ```
+      x-operations:
+        - t: match
+          title: Search matches
+          required:
+            - q
+          optional:
+            - utc
+        - t: league
+          title: Search leagues
+          required:
+            - q
+          optional: []
+        - t: team
+          title: Search teams
+          required:
+            - q
+          optional: []
+        - t: player
+          title: Search players
+          required:
+            - q
+          optional: []
+        - t: referee
+          title: Search referees
+          required:
+            - q
+          optional: []
+        - t: country
+          title: Search countries
+          required:
+            - q
+          optional: []
+        - t: continent
+          title: Search continents
+          required:
+            - q
+          optional: []
+        - t: tv
+          title: Search TV channels
+          required:
+            - q
+          optional: []
+          theme: broadcast
       parameters:
-        - name: user
-          in: query
-          description: Account username.
-          required: true
-          example: '{{USERNAME}}'
-          schema:
-            type: string
-        - name: token
-          in: query
-          description: API token generated in the account dashboard.
-          required: true
-          example: '{{TOKEN}}'
-          schema:
-            type: string
+        - $ref: '#/components/parameters/User'
+        - $ref: '#/components/parameters/Token'
         - name: t
           in: query
-          description: Resource type to search; this operation searches matches.
           required: true
+          description: Operation selector. See the operations table.
           example: match
           schema:
             type: string
+            enum:
+              - match
+              - league
+              - team
+              - player
+              - referee
+              - country
+              - continent
+              - tv
+            x-enumDescriptions:
+              match: Search matches
+              league: Search leagues
+              team: Search teams
+              player: Search players
+              referee: Search referees
+              country: Search countries
+              continent: Search continents
+              tv: Search TV channels
         - name: q
           in: query
-          description: Search text, such as a team, league or participant name.
           required: true
-          example: salzburg
+          description: 'Search text: part of a team, league, player, referee, country, continent or TV channel name. Required by every operation.'
           schema:
             type: string
-        - name: utc
-          in: query
-          description: Optional UTC offset for returned match times.
-          required: false
-          example: 2
-          schema:
-            type: number
-            minimum: -12
-            maximum: 14
+          example: salzburg
+        - $ref: '#/components/parameters/Utc'
       responses:
         '200':
-          description: ''
+          description: Array of search results. Match results carry `startdate`, `home`, `away`, `league_name`, `country_name` and `cc`; entity results carry `id`, `name` and `type`.
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  data:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        id:
-                          type: integer
-                        startdate:
-                          type: string
-                        name:
-                          type: string
-                        home:
-                          type: string
-                        away:
-                          type: string
-                        league_name:
-                          type: string
-                        country_name:
-                          type: string
-                        cc:
-                          type:
-                            - string
-                            - 'null'
-                        type:
-                          type: string
-                      required:
-                        - id
-                        - startdate
-                        - name
-                        - home
-                        - away
-                        - league_name
-                        - country_name
-                        - cc
-                        - type
-                  meta:
-                    type: object
-                    properties:
-                      requests_left:
-                        type: integer
-                      user:
-                        type: string
-                      plan:
-                        type: string
-                      pages:
-                        type: integer
-                      page:
-                        type: integer
-                      count:
-                        type: integer
-                      total:
-                        type: integer
-                      msg:
-                        type: string
-                    required:
-                      - requests_left
-                      - user
-                      - plan
-                      - pages
-                      - page
-                      - count
-                      - total
-                      - msg
-                required:
-                  - data
-                  - meta
-              example:
-                data:
-                  - id: 2411325
-                    startdate: '2025-09-28 14:30:00'
-                    name: Tirol vs Salzburg
-                    home: Tirol
-                    away: Salzburg
-                    league_name: Bundesliga
-                    country_name: Austria
-                    cc: at
-                    type: match
-                  - id: 2472985
-                    startdate: '2025-10-02 21:00:00'
-                    name: Lyon vs Salzburg
-                    home: Lyon
-                    away: Salzburg
-                    league_name: UEFA Europa League
-                    country_name: Europe
-                    cc: null
-                    type: match
-                  - id: 2417866
-                    startdate: '2025-10-03 18:00:00'
-                    name: Sudburgenland vs Fc salzburg frauen
-                    home: Sudburgenland
-                    away: Fc salzburg frauen
-                    league_name: Bundesliga, Women
-                    country_name: Austria
-                    cc: at
-                    type: match
-                meta:
-                  requests_left: 2950
-                  user: your_username
-                  plan: Soccer API 50
-                  pages: 1
-                  page: 1
-                  count: 0
-                  total: 0
-                  msg: ''
-          headers: {}
-        '4XX':
+                $ref: '#/components/schemas/SearchResponse'
+              examples:
+                match:
+                  summary: Search matches
+                  value:
+                    data:
+                      - id: 2411325
+                        startdate: '2025-09-28 14:30:00'
+                        name: Tirol vs Salzburg
+                        home: Tirol
+                        away: Salzburg
+                        league_name: Bundesliga
+                        country_name: Austria
+                        cc: at
+                        type: match
+                      - id: 2472985
+                        startdate: '2025-10-02 21:00:00'
+                        name: Lyon vs Salzburg
+                        home: Lyon
+                        away: Salzburg
+                        league_name: UEFA Europa League
+                        country_name: Europe
+                        cc: null
+                        type: match
+                      - id: 2417866
+                        startdate: '2025-10-03 18:00:00'
+                        name: Sudburgenland vs Fc salzburg frauen
+                        home: Sudburgenland
+                        away: Fc salzburg frauen
+                        league_name: Bundesliga, Women
+                        country_name: Austria
+                        cc: at
+                        type: match
+                    meta:
+                      requests_left: 2950
+                      user: your_username
+                      plan: Soccer API 50
+                      pages: 1
+                      page: 1
+                      count: 0
+                      total: 0
+                      msg: ''
+        '400':
+          description: Invalid `t` value, invalid parameter value or missing operation-specific parameter.
+        '401':
+          description: Missing or invalid `user` or `token`.
+        '403':
+          description: The league, dataset or operation is not available on the account plan.
+        '429':
+          description: Request allowance exhausted.
+        4XX:
           $ref: '#/components/responses/ClientError'
-      security: []
   /v2.2/continents/:
     get:
-      summary: Continent by ID
+      summary: Continents
       operationId: getContinents
-      deprecated: false
-      description: >+
-        The **Continent by ID** endpoint retrieves details for a specific
-        continent using its unique `id`.  
-
-        This is useful when you already know the continent ID and want to
-        confirm its details or use it as part of a larger workflow (e.g.,
-        continent → countries → leagues).
-
-
-        ---
-
-
-        ## Example Request
-
-        ```bash
-
-        curl -L -g
-        "https://api.soccersapi.com/v2.2/continents/?user={{USERNAME}}&token={{TOKEN}}&t=info&id=2"
-        ```
-
-
       tags:
         - Geography
-      parameters:
-        - name: user
-          in: query
-          description: ''
-          required: true
-          example: '{{USERNAME}}'
-          schema:
-            type: string
-        - name: token
-          in: query
-          description: ''
-          required: true
-          example: '{{TOKEN}}'
-          schema:
-            type: string
-        - name: t
-          in: query
-          description: ''
-          required: true
-          example: info
-          schema:
-            type: string
-        - name: id
-          in: query
-          description: ''
-          required: true
-          example: '2'
-          schema:
-            type: string
-      responses:
-        '200':
-          description: ''
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  data:
-                    type: object
-                    properties:
-                      id:
-                        type: integer
-                      name:
-                        type: string
-                    required:
-                      - id
-                      - name
-                  meta:
-                    type: object
-                    properties:
-                      requests_left:
-                        type: integer
-                      user:
-                        type: string
-                      plan:
-                        type: string
-                      pages:
-                        type: integer
-                      page:
-                        type: integer
-                      msg:
-                        type: string
-                    required:
-                      - requests_left
-                      - user
-                      - plan
-                      - pages
-                      - page
-                      - msg
-                required:
-                  - data
-                  - meta
-              example:
-                data:
-                  id: 2
-                  name: Europe
-                meta:
-                  requests_left: 2950
-                  user: your_username
-                  plan: Soccer API 50
-                  pages: 1
-                  page: 1
-                  msg: ''
-          headers: {}
-        '4XX':
-          $ref: '#/components/responses/ClientError'
-      security: []
-  /v2.2/countries/:
-    get:
-      summary: Country by ID
-      operationId: getCountries
-      deprecated: false
-      description: >
-        The **Country by ID** endpoint retrieves detailed information about a
-        single country using its unique `id`.  
+      description: |
+        Continents of the football data model. Catalogue data, not filtered by the leagues enabled on the account.
 
-        It returns the country’s name, ISO code, continent, and image flag.  
+        ## Operations
 
+        The `t` query parameter selects the operation. Parameters not listed for an operation are ignored.
 
-        This endpoint is useful when you already know a `country_id` (for
-        example, from a league, team, or venue object) and want to confirm its
-        details or display localized information in your app.  
+        | `t` | Operation | Required | Optional |
+        | --- | --- | --- | --- |
+        | `list` | All continents. | — | — |
+        | `info` | Continent by ID. | `id` | — |
 
+        ## Examples
 
-        ### Typical Use Cases
-
-        - Show the full country profile on a team, player, or league page.  
-
-        - Validate a `country_id` before using it in another request.  
-
-        - Power country selectors with localized names and flags.  
-
-
-        Example: requesting `id=15` returns details for **Austria**.  
-
-
-        ### Example Request
-
-        ```bash
-
-        curl -L -g
-        "https://api.soccersapi.com/v2.2/countries/?user={{USERNAME}}&token={{TOKEN}}&t=info&id=15"
-        ```
-      tags:
-        - Geography
-      parameters:
-        - name: user
-          in: query
-          description: ''
-          required: true
-          example: '{{USERNAME}}'
-          schema:
-            type: string
-        - name: token
-          in: query
-          description: ''
-          required: true
-          example: '{{TOKEN}}'
-          schema:
-            type: string
-        - name: t
-          in: query
-          description: ''
-          required: true
-          example: info
-          schema:
-            type: string
-        - name: id
-          in: query
-          description: ''
-          required: true
-          example: '4'
-          schema:
-            type: string
-      responses:
-        '200':
-          description: ''
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  data:
-                    type: object
-                    properties:
-                      id:
-                        type: integer
-                      name:
-                        type: string
-                      continent:
-                        type: string
-                      sub_region:
-                        type: 'null'
-                      long:
-                        type: 'null'
-                      lat:
-                        type: 'null'
-                      img:
-                        type: string
-                      code:
-                        type: string
-                    required:
-                      - id
-                      - name
-                      - continent
-                      - sub_region
-                      - long
-                      - lat
-                      - img
-                      - code
-                  meta:
-                    type: object
-                    properties:
-                      requests_left:
-                        type: integer
-                      user:
-                        type: string
-                      plan:
-                        type: string
-                      pages:
-                        type: integer
-                      page:
-                        type: integer
-                      msg:
-                        type: string
-                    required:
-                      - requests_left
-                      - user
-                      - plan
-                      - pages
-                      - page
-                      - msg
-                required:
-                  - data
-                  - meta
-              example:
-                data:
-                  id: 4
-                  name: Germany
-                  continent: Europe
-                  sub_region: null
-                  long: null
-                  lat: null
-                  img: https://cdn.soccersapi.com/images/countries/30/de.png
-                  code: de
-                meta:
-                  requests_left: 2950
-                  user: your_username
-                  plan: Soccer API 50
-                  pages: 1
-                  page: 1
-                  msg: ''
-          headers: {}
-        '4XX':
-          $ref: '#/components/responses/ClientError'
-      security: []
-  /v2.2/leagues/:
-    get:
-      summary: Cup Draw (Tournament Bracket)
-      operationId: getLeagues
-      deprecated: false
-      description: >-
-        Retrieve league data. The `t` selector determines the operation; this
-        definition shows `cup_draw`, which requires `season_id` and `stage_id`.
-        Other documented selectors include `list`, `info`, `sort`, `standings`
-        and `standings_live`.
-      tags:
-        - Competitions
-      parameters:
-        - name: user
-          in: query
-          description: ''
-          required: true
-          example: '{{USERNAME}}'
-          schema:
-            type: string
-        - name: token
-          in: query
-          description: ''
-          required: true
-          example: '{{TOKEN}}'
-          schema:
-            type: string
-        - name: t
-          in: query
-          description: ''
-          required: true
-          example: cup_draw
-          schema:
-            type: string
-        - name: season_id
-          in: query
-          description: ''
-          required: true
-          example: '45'
-          schema:
-            type: string
-        - name: stage_id
-          in: query
-          description: ''
-          required: true
-          example: '26'
-          schema:
-            type: string
-      responses:
-        '200':
-          description: ''
-          content:
-            application/json:
-              schema:
-                type: object
-                properties: {}
-        '4XX':
-          $ref: '#/components/responses/ClientError'
-      security: []
-  /v2.2/teams/:
-    get:
-      summary: Team Transfers
-      operationId: getTeams
-      deprecated: false
-      description: >-
-        Retrieve team data. The `t` selector determines the operation; this
-        definition shows `transfers`. Team profiles, lists, season membership,
-        sidelined players and trophies are available through their documented
-        selectors when covered by the account plan and data source.
-      tags:
-        - Teams
-      parameters:
-        - name: user
-          in: query
-          description: ''
-          required: true
-          example: '{{USERNAME}}'
-          schema:
-            type: string
-        - name: token
-          in: query
-          description: ''
-          required: true
-          example: '{{TOKEN}}'
-          schema:
-            type: string
-        - name: t
-          in: query
-          description: ''
-          required: true
-          example: transfers
-          schema:
-            type: string
-        - name: id
-          in: query
-          description: ''
-          required: true
-          example: '111'
-          schema:
-            type: string
-      responses:
-        '200':
-          description: ''
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  data:
-                    type: object
-                    properties:
-                      arrivals:
-                        type: array
-                        items:
-                          type: object
-                          properties:
-                            player:
-                              type: object
-                              properties:
-                                id:
-                                  type: 'null'
-                                name:
-                                  type: string
-                              required:
-                                - id
-                                - name
-                            team_left:
-                              type: object
-                              properties:
-                                id:
-                                  type: integer
-                                name:
-                                  type: string
-                              required:
-                                - id
-                                - name
-                            type:
-                              type: string
-                            date:
-                              type: 'null'
-                            fee:
-                              type: string
-                          required:
-                            - player
-                            - team_left
-                            - type
-                            - date
-                            - fee
-                      departures:
-                        type: 'null'
-                    required:
-                      - arrivals
-                      - departures
-                  meta:
-                    type: object
-                    properties:
-                      requests_left:
-                        type: integer
-                      user:
-                        type: string
-                      plan:
-                        type: string
-                      pages:
-                        type: integer
-                      page:
-                        type: integer
-                      count:
-                        type: integer
-                    required:
-                      - requests_left
-                      - user
-                      - plan
-                      - pages
-                      - page
-                      - count
-                required:
-                  - data
-                  - meta
-              example:
-                data:
-                  arrivals:
-                    - player:
-                        id: null
-                        name: Luis Díaz
-                      team_left:
-                        id: 1
-                        name: Liverpool FC
-                      type: Buy
-                      date: null
-                      fee: €70.00m
-                    - player:
-                        id: null
-                        name: Nicolas Jackson
-                      team_left:
-                        id: 20
-                        name: Chelsea FC
-                      type: Loan
-                      date: null
-                      fee: €16.50m
-                    - player:
-                        id: null
-                        name: Jonathan Tah
-                      team_left:
-                        id: 114
-                        name: Bayer 04 Leverkusen
-                      type: Buy
-                      date: null
-                      fee: €2.00m
-                    - player:
-                        id: null
-                        name: Tom Bischof
-                      team_left:
-                        id: 2818
-                        name: TSG 1899 Hoffenheim
-                      type: Buy
-                      date: null
-                      fee: €300k
-                    - player:
-                        id: null
-                        name: Jonah Kusi-Asare
-                      team_left:
-                        id: 3846
-                        name: FC Bayern Munich II
-                      type: ''
-                      date: null
-                      fee: '-'
-                    - player:
-                        id: null
-                        name: Lennart Karl
-                      team_left:
-                        id: 5225
-                        name: FC Bayern Munich U19
-                      type: ''
-                      date: null
-                      fee: '-'
-                    - player:
-                        id: null
-                        name: Mathys Tel
-                      team_left:
-                        id: 13
-                        name: Tottenham Hotspur
-                      type: ''
-                      date: null
-                      fee: '-'
-                    - player:
-                        id: null
-                        name: Paul Wanner
-                      team_left:
-                        id: 2856
-                        name: 1. FC Heidenheim 1846
-                      type: ''
-                      date: null
-                      fee: '-'
-                    - player:
-                        id: null
-                        name: Bryan Zaragoza
-                      team_left:
-                        id: 122
-                        name: CA Osasuna
-                      type: ''
-                      date: null
-                      fee: '-'
-                    - player:
-                        id: null
-                        name: Arijon Ibrahimovic
-                      team_left:
-                        id: 398
-                        name: SS Lazio Roma
-                      type: ''
-                      date: null
-                      fee: '-'
-                    - player:
-                        id: null
-                        name: Frans Krätzig
-                      team_left:
-                        id: 2856
-                        name: 1. FC Heidenheim 1846
-                      type: ''
-                      date: null
-                      fee: '-'
-                    - player:
-                        id: null
-                        name: Lovro Zvonarek
-                      team_left:
-                        id: 2874
-                        name: SK Sturm Graz
-                      type: ''
-                      date: null
-                      fee: '-'
-                  departures: null
-                meta:
-                  requests_left: 2950
-                  user: your_username
-                  plan: Soccer API 50
-                  pages: 1
-                  page: 1
-                  count: 1
-          headers: {}
-        '4XX':
-          $ref: '#/components/responses/ClientError'
-      security: []
-  /v2.2/seasons/:
-    get:
-      summary: Season by ID
-      operationId: getSeasons
-      deprecated: false
-      description: Retrieve a season by its SoccersAPI identifier.
-      tags:
-        - Competitions
-      parameters:
-        - name: user
-          in: query
-          description: ''
-          required: true
-          example: '{{USERNAME}}'
-          schema:
-            type: string
-        - name: token
-          in: query
-          description: ''
-          required: true
-          example: '{{TOKEN}}'
-          schema:
-            type: string
-        - name: t
-          in: query
-          description: ''
-          required: true
-          example: info
-          schema:
-            type: string
-        - name: id
-          in: query
-          description: ''
-          required: true
-          example: '406'
-          schema:
-            type: string
-      responses:
-        '200':
-          description: ''
-          content:
-            application/json:
-              schema:
-                type: object
-                properties: {}
-        '4XX':
-          $ref: '#/components/responses/ClientError'
-      security: []
-  /v2.2/stages/:
-    get:
-      summary: Stages by Season
-      operationId: getStages
-      deprecated: false
-      description: Retrieve the competition stages that belong to a season.
-      tags:
-        - Competitions
-      parameters:
-        - name: user
-          in: query
-          description: ''
-          required: true
-          example: '{{USERNAME}}'
-          schema:
-            type: string
-        - name: token
-          in: query
-          description: ''
-          required: true
-          example: '{{TOKEN}}'
-          schema:
-            type: string
-        - name: t
-          in: query
-          description: ''
-          required: true
-          example: byseason
-          schema:
-            type: string
-        - name: season_id
-          in: query
-          description: ''
-          required: true
-          example: '2091'
-          schema:
-            type: string
-      responses:
-        '200':
-          description: ''
-          content:
-            application/json:
-              schema:
-                type: object
-                properties: {}
-        '4XX':
-          $ref: '#/components/responses/ClientError'
-      security: []
-  /v2.2/groups/:
-    get:
-      summary: Groups by Season
-      operationId: getGroups
-      deprecated: false
-      description: Retrieve the competition groups that belong to a season.
-      tags:
-        - Competitions
-      parameters:
-        - name: user
-          in: query
-          description: ''
-          required: true
-          example: '{{USERNAME}}'
-          schema:
-            type: string
-        - name: token
-          in: query
-          description: ''
-          required: true
-          example: '{{TOKEN}}'
-          schema:
-            type: string
-        - name: t
-          in: query
-          description: ''
-          required: true
-          example: byseason
-          schema:
-            type: string
-        - name: season_id
-          in: query
-          description: ''
-          required: true
-          example: '7011'
-          schema:
-            type: string
-      responses:
-        '200':
-          description: ''
-          content:
-            application/json:
-              schema:
-                type: object
-                properties: {}
-        '4XX':
-          $ref: '#/components/responses/ClientError'
-      security: []
-  /v2.2/rounds/:
-    get:
-      summary: Rounds by Season
-      operationId: getRounds
-      deprecated: false
-      description: Retrieve the competition rounds that belong to a season.
-      tags:
-        - Competitions
-      parameters:
-        - name: user
-          in: query
-          description: ''
-          required: true
-          example: '{{USERNAME}}'
-          schema:
-            type: string
-        - name: token
-          in: query
-          description: ''
-          required: true
-          example: '{{TOKEN}}'
-          schema:
-            type: string
-        - name: t
-          in: query
-          description: ''
-          required: true
-          example: byseason
-          schema:
-            type: string
-        - name: season_id
-          in: query
-          description: ''
-          required: true
-          example: '406'
-          schema:
-            type: string
-      responses:
-        '200':
-          description: ''
-          content:
-            application/json:
-              schema:
-                type: object
-                properties: {}
-        '4XX':
-          $ref: '#/components/responses/ClientError'
-      security: []
-  /v2.2/livescores/:
-    get:
-      summary: Livescores and daily match feeds
-      operationId: getLivescores
-      deprecated: false
-      description: |-
-        Returns a list of matches for the feed selected with `t`.
-
-        ## Include match events in the same request
-
-        Use the dataset name `events`:
+        All continents:
 
         ```http
-        GET /v2.2/livescores/?user=USER&token=TOKEN&t=live&include=events
+        GET /v2.2/continents/?user=USER&token=TOKEN&t=list
         ```
 
-        Each match then has an `events` array. To receive events and team match
-        statistics together, use `include=events,stats` (comma-separated, with
-        no spaces).
+        Continent by ID:
 
-        `match_events` is **not** an include value. It is the `t` value of the
-        separate fixture endpoint (`/v2.2/fixtures/?t=match_events&id=...`).
-        Unsupported include values are ignored, so using
-        `include=match_events` does not add an events array.
+        ```http
+        GET /v2.2/continents/?user=USER&token=TOKEN&t=info&id=2
+        ```
+      x-operations:
+        - t: list
+          title: All continents
+          required: []
+          optional: []
+        - t: info
+          title: Continent by ID
+          required:
+            - id
+          optional: []
+      parameters:
+        - $ref: '#/components/parameters/User'
+        - $ref: '#/components/parameters/Token'
+        - name: t
+          in: query
+          required: true
+          description: Operation selector. See the operations table.
+          example: list
+          schema:
+            type: string
+            enum:
+              - list
+              - info
+            x-enumDescriptions:
+              list: All continents
+              info: Continent by ID
+        - name: id
+          in: query
+          required: false
+          description: Continent ID. Required when `t` is `info`.
+          schema:
+            type: string
+          example: '2'
+      responses:
+        '200':
+          description: 'The `data` shape depends on `t`: an object for single-resource operations and an array for lists. `meta` carries the request allowance and pagination.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DataResponse'
+              examples:
+                info:
+                  summary: Continent by ID
+                  value:
+                    data:
+                      id: 2
+                      name: Europe
+                    meta:
+                      requests_left: 2950
+                      user: your_username
+                      plan: Soccer API 50
+                      pages: 1
+                      page: 1
+                      msg: ''
+        '400':
+          description: Invalid `t` value, invalid parameter value or missing operation-specific parameter.
+        '401':
+          description: Missing or invalid `user` or `token`.
+        '403':
+          description: The league, dataset or operation is not available on the account plan.
+        '429':
+          description: Request allowance exhausted.
+        4XX:
+          $ref: '#/components/responses/ClientError'
+  /v2.2/countries/:
+    get:
+      summary: Countries
+      operationId: getCountries
+      tags:
+        - Geography
+      description: |
+        Countries of the football data model, with continent, ISO code and flag image. Catalogue data, not filtered by the leagues enabled on the account.
 
-        The included datasets are part of this API call; a separate events call
-        is not required. Dataset availability and completeness still depend on
-        the match and competition coverage.
+        ## Operations
+
+        The `t` query parameter selects the operation. Parameters not listed for an operation are ignored.
+
+        | `t` | Operation | Required | Optional |
+        | --- | --- | --- | --- |
+        | `list` | All countries. Paginated list of every country. | — | `page` |
+        | `info` | Country by ID. | `id` | — |
+
+        ## Examples
+
+        All countries:
+
+        ```http
+        GET /v2.2/countries/?user=USER&token=TOKEN&t=list&page=1
+        ```
+
+        Country by ID:
+
+        ```http
+        GET /v2.2/countries/?user=USER&token=TOKEN&t=info&id=4
+        ```
+      x-operations:
+        - t: list
+          title: All countries
+          required: []
+          optional:
+            - page
+        - t: info
+          title: Country by ID
+          required:
+            - id
+          optional: []
+      parameters:
+        - $ref: '#/components/parameters/User'
+        - $ref: '#/components/parameters/Token'
+        - name: t
+          in: query
+          required: true
+          description: Operation selector. See the operations table.
+          example: list
+          schema:
+            type: string
+            enum:
+              - list
+              - info
+            x-enumDescriptions:
+              list: All countries
+              info: Country by ID
+        - name: id
+          in: query
+          required: false
+          description: Country ID. Required when `t` is `info`.
+          schema:
+            type: string
+          example: '4'
+        - $ref: '#/components/parameters/Page'
+      responses:
+        '200':
+          description: 'The `data` shape depends on `t`: an object for single-resource operations and an array for lists. `meta` carries the request allowance and pagination.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DataResponse'
+              examples:
+                info:
+                  summary: Country by ID
+                  value:
+                    data:
+                      id: 4
+                      name: Germany
+                      continent: Europe
+                      sub_region: null
+                      long: null
+                      lat: null
+                      img: https://cdn.soccersapi.com/images/countries/30/de.png
+                      code: de
+                    meta:
+                      requests_left: 2950
+                      user: your_username
+                      plan: Soccer API 50
+                      pages: 1
+                      page: 1
+                      msg: ''
+        '400':
+          description: Invalid `t` value, invalid parameter value or missing operation-specific parameter.
+        '401':
+          description: Missing or invalid `user` or `token`.
+        '403':
+          description: The league, dataset or operation is not available on the account plan.
+        '429':
+          description: Request allowance exhausted.
+        4XX:
+          $ref: '#/components/responses/ClientError'
+  /v2.2/leagues/:
+    get:
+      summary: Leagues and standings
+      operationId: getLeagues
+      tags:
+        - Competitions
+      description: |
+        League profiles, league lists, standings and cup brackets. A league profile carries its `seasons` array and the IDs of the current season, stage and round, which are the entry points for fixtures, standings and leaders.
+
+        ## Operations
+
+        The `t` query parameter selects the operation. Parameters not listed for an operation are ignored.
+
+        | `t` | Operation | Required | Optional |
+        | --- | --- | --- | --- |
+        | `list` | Leagues. Leagues available to the account, optionally filtered by country. Paginated. | — | `country_id`, `page` |
+        | `info` | League by ID. League profile with seasons and current season, stage and round. | `id` | — |
+        | `sort` | Leagues by multiple IDs. Several league profiles in one request. | `ids` | — |
+        | `standings` | Standings. League table for a season. Competitions with several tables (groups, splits) return one entry per table, identified by `number_standings`. | `season_id` | — |
+        | `standings_live` | Live standings. Rolling table that includes the matches currently in play. | `season_id` | — |
+        | `cup_draw` | Cup draw (tournament bracket). Knockout bracket of a cup stage. | `season_id`, `stage_id` | — |
+
+        The public reference shows `t=multiple&id=…` on one page for the batch lookup; `t=sort&ids=…` is the form shared with teams and fixtures.
+
+        ## Examples
+
+        Leagues:
+
+        ```http
+        GET /v2.2/leagues/?user=USER&token=TOKEN&t=list&country_id=4
+        ```
+
+        League by ID:
+
+        ```http
+        GET /v2.2/leagues/?user=USER&token=TOKEN&t=info&id=1005
+        ```
+
+        Leagues by multiple IDs:
+
+        ```http
+        GET /v2.2/leagues/?user=USER&token=TOKEN&t=sort&ids=974,1005,1609
+        ```
+
+        Standings:
+
+        ```http
+        GET /v2.2/leagues/?user=USER&token=TOKEN&t=standings&season_id=406
+        ```
+
+        Live standings:
+
+        ```http
+        GET /v2.2/leagues/?user=USER&token=TOKEN&t=standings_live&season_id=406
+        ```
+
+        Cup draw (tournament bracket):
+
+        ```http
+        GET /v2.2/leagues/?user=USER&token=TOKEN&t=cup_draw&season_id=45&stage_id=26
+        ```
+      x-operations:
+        - t: list
+          title: Leagues
+          required: []
+          optional:
+            - country_id
+            - page
+        - t: info
+          title: League by ID
+          required:
+            - id
+          optional: []
+        - t: sort
+          title: Leagues by multiple IDs
+          required:
+            - ids
+          optional: []
+        - t: standings
+          title: Standings
+          required:
+            - season_id
+          optional: []
+        - t: standings_live
+          title: Live standings
+          required:
+            - season_id
+          optional: []
+        - t: cup_draw
+          title: Cup draw (tournament bracket)
+          required:
+            - season_id
+            - stage_id
+          optional: []
+      parameters:
+        - $ref: '#/components/parameters/User'
+        - $ref: '#/components/parameters/Token'
+        - name: t
+          in: query
+          required: true
+          description: Operation selector. See the operations table.
+          example: list
+          schema:
+            type: string
+            enum:
+              - list
+              - info
+              - sort
+              - standings
+              - standings_live
+              - cup_draw
+            x-enumDescriptions:
+              list: Leagues
+              info: League by ID
+              sort: Leagues by multiple IDs
+              standings: Standings
+              standings_live: Live standings
+              cup_draw: Cup draw (tournament bracket)
+        - name: id
+          in: query
+          required: false
+          description: League ID. Required when `t` is `info`.
+          schema:
+            type: string
+          example: '1005'
+        - name: ids
+          in: query
+          required: false
+          description: Comma-separated league IDs, without spaces. Required when `t` is `sort`.
+          schema:
+            type: string
+          example: 974,1005,1609
+        - name: country_id
+          in: query
+          required: false
+          description: Country ID. Optional for `list`.
+          schema:
+            type: string
+          example: '4'
+        - name: season_id
+          in: query
+          required: false
+          description: Season ID. Required when `t` is `standings`, `standings_live`, `cup_draw`.
+          schema:
+            type: string
+          example: '406'
+        - name: stage_id
+          in: query
+          required: false
+          description: Stage ID. Required when `t` is `cup_draw`.
+          schema:
+            type: string
+          example: '26'
+        - $ref: '#/components/parameters/Page'
+      responses:
+        '200':
+          description: 'The `data` shape depends on `t`: an object for single-resource operations and an array for lists. `meta` carries the request allowance and pagination.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DataResponse'
+        '400':
+          description: Invalid `t` value, invalid parameter value or missing operation-specific parameter.
+        '401':
+          description: Missing or invalid `user` or `token`.
+        '403':
+          description: The league, dataset or operation is not available on the account plan.
+        '429':
+          description: Request allowance exhausted.
+        4XX:
+          $ref: '#/components/responses/ClientError'
+  /v2.2/teams/:
+    get:
+      summary: Teams
+      operationId: getTeams
+      tags:
+        - Teams
+      description: |
+        Team profiles, lists, squads, transfers, sidelined players and trophies. A team profile carries its seasons and the leagues it takes part in.
+
+        ## Operations
+
+        The `t` query parameter selects the operation. Parameters not listed for an operation are ignored.
+
+        | `t` | Operation | Required | Optional |
+        | --- | --- | --- | --- |
+        | `info` | Team by ID. Team profile with venue, coach, kit colours, seasons and leagues. | `id` | — |
+        | `list` | Teams by country. | `country_id` | `page` |
+        | `sort` | Teams by multiple IDs. | `ids` | — |
+        | `byseason` | Teams by season. Teams taking part in a season. | `season_id` | — |
+        | `national` | National teams. | — | — |
+        | `squad` | Team squad. Current squad, or the squad of a past season when `season_id` is given. | `id` | `season_id` |
+        | `transfers` | Team transfers. Arrivals and departures with fee and date. | `id` | — |
+        | `sidelined` | Team sidelined players. Injured and suspended players. | `id` | — |
+        | `trophies` | Team trophies. | `id` | — |
+
+        ## Examples
+
+        Team by ID:
+
+        ```http
+        GET /v2.2/teams/?user=USER&token=TOKEN&t=info&id=111
+        ```
+
+        Teams by country:
+
+        ```http
+        GET /v2.2/teams/?user=USER&token=TOKEN&t=list&country_id=4
+        ```
+
+        Teams by multiple IDs:
+
+        ```http
+        GET /v2.2/teams/?user=USER&token=TOKEN&t=sort&ids=19,99,108
+        ```
+
+        Teams by season:
+
+        ```http
+        GET /v2.2/teams/?user=USER&token=TOKEN&t=byseason&season_id=13480
+        ```
+
+        National teams:
+
+        ```http
+        GET /v2.2/teams/?user=USER&token=TOKEN&t=national
+        ```
+
+        Team squad:
+
+        ```http
+        GET /v2.2/teams/?user=USER&token=TOKEN&t=squad&id=2868
+        ```
+
+        Team transfers:
+
+        ```http
+        GET /v2.2/teams/?user=USER&token=TOKEN&t=transfers&id=111
+        ```
+
+        Team sidelined players:
+
+        ```http
+        GET /v2.2/teams/?user=USER&token=TOKEN&t=sidelined&id=111
+        ```
+
+        Team trophies:
+
+        ```http
+        GET /v2.2/teams/?user=USER&token=TOKEN&t=trophies&id=111
+        ```
+      x-operations:
+        - t: info
+          title: Team by ID
+          required:
+            - id
+          optional: []
+        - t: list
+          title: Teams by country
+          required:
+            - country_id
+          optional:
+            - page
+        - t: sort
+          title: Teams by multiple IDs
+          required:
+            - ids
+          optional: []
+        - t: byseason
+          title: Teams by season
+          required:
+            - season_id
+          optional: []
+        - t: national
+          title: National teams
+          required: []
+          optional: []
+        - t: squad
+          title: Team squad
+          required:
+            - id
+          optional:
+            - season_id
+        - t: transfers
+          title: Team transfers
+          required:
+            - id
+          optional: []
+        - t: sidelined
+          title: Team sidelined players
+          required:
+            - id
+          optional: []
+        - t: trophies
+          title: Team trophies
+          required:
+            - id
+          optional: []
+      parameters:
+        - $ref: '#/components/parameters/User'
+        - $ref: '#/components/parameters/Token'
+        - name: t
+          in: query
+          required: true
+          description: Operation selector. See the operations table.
+          example: info
+          schema:
+            type: string
+            enum:
+              - info
+              - list
+              - sort
+              - byseason
+              - national
+              - squad
+              - transfers
+              - sidelined
+              - trophies
+            x-enumDescriptions:
+              info: Team by ID
+              list: Teams by country
+              sort: Teams by multiple IDs
+              byseason: Teams by season
+              national: National teams
+              squad: Team squad
+              transfers: Team transfers
+              sidelined: Team sidelined players
+              trophies: Team trophies
+        - name: id
+          in: query
+          required: false
+          description: Team ID. Required when `t` is `info`, `squad`, `transfers`, `sidelined`, `trophies`.
+          schema:
+            type: string
+          example: '111'
+        - name: ids
+          in: query
+          required: false
+          description: Comma-separated team IDs, without spaces. Required when `t` is `sort`.
+          schema:
+            type: string
+          example: 19,99,108
+        - name: country_id
+          in: query
+          required: false
+          description: Country ID. Required when `t` is `list`.
+          schema:
+            type: string
+          example: '4'
+        - name: season_id
+          in: query
+          required: false
+          description: Season ID. Required when `t` is `byseason`. Optional for `squad`.
+          schema:
+            type: string
+          example: '13480'
+        - $ref: '#/components/parameters/Page'
+      responses:
+        '200':
+          description: 'The `data` shape depends on `t`: an object for single-resource operations and an array for lists. `meta` carries the request allowance and pagination.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DataResponse'
+              examples:
+                transfers:
+                  summary: Team transfers
+                  value:
+                    data:
+                      arrivals:
+                        - player:
+                            id: null
+                            name: Luis Díaz
+                          team_left:
+                            id: 1
+                            name: Liverpool FC
+                          type: Buy
+                          date: null
+                          fee: €70.00m
+                        - player:
+                            id: null
+                            name: Nicolas Jackson
+                          team_left:
+                            id: 20
+                            name: Chelsea FC
+                          type: Loan
+                          date: null
+                          fee: €16.50m
+                        - player:
+                            id: null
+                            name: Jonathan Tah
+                          team_left:
+                            id: 114
+                            name: Bayer 04 Leverkusen
+                          type: Buy
+                          date: null
+                          fee: €2.00m
+                        - player:
+                            id: null
+                            name: Tom Bischof
+                          team_left:
+                            id: 2818
+                            name: TSG 1899 Hoffenheim
+                          type: Buy
+                          date: null
+                          fee: €300k
+                        - player:
+                            id: null
+                            name: Jonah Kusi-Asare
+                          team_left:
+                            id: 3846
+                            name: FC Bayern Munich II
+                          type: ''
+                          date: null
+                          fee: '-'
+                        - player:
+                            id: null
+                            name: Lennart Karl
+                          team_left:
+                            id: 5225
+                            name: FC Bayern Munich U19
+                          type: ''
+                          date: null
+                          fee: '-'
+                        - player:
+                            id: null
+                            name: Mathys Tel
+                          team_left:
+                            id: 13
+                            name: Tottenham Hotspur
+                          type: ''
+                          date: null
+                          fee: '-'
+                        - player:
+                            id: null
+                            name: Paul Wanner
+                          team_left:
+                            id: 2856
+                            name: 1. FC Heidenheim 1846
+                          type: ''
+                          date: null
+                          fee: '-'
+                        - player:
+                            id: null
+                            name: Bryan Zaragoza
+                          team_left:
+                            id: 122
+                            name: CA Osasuna
+                          type: ''
+                          date: null
+                          fee: '-'
+                        - player:
+                            id: null
+                            name: Arijon Ibrahimovic
+                          team_left:
+                            id: 398
+                            name: SS Lazio Roma
+                          type: ''
+                          date: null
+                          fee: '-'
+                        - player:
+                            id: null
+                            name: Frans Krätzig
+                          team_left:
+                            id: 2856
+                            name: 1. FC Heidenheim 1846
+                          type: ''
+                          date: null
+                          fee: '-'
+                        - player:
+                            id: null
+                            name: Lovro Zvonarek
+                          team_left:
+                            id: 2874
+                            name: SK Sturm Graz
+                          type: ''
+                          date: null
+                          fee: '-'
+                      departures: null
+                    meta:
+                      requests_left: 2950
+                      user: your_username
+                      plan: Soccer API 50
+                      pages: 1
+                      page: 1
+                      count: 1
+        '400':
+          description: Invalid `t` value, invalid parameter value or missing operation-specific parameter.
+        '401':
+          description: Missing or invalid `user` or `token`.
+        '403':
+          description: The league, dataset or operation is not available on the account plan.
+        '429':
+          description: Request allowance exhausted.
+        4XX:
+          $ref: '#/components/responses/ClientError'
+  /v2.2/seasons/:
+    get:
+      summary: Seasons
+      operationId: getSeasons
+      tags:
+        - Competitions
+      description: |
+        Season details. Season IDs come from a league profile (`leagues?t=info`) and are the key for fixtures, standings, teams, statistics and leaders.
+
+        ## Operations
+
+        The `t` query parameter selects the operation. Parameters not listed for an operation are ignored.
+
+        | `t` | Operation | Required | Optional |
+        | --- | --- | --- | --- |
+        | `info` | Season by ID. | `id` | — |
+
+        ## Examples
+
+        Season by ID:
+
+        ```http
+        GET /v2.2/seasons/?user=USER&token=TOKEN&t=info&id=406
+        ```
+      x-operations:
+        - t: info
+          title: Season by ID
+          required:
+            - id
+          optional: []
+      parameters:
+        - $ref: '#/components/parameters/User'
+        - $ref: '#/components/parameters/Token'
+        - name: t
+          in: query
+          required: true
+          description: Operation selector. See the operations table.
+          example: info
+          schema:
+            type: string
+            enum:
+              - info
+            x-enumDescriptions:
+              info: Season by ID
+        - name: id
+          in: query
+          required: true
+          description: Season ID. Required by every operation.
+          schema:
+            type: string
+          example: '406'
+      responses:
+        '200':
+          description: 'The `data` shape depends on `t`: an object for single-resource operations and an array for lists. `meta` carries the request allowance and pagination.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DataResponse'
+        '400':
+          description: Invalid `t` value, invalid parameter value or missing operation-specific parameter.
+        '401':
+          description: Missing or invalid `user` or `token`.
+        '403':
+          description: The league, dataset or operation is not available on the account plan.
+        '429':
+          description: Request allowance exhausted.
+        4XX:
+          $ref: '#/components/responses/ClientError'
+  /v2.2/stages/:
+    get:
+      summary: Stages
+      operationId: getStages
+      tags:
+        - Competitions
+      description: |
+        Stages of a season, such as regular season, play-offs or knockout rounds.
+
+        ## Operations
+
+        The `t` query parameter selects the operation. Parameters not listed for an operation are ignored.
+
+        | `t` | Operation | Required | Optional |
+        | --- | --- | --- | --- |
+        | `byseason` | Stages by season. | `season_id` | — |
+        | `info` | Stage by ID. | `id` | — |
+
+        ## Examples
+
+        Stages by season:
+
+        ```http
+        GET /v2.2/stages/?user=USER&token=TOKEN&t=byseason&season_id=2091
+        ```
+
+        Stage by ID:
+
+        ```http
+        GET /v2.2/stages/?user=USER&token=TOKEN&t=info&id=26
+        ```
+      x-operations:
+        - t: byseason
+          title: Stages by season
+          required:
+            - season_id
+          optional: []
+        - t: info
+          title: Stage by ID
+          required:
+            - id
+          optional: []
+      parameters:
+        - $ref: '#/components/parameters/User'
+        - $ref: '#/components/parameters/Token'
+        - name: t
+          in: query
+          required: true
+          description: Operation selector. See the operations table.
+          example: byseason
+          schema:
+            type: string
+            enum:
+              - byseason
+              - info
+            x-enumDescriptions:
+              byseason: Stages by season
+              info: Stage by ID
+        - name: id
+          in: query
+          required: false
+          description: Stage ID. Required when `t` is `info`.
+          schema:
+            type: string
+          example: '26'
+        - name: season_id
+          in: query
+          required: false
+          description: Season ID. Required when `t` is `byseason`.
+          schema:
+            type: string
+          example: '2091'
+      responses:
+        '200':
+          description: 'The `data` shape depends on `t`: an object for single-resource operations and an array for lists. `meta` carries the request allowance and pagination.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DataResponse'
+        '400':
+          description: Invalid `t` value, invalid parameter value or missing operation-specific parameter.
+        '401':
+          description: Missing or invalid `user` or `token`.
+        '403':
+          description: The league, dataset or operation is not available on the account plan.
+        '429':
+          description: Request allowance exhausted.
+        4XX:
+          $ref: '#/components/responses/ClientError'
+  /v2.2/groups/:
+    get:
+      summary: Groups
+      operationId: getGroups
+      tags:
+        - Competitions
+      description: |
+        Groups of a season for competitions with a group phase.
+
+        ## Operations
+
+        The `t` query parameter selects the operation. Parameters not listed for an operation are ignored.
+
+        | `t` | Operation | Required | Optional |
+        | --- | --- | --- | --- |
+        | `byseason` | Groups by season. | `season_id` | — |
+        | `info` | Group by ID. | `id` | — |
+
+        ## Examples
+
+        Groups by season:
+
+        ```http
+        GET /v2.2/groups/?user=USER&token=TOKEN&t=byseason&season_id=7011
+        ```
+
+        Group by ID:
+
+        ```http
+        GET /v2.2/groups/?user=USER&token=TOKEN&t=info&id=5108
+        ```
+      x-operations:
+        - t: byseason
+          title: Groups by season
+          required:
+            - season_id
+          optional: []
+        - t: info
+          title: Group by ID
+          required:
+            - id
+          optional: []
+      parameters:
+        - $ref: '#/components/parameters/User'
+        - $ref: '#/components/parameters/Token'
+        - name: t
+          in: query
+          required: true
+          description: Operation selector. See the operations table.
+          example: byseason
+          schema:
+            type: string
+            enum:
+              - byseason
+              - info
+            x-enumDescriptions:
+              byseason: Groups by season
+              info: Group by ID
+        - name: id
+          in: query
+          required: false
+          description: Group ID. Required when `t` is `info`.
+          schema:
+            type: string
+          example: '5108'
+        - name: season_id
+          in: query
+          required: false
+          description: Season ID. Required when `t` is `byseason`.
+          schema:
+            type: string
+          example: '7011'
+      responses:
+        '200':
+          description: 'The `data` shape depends on `t`: an object for single-resource operations and an array for lists. `meta` carries the request allowance and pagination.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DataResponse'
+        '400':
+          description: Invalid `t` value, invalid parameter value or missing operation-specific parameter.
+        '401':
+          description: Missing or invalid `user` or `token`.
+        '403':
+          description: The league, dataset or operation is not available on the account plan.
+        '429':
+          description: Request allowance exhausted.
+        4XX:
+          $ref: '#/components/responses/ClientError'
+  /v2.2/rounds/:
+    get:
+      summary: Rounds
+      operationId: getRounds
+      tags:
+        - Competitions
+      description: |
+        Rounds (match days) of a season.
+
+        ## Operations
+
+        The `t` query parameter selects the operation. Parameters not listed for an operation are ignored.
+
+        | `t` | Operation | Required | Optional |
+        | --- | --- | --- | --- |
+        | `byseason` | Rounds by season. | `season_id` | — |
+
+        ## Examples
+
+        Rounds by season:
+
+        ```http
+        GET /v2.2/rounds/?user=USER&token=TOKEN&t=byseason&season_id=406
+        ```
+      x-operations:
+        - t: byseason
+          title: Rounds by season
+          required:
+            - season_id
+          optional: []
+      parameters:
+        - $ref: '#/components/parameters/User'
+        - $ref: '#/components/parameters/Token'
+        - name: t
+          in: query
+          required: true
+          description: Operation selector. See the operations table.
+          example: byseason
+          schema:
+            type: string
+            enum:
+              - byseason
+            x-enumDescriptions:
+              byseason: Rounds by season
+        - name: season_id
+          in: query
+          required: true
+          description: Season ID. Required by every operation.
+          schema:
+            type: string
+          example: '406'
+      responses:
+        '200':
+          description: 'The `data` shape depends on `t`: an object for single-resource operations and an array for lists. `meta` carries the request allowance and pagination.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DataResponse'
+        '400':
+          description: Invalid `t` value, invalid parameter value or missing operation-specific parameter.
+        '401':
+          description: Missing or invalid `user` or `token`.
+        '403':
+          description: The league, dataset or operation is not available on the account plan.
+        '429':
+          description: Request allowance exhausted.
+        4XX:
+          $ref: '#/components/responses/ClientError'
+  /v2.2/livescores/:
+    get:
+      summary: Livescores
+      operationId: getLivescores
+      tags:
+        - Livescores
+      description: |
+        Match feeds for matches in play and for the current, previous and next day. Every feed returns match objects with status, clock, scores, teams and league, and can embed datasets through `include`.
+
+        ## Operations
+
+        The `t` query parameter selects the operation. Parameters not listed for an operation are ignored.
+
+        | `t` | Operation | Required | Optional |
+        | --- | --- | --- | --- |
+        | `live` | Matches in play. | — | `include`, `utc`, `lang`, `odds_format` |
+        | `today` | Today's matches. | — | `include`, `utc`, `lang`, `odds_format` |
+        | `tomorrow` | Tomorrow's matches. | — | `include`, `utc`, `lang`, `odds_format` |
+        | `yesterday` | Yesterday's matches. | — | `include`, `utc`, `lang`, `odds_format` |
+        | `notstarted` | Today's matches not started. | — | `include`, `utc`, `lang`, `odds_format` |
+        | `ended` | Today's matches ended. | — | `include`, `utc`, `lang`, `odds_format` |
+
+        ## Includes
+
+        Comma-separated dataset names for `include`, without spaces:
+
+        - `events`: match timeline (goals, cards, substitutions); see the Match Events guide
+        - `stats`: team match statistics, one entry per team
+        - `odds_prematch`: pre-match odds where the plan and match coverage provide them (odds theme)
+        - `odds_inplay`: in-play odds for matches in play (odds theme)
 
         ## Live publication behavior
 
-        Scores and event attribution are updated independently. A score change
-        can therefore be visible before the goal event, scorer or assist has
-        been published by the source. No fixed maximum delay is guaranteed.
-        Keep events on the normal livescores polling cycle. If attribution is
-        incomplete, read it again on the next scheduled poll instead of adding
-        an immediate high-frequency events loop.
-      tags:
-        - Livescores
+        Scores and event attribution are updated independently. A score change can be visible before the goal event, scorer or assist has been published by the source, and no fixed maximum delay is guaranteed. Keep events on the normal polling cycle: if attribution is incomplete, read it again on the next scheduled poll instead of adding an immediate high-frequency events loop.
+
+        ## Examples
+
+        Matches in play:
+
+        ```http
+        GET /v2.2/livescores/?user=USER&token=TOKEN&t=live&include=events,stats
+        ```
+
+        Today's matches:
+
+        ```http
+        GET /v2.2/livescores/?user=USER&token=TOKEN&t=today&utc=2
+        ```
+
+        Tomorrow's matches:
+
+        ```http
+        GET /v2.2/livescores/?user=USER&token=TOKEN&t=tomorrow
+        ```
+
+        Yesterday's matches:
+
+        ```http
+        GET /v2.2/livescores/?user=USER&token=TOKEN&t=yesterday
+        ```
+
+        Today's matches not started:
+
+        ```http
+        GET /v2.2/livescores/?user=USER&token=TOKEN&t=notstarted
+        ```
+
+        Today's matches ended:
+
+        ```http
+        GET /v2.2/livescores/?user=USER&token=TOKEN&t=ended
+        ```
+      x-operations:
+        - t: live
+          title: Matches in play
+          required: []
+          optional:
+            - include
+            - utc
+            - lang
+            - odds_format
+        - t: today
+          title: Today's matches
+          required: []
+          optional:
+            - include
+            - utc
+            - lang
+            - odds_format
+        - t: tomorrow
+          title: Tomorrow's matches
+          required: []
+          optional:
+            - include
+            - utc
+            - lang
+            - odds_format
+        - t: yesterday
+          title: Yesterday's matches
+          required: []
+          optional:
+            - include
+            - utc
+            - lang
+            - odds_format
+        - t: notstarted
+          title: Today's matches not started
+          required: []
+          optional:
+            - include
+            - utc
+            - lang
+            - odds_format
+        - t: ended
+          title: Today's matches ended
+          required: []
+          optional:
+            - include
+            - utc
+            - lang
+            - odds_format
       parameters:
-        - name: user
-          in: query
-          description: Account username.
-          required: true
-          example: '{{USERNAME}}'
-          schema:
-            type: string
-        - name: token
-          in: query
-          description: API token generated in the account dashboard.
-          required: true
-          example: '{{TOKEN}}'
-          schema:
-            type: string
+        - $ref: '#/components/parameters/User'
+        - $ref: '#/components/parameters/Token'
         - name: t
           in: query
-          description: |-
-            Feed to return: `live` for matches currently in play; `today`,
-            `tomorrow` or `yesterday` for a calendar-day feed; `notstarted` or
-            `ended` for today's matches filtered by status.
           required: true
+          description: Operation selector. See the operations table.
           example: live
           schema:
             type: string
@@ -1051,35 +1405,23 @@ paths:
               - yesterday
               - notstarted
               - ended
+            x-enumDescriptions:
+              live: Matches in play
+              today: Today's matches
+              tomorrow: Tomorrow's matches
+              yesterday: Yesterday's matches
+              notstarted: Today's matches not started
+              ended: Today's matches ended
         - name: include
           in: query
-          description: |-
-            Comma-separated datasets to embed in every match. Use `events` for
-            the match timeline and `stats` for team match statistics. Live feeds
-            also support `odds_prematch` and `odds_inplay` where the plan and
-            match coverage provide them. Do not insert spaces between values.
           required: false
+          description: 'Comma-separated datasets to embed in the response, without spaces. Supported values: `events`, `stats`, `odds_prematch`, `odds_inplay`. See the includes section.'
           example: events,stats
           schema:
             type: string
-        - name: utc
-          in: query
-          description: |-
-            UTC offset applied to returned date/time values, including half-hour
-            offsets such as `4.5`. Omit it for the API default.
-          required: false
-          example: 2
-          schema:
-            type: number
-            minimum: -12
-            maximum: 14
-        - name: lang
-          in: query
-          description: Language code for localized values where available.
-          required: false
-          example: en
-          schema:
-            type: string
+        - $ref: '#/components/parameters/Utc'
+        - $ref: '#/components/parameters/Lang'
+        - $ref: '#/components/parameters/OddsFormat'
       responses:
         '200':
           description: Match feed. Included datasets appear on each match.
@@ -1087,93 +1429,291 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/MatchListResponse'
+        '400':
+          description: Invalid `t` value, invalid parameter value or missing operation-specific parameter.
         '401':
           description: Missing or invalid `user` or `token`.
         '403':
-          description: The requested data is not available on the account plan.
-        '400':
-          description: Invalid query parameter.
+          description: The league, dataset or operation is not available on the account plan.
         '429':
-          description: Request limit exceeded.
-        '4XX':
+          description: Request allowance exhausted.
+        4XX:
           $ref: '#/components/responses/ClientError'
-      security: []
   /v2.2/fixtures/:
     get:
-      summary: Fixtures, match details and match datasets
+      summary: Fixtures and match datasets
       operationId: getFixtures
-      deprecated: false
-      description: |-
-        Multipurpose fixture endpoint. The `t` query parameter selects the
-        operation.
+      tags:
+        - Fixtures
+      description: |
+        Fixture lists by date, season, round, team or TV channel, single match details and the per-match datasets: events, lineups, bench, commentary, sidelined players and odds. Match-returning operations accept `include` to embed datasets in the match objects.
 
-        | Operation | Required parameters | Purpose |
-        | --- | --- | --- |
-        | `schedule` | `d` | Fixtures on a date; optional league/country/season filters. |
-        | `season` | `season_id` | Fixtures in a season; optional stage/group/team filters. |
-        | `round` | `round_id` | Fixtures in a round; optional team filter. |
-        | `info` | `id` | One match by ID. |
-        | `sort` | `ids` | Multiple matches by comma-separated IDs. |
-        | `match_events` | `id` | Standalone event timeline for one match. |
-        | `match_lineups` | `id` | Match formations and lineups. |
-        | `match_bench` | `id` | Match bench players. |
-        | `match_sidelined` | `id` | Injured or suspended players for a match. |
-        | `match_odds` | `id` | Pre-match odds. |
-        | `match_oddsinplay` | `id` | In-play odds. |
-        | `match_odds_info` | `id`, `bookmaker_id` | Match odds for one bookmaker. |
+        ## Operations
 
-        ## Embedded events and stats
+        The `t` query parameter selects the operation. Parameters not listed for an operation are ignored. The theme column marks datasets that themed plans (Odds, Broadcast) include only for their own theme; Free and Standard plans include every theme for their leagues.
 
-        For match-returning operations (`schedule`, `info` and `sort`), add the
-        dataset names `events` and/or `stats`:
+        | `t` | Operation | Required | Optional | Theme |
+        | --- | --- | --- | --- | --- |
+        | `schedule` | Fixtures by date. Matches on a date, optionally narrowed to a country, league, season, stage, group or round. Paginated. | `d` | `country_id`, `league_id`, `season_id`, `stage_id`, `group_id`, `round_id`, `include`, `utc`, `lang`, `page`, `odds_format` | core |
+        | `season` | Fixtures by season. Every match of a season, optionally narrowed to a stage, group or team. Paginated. | `season_id` | `stage_id`, `group_id`, `team_id`, `order`, `include`, `utc`, `lang`, `page`, `odds_format` | core |
+        | `round` | Fixtures by round. | `round_id` | `team_id`, `include`, `utc`, `lang`, `odds_format` | core |
+        | `last_next` | Team last and next fixtures. Recent results and upcoming matches of a team. | `team_id` | `include`, `utc`, `lang` | core |
+        | `tv` | Fixtures by TV channel. Matches scheduled on a TV channel over the next two weeks. | `tv_id` | `include`, `utc`, `lang` | broadcast |
+        | `info` | Match by ID. One match with teams, league, venue, scores, status and clock. | `id` | `include`, `utc`, `lang`, `odds_format` | core |
+        | `sort` | Matches by multiple IDs. | `ids` | `include`, `utc`, `lang` | core |
+        | `match_events` | Match events. Standalone event timeline of one match. | `id` | — | core |
+        | `match_lineups` | Match lineups. Formations and starting lineups. Add `include=stats` for per-player statistics, omitted by default for speed. | `id` | `include`, `lang` | core |
+        | `match_bench` | Match bench. | `id` | — | core |
+        | `match_comments` | Match commentary. Text commentary of the match where covered. | `id` | `lang` | core |
+        | `match_sidelined` | Match sidelined players. Injured and suspended players of both teams. | `id` | — | core |
+        | `match_odds` | Pre-match odds. Pre-match odds by bookmaker and market. | `id` | `odds_format` | odds |
+        | `match_oddsinplay` | In-play odds. | `id` | `odds_format` | odds |
+        | `match_odds_info` | Match odds by bookmaker. | `id`, `bookmaker_id` | `odds_format` | odds |
+
+        ## Includes
+
+        Comma-separated dataset names for `include`, without spaces:
+
+        - `events`: match timeline; `schedule`, `season`, `round`, `last_next`, `tv`, `info` and `sort`
+        - `stats`: team match statistics on match-returning operations; per-player statistics on `match_lineups`
+        - `broadcast`: TV channels showing the match (broadcast theme)
+        - `odds_prematch`: pre-match odds (odds theme)
+        - `odds_inplay`: in-play odds for matches in play (odds theme)
+
+        The match-detail operation is `t=info`; `match_by_id` is not a valid value and `/v2.2/matches/` is not a v2.2 route. Dataset names such as `events` belong in `include`; `match_events` is an operation, not an include value. IDs can be JSON numbers or numeric strings depending on the operation: treat them as opaque and normalize before strict comparisons.
+
+        ## Examples
+
+        Fixtures by date:
+
+        ```http
+        GET /v2.2/fixtures/?user=USER&token=TOKEN&t=schedule&d=2026-08-30&include=broadcast&utc=2
+        ```
+
+        Fixtures by season:
+
+        ```http
+        GET /v2.2/fixtures/?user=USER&token=TOKEN&t=season&season_id=7194&team_id=111&order=asc
+        ```
+
+        Fixtures by round:
+
+        ```http
+        GET /v2.2/fixtures/?user=USER&token=TOKEN&t=round&round_id=1994
+        ```
+
+        Team last and next fixtures:
+
+        ```http
+        GET /v2.2/fixtures/?user=USER&token=TOKEN&t=last_next&team_id=99
+        ```
+
+        Fixtures by TV channel:
+
+        ```http
+        GET /v2.2/fixtures/?user=USER&token=TOKEN&t=tv&tv_id=30
+        ```
+
+        Match by ID:
 
         ```http
         GET /v2.2/fixtures/?user=USER&token=TOKEN&t=info&id=2589310&include=events,stats
+        ```
+
+        Matches by multiple IDs:
+
+        ```http
         GET /v2.2/fixtures/?user=USER&token=TOKEN&t=sort&ids=2589310,2589313&include=events
         ```
 
-        The returned match object contains `events` and/or `stats`. The physical
-        match-detail endpoint is `fixtures?t=info`; `match_by_id` is not a valid
-        `t` value and `/v2.2/matches/` is not a v2.2 endpoint.
-
-        To fetch only the timeline, use:
+        Match events:
 
         ```http
         GET /v2.2/fixtures/?user=USER&token=TOKEN&t=match_events&id=2589310
         ```
 
-        Event IDs can be JSON numbers or numeric strings depending on the
-        operation. Treat IDs as opaque values and normalize them before strict
-        comparisons.
-      tags:
-        - Fixtures
+        Match lineups:
+
+        ```http
+        GET /v2.2/fixtures/?user=USER&token=TOKEN&t=match_lineups&id=2589310&include=stats
+        ```
+
+        Match bench:
+
+        ```http
+        GET /v2.2/fixtures/?user=USER&token=TOKEN&t=match_bench&id=2589310
+        ```
+
+        Match commentary:
+
+        ```http
+        GET /v2.2/fixtures/?user=USER&token=TOKEN&t=match_comments&id=2589310
+        ```
+
+        Match sidelined players:
+
+        ```http
+        GET /v2.2/fixtures/?user=USER&token=TOKEN&t=match_sidelined&id=2589310
+        ```
+
+        Pre-match odds:
+
+        ```http
+        GET /v2.2/fixtures/?user=USER&token=TOKEN&t=match_odds&id=2589310
+        ```
+
+        In-play odds:
+
+        ```http
+        GET /v2.2/fixtures/?user=USER&token=TOKEN&t=match_oddsinplay&id=2589310
+        ```
+
+        Match odds by bookmaker:
+
+        ```http
+        GET /v2.2/fixtures/?user=USER&token=TOKEN&t=match_odds_info&id=2589310&bookmaker_id=1
+        ```
+      x-operations:
+        - t: schedule
+          title: Fixtures by date
+          required:
+            - d
+          optional:
+            - country_id
+            - league_id
+            - season_id
+            - stage_id
+            - group_id
+            - round_id
+            - include
+            - utc
+            - lang
+            - page
+            - odds_format
+        - t: season
+          title: Fixtures by season
+          required:
+            - season_id
+          optional:
+            - stage_id
+            - group_id
+            - team_id
+            - order
+            - include
+            - utc
+            - lang
+            - page
+            - odds_format
+        - t: round
+          title: Fixtures by round
+          required:
+            - round_id
+          optional:
+            - team_id
+            - include
+            - utc
+            - lang
+            - odds_format
+        - t: last_next
+          title: Team last and next fixtures
+          required:
+            - team_id
+          optional:
+            - include
+            - utc
+            - lang
+        - t: tv
+          title: Fixtures by TV channel
+          required:
+            - tv_id
+          optional:
+            - include
+            - utc
+            - lang
+          theme: broadcast
+        - t: info
+          title: Match by ID
+          required:
+            - id
+          optional:
+            - include
+            - utc
+            - lang
+            - odds_format
+        - t: sort
+          title: Matches by multiple IDs
+          required:
+            - ids
+          optional:
+            - include
+            - utc
+            - lang
+        - t: match_events
+          title: Match events
+          required:
+            - id
+          optional: []
+        - t: match_lineups
+          title: Match lineups
+          required:
+            - id
+          optional:
+            - include
+            - lang
+        - t: match_bench
+          title: Match bench
+          required:
+            - id
+          optional: []
+        - t: match_comments
+          title: Match commentary
+          required:
+            - id
+          optional:
+            - lang
+        - t: match_sidelined
+          title: Match sidelined players
+          required:
+            - id
+          optional: []
+        - t: match_odds
+          title: Pre-match odds
+          required:
+            - id
+          optional:
+            - odds_format
+          theme: odds
+        - t: match_oddsinplay
+          title: In-play odds
+          required:
+            - id
+          optional:
+            - odds_format
+          theme: odds
+        - t: match_odds_info
+          title: Match odds by bookmaker
+          required:
+            - id
+            - bookmaker_id
+          optional:
+            - odds_format
+          theme: odds
       parameters:
-        - name: user
-          in: query
-          description: Account username.
-          required: true
-          example: '{{USERNAME}}'
-          schema:
-            type: string
-        - name: token
-          in: query
-          description: API token generated in the account dashboard.
-          required: true
-          example: '{{TOKEN}}'
-          schema:
-            type: string
+        - $ref: '#/components/parameters/User'
+        - $ref: '#/components/parameters/Token'
         - name: t
           in: query
-          description: Operation selector. See the operation table above.
           required: true
-          example: info
+          description: Operation selector. See the operations table.
+          example: schedule
           schema:
             type: string
             enum:
               - schedule
               - season
-              - stage
               - round
+              - last_next
+              - tv
               - info
               - sort
               - match_events
@@ -1184,109 +1724,131 @@ paths:
               - match_odds
               - match_oddsinplay
               - match_odds_info
+            x-enumDescriptions:
+              schedule: Fixtures by date
+              season: Fixtures by season
+              round: Fixtures by round
+              last_next: Team last and next fixtures
+              tv: Fixtures by TV channel
+              info: Match by ID
+              sort: Matches by multiple IDs
+              match_events: Match events
+              match_lineups: Match lineups
+              match_bench: Match bench
+              match_comments: Match commentary
+              match_sidelined: Match sidelined players
+              match_odds: Pre-match odds
+              match_oddsinplay: In-play odds
+              match_odds_info: Match odds by bookmaker
         - name: id
           in: query
-          description: Match ID. Required by single-match operations.
           required: false
-          example: '2589310'
+          description: Match ID. Required when `t` is `info`, `match_events`, `match_lineups`, `match_bench`, `match_comments`, `match_sidelined`, `match_odds`, `match_oddsinplay`, `match_odds_info`.
           schema:
             type: string
+          example: '2589310'
         - name: ids
           in: query
-          description: Comma-separated match IDs. Required when `t=sort`.
           required: false
-          example: 2589310,2589313
+          description: Comma-separated match IDs, without spaces. Required when `t` is `sort`.
           schema:
             type: string
+          example: 2589310,2589313
         - name: d
           in: query
-          description: Calendar date in `YYYY-MM-DD` format. Required when `t=schedule`.
           required: false
-          example: '2026-08-30'
+          description: Calendar date in `YYYY-MM-DD` format, interpreted in the `utc` offset when given. Required when `t` is `schedule`.
           schema:
             type: string
             format: date
+          example: '2026-08-30'
         - name: season_id
           in: query
-          description: Season ID. Required when `t=season`; optional schedule filter.
           required: false
+          description: Season ID. Required when `t` is `season`. Optional for `schedule`.
           schema:
             type: string
+          example: '7194'
         - name: stage_id
           in: query
-          description: Optional stage filter.
           required: false
+          description: Stage ID. Optional for `schedule`, `season`.
           schema:
             type: string
+          example: '6'
         - name: group_id
           in: query
-          description: Optional group filter.
           required: false
+          description: Group ID. Optional for `schedule`, `season`.
           schema:
             type: string
+          example: '308'
         - name: round_id
           in: query
-          description: Round ID. Required when `t=round`.
           required: false
+          description: Round ID. Required when `t` is `round`. Optional for `schedule`.
           schema:
             type: string
+          example: '1994'
         - name: team_id
           in: query
-          description: Optional team filter for season, stage or round fixture lists.
           required: false
+          description: Team ID. Required when `t` is `last_next`. Optional for `season`, `round`.
           schema:
             type: string
+          example: '111'
         - name: league_id
           in: query
-          description: Optional league filter when `t=schedule`.
           required: false
+          description: League ID. Optional for `schedule`.
           schema:
             type: string
+          example: '594'
         - name: country_id
           in: query
-          description: Optional country filter when `t=schedule`.
           required: false
+          description: Country ID. Optional for `schedule`.
           schema:
             type: string
+          example: '4'
+        - name: tv_id
+          in: query
+          required: false
+          description: TV channel ID. Required when `t` is `tv`.
+          schema:
+            type: string
+          example: '30'
         - name: bookmaker_id
           in: query
-          description: Bookmaker ID. Required when `t=match_odds_info`.
           required: false
+          description: Bookmaker ID. Required when `t` is `match_odds_info`.
           schema:
             type: string
+          example: '1'
+        - name: order
+          in: query
+          required: false
+          description: Sort order of the fixture list by kickoff time. Optional for `season`.
+          schema:
+            type: string
+            enum:
+              - asc
+              - desc
+          example: asc
         - name: include
           in: query
-          description: |-
-            Comma-separated datasets embedded into match objects. Use `events`
-            and `stats` with `schedule`, `info` or `sort`. Other supported match
-            datasets include `broadcast`, `odds_prematch` and `odds_inplay`
-            where coverage and plan access allow them. Do not use
-            `match_events` or `match_stats` here.
           required: false
+          description: 'Comma-separated datasets to embed in the response, without spaces. Supported values: `events`, `stats`, `broadcast`, `odds_prematch`, `odds_inplay`. See the includes section.'
           example: events,stats
           schema:
             type: string
-        - name: utc
-          in: query
-          description: UTC offset, including decimal offsets such as `4.5`.
-          required: false
-          schema:
-            type: number
-            minimum: -12
-            maximum: 14
-        - name: lang
-          in: query
-          description: Language code for localized values where available.
-          required: false
-          example: en
-          schema:
-            type: string
+        - $ref: '#/components/parameters/Utc'
+        - $ref: '#/components/parameters/Lang'
+        - $ref: '#/components/parameters/OddsFormat'
+        - $ref: '#/components/parameters/Page'
       responses:
         '200':
-          description: |-
-            The `data` shape depends on `t`: a match object for `info`, an array
-            of matches for list/batch operations, an event array for
-            `match_events`, or the selected match dataset for other operations.
+          description: 'The `data` shape depends on `t`: a match object for `info`, an array of matches for list and batch operations, an event array for `match_events`, and the selected dataset for the other match operations.'
           content:
             application/json:
               schema:
@@ -1295,961 +1857,1341 @@ paths:
                   - $ref: '#/components/schemas/MatchListResponse'
                   - $ref: '#/components/schemas/MatchEventsResponse'
                   - $ref: '#/components/schemas/MatchStatsResponse'
+                  - $ref: '#/components/schemas/DataResponse'
+        '400':
+          description: Invalid `t` value, invalid parameter value or missing operation-specific parameter.
         '401':
           description: Missing or invalid `user` or `token`.
         '403':
-          description: The requested data is not available on the account plan.
-        '400':
-          description: Invalid `t` value or missing operation-specific parameter.
+          description: The league, dataset or operation is not available on the account plan.
         '429':
-          description: Request limit exceeded.
-        '4XX':
+          description: Request allowance exhausted.
+        4XX:
           $ref: '#/components/responses/ClientError'
-      security: []
   /v2.2/stats/:
     get:
-      summary: Player Stats by Match ID
+      summary: Statistics
       operationId: getStatistics
-      deprecated: false
-      description: >-
-        Retrieve statistics for a match, league, season, team or player. The
-        `t` selector and identifier parameters determine the dataset; this
-        definition shows player statistics filtered by `match_id`.
       tags:
         - Statistics
+      description: |
+        Aggregated statistics for leagues, seasons, teams and players, and per-match statistics. The meaning of `id` depends on the operation.
+
+        ## Operations
+
+        The `t` query parameter selects the operation. Parameters not listed for an operation are ignored.
+
+        | `t` | Operation | Required | Optional |
+        | --- | --- | --- | --- |
+        | `league` | League statistics, current season. | `id` | — |
+        | `season` | League statistics by season. Season totals such as goals, cards and goal lines. | `id` | — |
+        | `team` | Team statistics by season. | `id`, `season_id` | — |
+        | `player` | Player statistics. Season statistics with `id` and `season_id`, or single-match statistics with `player_id` and `match_id`. | — | `id`, `season_id`, `player_id`, `match_id`, `lang` |
+        | `match` | Match statistics. Team statistics of one match, one entry per team. | `id` | — |
+
+        ## Examples
+
+        League statistics, current season:
+
+        ```http
+        GET /v2.2/stats/?user=USER&token=TOKEN&t=league&id=1005
+        ```
+
+        League statistics by season:
+
+        ```http
+        GET /v2.2/stats/?user=USER&token=TOKEN&t=season&id=12588
+        ```
+
+        Team statistics by season:
+
+        ```http
+        GET /v2.2/stats/?user=USER&token=TOKEN&t=team&id=98&season_id=406
+        ```
+
+        Player statistics:
+
+        ```http
+        GET /v2.2/stats/?user=USER&token=TOKEN&t=player&id=18103&season_id=12516
+        ```
+
+        Match statistics:
+
+        ```http
+        GET /v2.2/stats/?user=USER&token=TOKEN&t=match&id=2589310
+        ```
+      x-operations:
+        - t: league
+          title: League statistics, current season
+          required:
+            - id
+          optional: []
+        - t: season
+          title: League statistics by season
+          required:
+            - id
+          optional: []
+        - t: team
+          title: Team statistics by season
+          required:
+            - id
+            - season_id
+          optional: []
+        - t: player
+          title: Player statistics
+          required: []
+          optional:
+            - id
+            - season_id
+            - player_id
+            - match_id
+            - lang
+        - t: match
+          title: Match statistics
+          required:
+            - id
+          optional: []
       parameters:
-        - name: user
-          in: query
-          description: ''
-          required: true
-          example: '{{USERNAME}}'
-          schema:
-            type: string
-        - name: token
-          in: query
-          description: ''
-          required: true
-          example: '{{TOKEN}}'
-          schema:
-            type: string
+        - $ref: '#/components/parameters/User'
+        - $ref: '#/components/parameters/Token'
         - name: t
           in: query
-          description: ''
           required: true
-          example: player
-          schema:
-            type: string
-        - name: player_id
-          in: query
-          description: ''
-          required: true
-          example: '11306'
-          schema:
-            type: string
-        - name: match_id
-          in: query
-          description: ''
-          required: true
-          example: '1531916'
-          schema:
-            type: string
-      responses:
-        '200':
-          description: ''
-          content:
-            application/json:
-              schema:
-                type: object
-                properties: {}
-        '4XX':
-          $ref: '#/components/responses/ClientError'
-      security: []
-  /v2.2/h2h/:
-    get:
-      summary: H2H Team vs Team
-      operationId: getHeadToHead
-      deprecated: false
-      description: Retrieve historical head-to-head matches for two teams.
-      tags:
-        - Head to head
-      parameters:
-        - name: user
-          in: query
-          description: ''
-          required: true
-          example: '{{USERNAME}}'
-          schema:
-            type: string
-        - name: token
-          in: query
-          description: ''
-          required: true
-          example: '{{TOKEN}}'
-          schema:
-            type: string
-        - name: t
-          in: query
-          description: ''
-          required: true
-          example: teams
-          schema:
-            type: string
-        - name: team1
-          in: query
-          description: ''
-          required: true
-          example: '99'
-          schema:
-            type: string
-        - name: team2
-          in: query
-          description: ''
-          required: true
-          example: '113'
-          schema:
-            type: string
-      responses:
-        '200':
-          description: ''
-          content:
-            application/json:
-              schema:
-                type: object
-                properties: {}
-        '4XX':
-          $ref: '#/components/responses/ClientError'
-      security: []
-  /v2.2/leaders/:
-    get:
-      summary: Topassists
-      operationId: getLeaders
-      deprecated: false
-      description: >-
-        Retrieve season leaderboards. Supported datasets include top scorers,
-        top assists and cards, selected with `t`.
-      tags:
-        - Leaders
-      parameters:
-        - name: user
-          in: query
-          description: ''
-          required: true
-          example: '{{USERNAME}}'
-          schema:
-            type: string
-        - name: token
-          in: query
-          description: ''
-          required: true
-          example: '{{TOKEN}}'
-          schema:
-            type: string
-        - name: t
-          in: query
-          description: ''
-          required: true
-          example: topassists
-          schema:
-            type: string
-        - name: season_id
-          in: query
-          description: ''
-          required: true
-          example: '12516'
-          schema:
-            type: string
-      responses:
-        '200':
-          description: ''
-          content:
-            application/json:
-              schema:
-                type: object
-                properties: {}
-        '4XX':
-          $ref: '#/components/responses/ClientError'
-      security: []
-  /v2.2/bookmakers/:
-    get:
-      summary: Bookmaker by ID
-      operationId: getBookmakers
-      deprecated: false
-      description: Retrieve bookmaker metadata by its SoccersAPI identifier.
-      tags:
-        - Betting
-      parameters:
-        - name: user
-          in: query
-          description: ''
-          required: true
-          example: '{{USERNAME}}'
-          schema:
-            type: string
-        - name: token
-          in: query
-          description: ''
-          required: true
-          example: '{{TOKEN}}'
-          schema:
-            type: string
-        - name: t
-          in: query
-          description: ''
-          required: true
-          example: info
-          schema:
-            type: string
-        - name: id
-          in: query
-          description: ''
-          required: true
-          example: '2'
-          schema:
-            type: string
-      responses:
-        '200':
-          description: ''
-          content:
-            application/json:
-              schema:
-                type: object
-                properties: {}
-        '4XX':
-          $ref: '#/components/responses/ClientError'
-      security: []
-  /v2.2/markets/:
-    get:
-      summary: Market by ID
-      operationId: getMarkets
-      deprecated: false
-      description: Retrieve betting-market metadata by its SoccersAPI identifier.
-      tags:
-        - Betting
-      parameters:
-        - name: user
-          in: query
-          description: ''
-          required: true
-          example: '{{USERNAME}}'
-          schema:
-            type: string
-        - name: token
-          in: query
-          description: ''
-          required: true
-          example: '{{TOKEN}}'
-          schema:
-            type: string
-        - name: t
-          in: query
-          description: ''
-          required: true
-          example: info
-          schema:
-            type: string
-        - name: id
-          in: query
-          description: ''
-          required: true
-          example: '1'
-          schema:
-            type: string
-      responses:
-        '200':
-          description: ''
-          content:
-            application/json:
-              schema:
-                type: object
-                properties: {}
-        '4XX':
-          $ref: '#/components/responses/ClientError'
-      security: []
-  /v2.2/broadcast/:
-    get:
-      summary: Matches on TV by Date
-      operationId: getBroadcasts
-      deprecated: false
-      description: Retrieve the television schedule for matches on a date.
-      tags:
-        - Broadcast
-      parameters:
-        - name: user
-          in: query
-          description: ''
-          required: true
-          example: '{{USERNAME}}'
-          schema:
-            type: string
-        - name: token
-          in: query
-          description: ''
-          required: true
-          example: '{{TOKEN}}'
-          schema:
-            type: string
-        - name: t
-          in: query
-          description: ''
-          required: true
-          example: schedule
-          schema:
-            type: string
-        - name: d
-          in: query
-          description: ''
-          required: true
-          example: '2022-09-01'
-          schema:
-            type: string
-        - name: include
-          in: query
-          description: ''
-          required: true
-          example: tvs
-          schema:
-            type: string
-      responses:
-        '200':
-          description: ''
-          content:
-            application/json:
-              schema:
-                type: object
-                properties: {}
-        '4XX':
-          $ref: '#/components/responses/ClientError'
-      security: []
-  /v2.2/players/:
-    get:
-      summary: Players by Country
-      operationId: getPlayers
-      deprecated: false
-      description: Retrieve players filtered by country.
-      tags:
-        - People
-      parameters:
-        - name: user
-          in: query
-          description: ''
-          required: true
-          example: '{{USERNAME}}'
-          schema:
-            type: string
-        - name: token
-          in: query
-          description: ''
-          required: true
-          example: '{{TOKEN}}'
-          schema:
-            type: string
-        - name: t
-          in: query
-          description: ''
-          required: true
-          example: list
-          schema:
-            type: string
-        - name: country_id
-          in: query
-          description: ''
-          required: true
-          example: '4'
-          schema:
-            type: string
-      responses:
-        '200':
-          description: ''
-          content:
-            application/json:
-              schema:
-                type: object
-                properties: {}
-        '4XX':
-          $ref: '#/components/responses/ClientError'
-      security: []
-  /v2.2/coaches/:
-    get:
-      summary: Coaches by Country
-      operationId: getCoaches
-      deprecated: false
-      description: Retrieve coaches filtered by country.
-      tags:
-        - People
-      parameters:
-        - name: user
-          in: query
-          description: ''
-          required: true
-          example: '{{USERNAME}}'
-          schema:
-            type: string
-        - name: token
-          in: query
-          description: ''
-          required: true
-          example: '{{TOKEN}}'
-          schema:
-            type: string
-        - name: t
-          in: query
-          description: ''
-          required: true
-          example: list
-          schema:
-            type: string
-        - name: country_id
-          in: query
-          description: ''
-          required: true
-          example: '25'
-          schema:
-            type: string
-      responses:
-        '200':
-          description: ''
-          content:
-            application/json:
-              schema:
-                type: object
-                properties: {}
-        '4XX':
-          $ref: '#/components/responses/ClientError'
-      security: []
-  /v2.2/referees/:
-    get:
-      summary: Referee by ID
-      operationId: getReferees
-      deprecated: false
-      description: Retrieve a referee by their SoccersAPI identifier.
-      tags:
-        - People
-      parameters:
-        - name: user
-          in: query
-          description: ''
-          required: true
-          example: '{{USERNAME}}'
-          schema:
-            type: string
-        - name: token
-          in: query
-          description: ''
-          required: true
-          example: '{{TOKEN}}'
-          schema:
-            type: string
-        - name: t
-          in: query
-          description: ''
-          required: true
-          example: info
-          schema:
-            type: string
-        - name: id
-          in: query
-          description: ''
-          required: true
-          example: '372'
-          schema:
-            type: string
-      responses:
-        '200':
-          description: ''
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  data:
-                    type: object
-                    properties:
-                      id:
-                        type: string
-                      name:
-                        type: string
-                      common_name:
-                        type: string
-                      firstname:
-                        type: string
-                      lastname:
-                        type: string
-                      birthdate:
-                        type: string
-                      img:
-                        type: string
-                      country:
-                        type: object
-                        properties:
-                          id:
-                            type: integer
-                          name:
-                            type: string
-                          cc:
-                            type: string
-                        required:
-                          - id
-                          - name
-                          - cc
-                    required:
-                      - id
-                      - name
-                      - common_name
-                      - firstname
-                      - lastname
-                      - birthdate
-                      - img
-                      - country
-                  meta:
-                    type: object
-                    properties:
-                      requests_left:
-                        type: integer
-                      user:
-                        type: string
-                      plan:
-                        type: string
-                      pages:
-                        type: integer
-                      page:
-                        type: integer
-                      count:
-                        type: integer
-                      total:
-                        type: integer
-                    required:
-                      - requests_left
-                      - user
-                      - plan
-                      - pages
-                      - page
-                      - count
-                      - total
-                required:
-                  - data
-                  - meta
-              example:
-                data:
-                  id: '372'
-                  name: Deniz Aytekin
-                  common_name: Aytekin, Deniz
-                  firstname: Deniz
-                  lastname: Aytekin
-                  birthdate: 21/07/78
-                  img: https://cdn.soccersapi.com/images/soccer/referees/50/372.png
-                  country:
-                    id: 4
-                    name: Germany
-                    cc: de
-                meta:
-                  requests_left: 2950
-                  user: your_username
-                  plan: Soccer API 50
-                  pages: 1
-                  page: 1
-                  count: 1
-                  total: 1
-        '4XX':
-          $ref: '#/components/responses/ClientError'
-      security: []
-  /v2.2/venues/:
-    get:
-      summary: Venues by Country
-      operationId: getVenues
-      deprecated: false
-      description: Retrieve venues filtered by country.
-      tags:
-        - Venues
-      parameters:
-        - name: user
-          in: query
-          description: ''
-          required: true
-          example: '{{USERNAME}}'
-          schema:
-            type: string
-        - name: token
-          in: query
-          description: ''
-          required: true
-          example: '{{TOKEN}}'
-          schema:
-            type: string
-        - name: t
-          in: query
-          description: ''
-          required: true
-          example: list
-          schema:
-            type: string
-        - name: country_id
-          in: query
-          description: ''
-          required: true
-          example: '15'
-          schema:
-            type: string
-      responses:
-        '200':
-          description: ''
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  data:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        id:
-                          type: integer
-                        name:
-                          type: string
-                        capacity:
-                          type:
-                            - integer
-                            - 'null'
-                        city:
-                          type: string
-                        address:
-                          type:
-                            - string
-                            - 'null'
-                        img:
-                          type: string
-                        coordinates:
-                          type:
-                            - object
-                            - 'null'
-                          properties:
-                            lat:
-                              type: string
-                            long:
-                              type: string
-                          required:
-                            - lat
-                            - long
-                        country:
-                          type: object
-                          properties:
-                            id:
-                              type: integer
-                            name:
-                              type: string
-                            continent:
-                              type: string
-                            sub_region:
-                              type: 'null'
-                            long:
-                              type: 'null'
-                            lat:
-                              type: 'null'
-                            img:
-                              type: string
-                            code:
-                              type: string
-                            cc:
-                              type: string
-                          required:
-                            - id
-                            - name
-                            - continent
-                            - sub_region
-                            - long
-                            - lat
-                            - img
-                            - code
-                            - cc
-                      required:
-                        - id
-                        - name
-                        - capacity
-                        - city
-                        - address
-                        - img
-                        - coordinates
-                        - country
-                  meta:
-                    type: object
-                    properties:
-                      requests_left:
-                        type: integer
-                      user:
-                        type: string
-                      plan:
-                        type: string
-                      pages:
-                        type: integer
-                      page:
-                        type: integer
-                      count:
-                        type: integer
-                      total:
-                        type: integer
-                      msg:
-                        type: string
-                    required:
-                      - requests_left
-                      - user
-                      - plan
-                      - pages
-                      - page
-                      - count
-                      - total
-                      - msg
-                required:
-                  - data
-                  - meta
-              example:
-                data:
-                  - id: 191
-                    name: Cashpoint Arena
-                    capacity: 8500
-                    city: Altach
-                    address: null
-                    img: https://cdn.soccersapi.com/images/soccer/venues/191.png
-                    coordinates:
-                      lat: '47.353889'
-                      long: '9.636667'
-                    country:
-                      id: 15
-                      name: Austria
-                      continent: Europe
-                      sub_region: null
-                      long: null
-                      lat: null
-                      img: https://cdn.soccersapi.com/images/countries/30/at.png
-                      code: at
-                      cc: at
-                  - id: 192
-                    name: Lavanttal-Arena
-                    capacity: 7300
-                    city: Wolfsberg
-                    address: null
-                    img: https://cdn.soccersapi.com/images/soccer/venues/192.png
-                    coordinates:
-                      lat: '46.826258'
-                      long: '14.851989'
-                    country:
-                      id: 15
-                      name: Austria
-                      continent: Europe
-                      sub_region: null
-                      long: null
-                      lat: null
-                      img: https://cdn.soccersapi.com/images/countries/30/at.png
-                      code: at
-                      cc: at
-                  - id: 321
-                    name: Stadion Birkenwiese
-                    capacity: 12000
-                    city: Dornbirn
-                    address: Hochsterstrasse 78a
-                    img: https://cdn.soccersapi.com/images/soccer/venues/321.png
-                    coordinates:
-                      lat: '47.416498'
-                      long: '9.724090'
-                    country:
-                      id: 15
-                      name: Austria
-                      continent: Europe
-                      sub_region: null
-                      long: null
-                      lat: null
-                      img: https://cdn.soccersapi.com/images/countries/30/at.png
-                      code: at
-                      cc: at
-                meta:
-                  requests_left: 2950
-                  user: your_username
-                  plan: Soccer API 50
-                  pages: 2
-                  page: 1
-                  count: 100
-                  total: 147
-                  msg: ''
-          headers: {}
-        '4XX':
-          $ref: '#/components/responses/ClientError'
-      security: []
-  /v2.2/media/:
-    get:
-      summary: Media Highlights
-      operationId: getMedia
-      deprecated: false
-      description: Fetch video highlights by league, team, event, date
-      tags:
-        - Media
-      parameters:
-        - name: user
-          in: query
-          description: username
-          required: false
-          example: '{{USERNAME}}'
-          schema:
-            type: string
-        - name: token
-          in: query
-          description: token
-          required: false
-          example: '{{TOKEN}}'
-          schema:
-            type: string
-        - name: id
-          in: query
-          description: ID
-          required: false
-          example: '637'
-          schema:
-            type: string
-        - name: t
-          in: query
-          description: type
-          required: false
+          description: Operation selector. See the operations table.
           example: league
           schema:
             type: string
+            enum:
+              - league
+              - season
+              - team
+              - player
+              - match
+            x-enumDescriptions:
+              league: League statistics, current season
+              season: League statistics by season
+              team: Team statistics by season
+              player: Player statistics
+              match: Match statistics
+        - name: id
+          in: query
+          required: false
+          description: 'Resource ID: league ID for `league`, season ID for `season`, team ID for `team`, player ID for `player`, match ID for `match`. Required when `t` is `league`, `season`, `team`, `match`. Optional for `player`.'
+          schema:
+            type: string
+          example: '1005'
+        - name: season_id
+          in: query
+          required: false
+          description: Season ID. Required when `t` is `team`. Optional for `player`.
+          schema:
+            type: string
+          example: '406'
+        - name: player_id
+          in: query
+          required: false
+          description: Player ID. Optional for `player`.
+          schema:
+            type: string
+          example: '11306'
+        - name: match_id
+          in: query
+          required: false
+          description: Match ID. Optional for `player`.
+          schema:
+            type: string
+          example: '1531916'
+        - $ref: '#/components/parameters/Lang'
       responses:
         '200':
-          description: ''
+          description: 'The `data` shape depends on `t`: an object for single-resource operations and an array for lists. `meta` carries the request allowance and pagination.'
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  data:
-                    type: array
-                    items:
-                      type: array
-                      items:
-                        type: object
-                        properties:
-                          id:
-                            type: integer
-                          league_id:
-                            type: integer
-                          season_id:
-                            type: integer
-                          home_id:
-                            type: integer
-                          away_id:
-                            type: integer
-                          round_id:
-                            type: integer
-                          stage_id:
-                            type: integer
-                          group_id:
-                            type: integer
-                          startdate:
-                            type: string
-                          title:
-                            type: string
-                          image:
-                            type: string
-                          url:
-                            type: string
-                          source:
-                            type: string
-                        required:
-                          - id
-                          - league_id
-                          - season_id
-                          - home_id
-                          - away_id
-                          - round_id
-                          - stage_id
-                          - group_id
-                          - startdate
-                          - title
-                          - image
-                          - url
-                          - source
-                  meta:
-                    type: object
-                    properties:
-                      requests_left:
-                        type: integer
-                      user:
-                        type: string
-                      plan:
-                        type: string
-                      pages:
-                        type: integer
-                      page:
-                        type: integer
-                      total:
-                        type: integer
-                      msg:
-                        type: string
-                    required:
-                      - requests_left
-                      - user
-                      - plan
-                      - pages
-                      - page
-                      - total
-                      - msg
-                required:
-                  - data
-                  - meta
-              example:
-                data:
-                  - - id: 1843815
-                      league_id: 637
-                      season_id: 14341
-                      home_id: 116
-                      away_id: 118
-                      round_id: 182349
-                      stage_id: 207
-                      group_id: 1
-                      startdate: '2024-11-24 20:00:00'
-                      title: >-
-                        ATHLETIC CLUB 1 - 0 REAL SOCIEDAD I RESUMEN LALIGA EA
-                        SPORTS
-                      image: https://i.ytimg.com/vi/aVy9O_x1Fe8/maxresdefault.jpg
-                      url: https://www.youtube.com/watch?v=aVy9O_x1Fe8
-                      source: www.youtube.com
-                    - id: 1843819
-                      league_id: 637
-                      season_id: 14341
-                      home_id: 121
-                      away_id: 113
-                      round_id: 182349
-                      stage_id: 207
-                      group_id: 1
-                      startdate: '2024-11-24 17:30:00'
-                      title: CD LEGANÉS 0 - 3 REAL MADRID I RESUMEN LALIGA EA SPORTS
-                      image: https://i.ytimg.com/vi/pQVtyVtkGfM/maxresdefault.jpg
-                      url: https://www.youtube.com/watch?v=pQVtyVtkGfM
-                      source: www.youtube.com
-                    - id: 1843819
-                      league_id: 637
-                      season_id: 14341
-                      home_id: 121
-                      away_id: 113
-                      round_id: 182349
-                      stage_id: 207
-                      group_id: 1
-                      startdate: '2024-11-24 17:30:00'
-                      title: CD LEGANÉS 0 - 3 REAL MADRID I RESUMEN LALIGA EA SPORTS
-                      image: https://i.ytimg.com/vi/9lStg3L28xQ/maxresdefault.jpg
-                      url: https://www.youtube.com/watch?v=9lStg3L28xQ
-                      source: www.youtube.com
-                meta:
-                  requests_left: 2950
-                  user: your_username
-                  plan: Soccer API 50
-                  pages: 1
-                  page: 1
-                  total: 56
-                  msg: ''
-          headers: {}
-        '4XX':
+                $ref: '#/components/schemas/DataResponse'
+        '400':
+          description: Invalid `t` value, invalid parameter value or missing operation-specific parameter.
+        '401':
+          description: Missing or invalid `user` or `token`.
+        '403':
+          description: The league, dataset or operation is not available on the account plan.
+        '429':
+          description: Request allowance exhausted.
+        4XX:
           $ref: '#/components/responses/ClientError'
-      security: []
+  /v2.2/h2h/:
+    get:
+      summary: Head to head
+      operationId: getHeadToHead
+      tags:
+        - Head to head
+      description: |
+        Historical meetings between two teams.
+
+        ## Operations
+
+        The `t` query parameter selects the operation. Parameters not listed for an operation are ignored.
+
+        | `t` | Operation | Required | Optional |
+        | --- | --- | --- | --- |
+        | `teams` | Team vs team. | `team1`, `team2` | — |
+        | `match` | Match head to head. Previous meetings of the two teams of a match. | `id` | — |
+
+        ## Examples
+
+        Team vs team:
+
+        ```http
+        GET /v2.2/h2h/?user=USER&token=TOKEN&t=teams&team1=99&team2=113
+        ```
+
+        Match head to head:
+
+        ```http
+        GET /v2.2/h2h/?user=USER&token=TOKEN&t=match&id=2589310
+        ```
+      x-operations:
+        - t: teams
+          title: Team vs team
+          required:
+            - team1
+            - team2
+          optional: []
+        - t: match
+          title: Match head to head
+          required:
+            - id
+          optional: []
+      parameters:
+        - $ref: '#/components/parameters/User'
+        - $ref: '#/components/parameters/Token'
+        - name: t
+          in: query
+          required: true
+          description: Operation selector. See the operations table.
+          example: teams
+          schema:
+            type: string
+            enum:
+              - teams
+              - match
+            x-enumDescriptions:
+              teams: Team vs team
+              match: Match head to head
+        - name: team1
+          in: query
+          required: false
+          description: First team ID. Required when `t` is `teams`.
+          schema:
+            type: string
+          example: '99'
+        - name: team2
+          in: query
+          required: false
+          description: Second team ID. Required when `t` is `teams`.
+          schema:
+            type: string
+          example: '113'
+        - name: id
+          in: query
+          required: false
+          description: Match ID. Required when `t` is `match`.
+          schema:
+            type: string
+          example: '2589310'
+      responses:
+        '200':
+          description: 'The `data` shape depends on `t`: an object for single-resource operations and an array for lists. `meta` carries the request allowance and pagination.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DataResponse'
+        '400':
+          description: Invalid `t` value, invalid parameter value or missing operation-specific parameter.
+        '401':
+          description: Missing or invalid `user` or `token`.
+        '403':
+          description: The league, dataset or operation is not available on the account plan.
+        '429':
+          description: Request allowance exhausted.
+        4XX:
+          $ref: '#/components/responses/ClientError'
+  /v2.2/leaders/:
+    get:
+      summary: Leaders
+      operationId: getLeaders
+      tags:
+        - Leaders
+      description: |
+        Season leaderboards.
+
+        ## Operations
+
+        The `t` query parameter selects the operation. Parameters not listed for an operation are ignored.
+
+        | `t` | Operation | Required | Optional |
+        | --- | --- | --- | --- |
+        | `topscorers` | Top scorers. | `season_id` | — |
+        | `topassists` | Top assists. | `season_id` | — |
+
+        ## Examples
+
+        Top scorers:
+
+        ```http
+        GET /v2.2/leaders/?user=USER&token=TOKEN&t=topscorers&season_id=12516
+        ```
+
+        Top assists:
+
+        ```http
+        GET /v2.2/leaders/?user=USER&token=TOKEN&t=topassists&season_id=12516
+        ```
+      x-operations:
+        - t: topscorers
+          title: Top scorers
+          required:
+            - season_id
+          optional: []
+        - t: topassists
+          title: Top assists
+          required:
+            - season_id
+          optional: []
+      parameters:
+        - $ref: '#/components/parameters/User'
+        - $ref: '#/components/parameters/Token'
+        - name: t
+          in: query
+          required: true
+          description: Operation selector. See the operations table.
+          example: topscorers
+          schema:
+            type: string
+            enum:
+              - topscorers
+              - topassists
+            x-enumDescriptions:
+              topscorers: Top scorers
+              topassists: Top assists
+        - name: season_id
+          in: query
+          required: true
+          description: Season ID. Required by every operation.
+          schema:
+            type: string
+          example: '12516'
+      responses:
+        '200':
+          description: 'The `data` shape depends on `t`: an object for single-resource operations and an array for lists. `meta` carries the request allowance and pagination.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DataResponse'
+        '400':
+          description: Invalid `t` value, invalid parameter value or missing operation-specific parameter.
+        '401':
+          description: Missing or invalid `user` or `token`.
+        '403':
+          description: The league, dataset or operation is not available on the account plan.
+        '429':
+          description: Request allowance exhausted.
+        4XX:
+          $ref: '#/components/responses/ClientError'
+  /v2.2/bookmakers/:
+    get:
+      summary: Bookmakers
+      operationId: getBookmakers
+      tags:
+        - Betting
+      description: |
+        Bookmaker catalogue used by the odds datasets.
+
+        ## Operations
+
+        The `t` query parameter selects the operation. Parameters not listed for an operation are ignored.
+
+        | `t` | Operation | Required | Optional |
+        | --- | --- | --- | --- |
+        | `info` | Bookmaker by ID. | `id` | — |
+
+        ## Examples
+
+        Bookmaker by ID:
+
+        ```http
+        GET /v2.2/bookmakers/?user=USER&token=TOKEN&t=info&id=2
+        ```
+      x-operations:
+        - t: info
+          title: Bookmaker by ID
+          required:
+            - id
+          optional: []
+      parameters:
+        - $ref: '#/components/parameters/User'
+        - $ref: '#/components/parameters/Token'
+        - name: t
+          in: query
+          required: true
+          description: Operation selector. See the operations table.
+          example: info
+          schema:
+            type: string
+            enum:
+              - info
+            x-enumDescriptions:
+              info: Bookmaker by ID
+        - name: id
+          in: query
+          required: true
+          description: Bookmaker ID. Required by every operation.
+          schema:
+            type: string
+          example: '2'
+      responses:
+        '200':
+          description: 'The `data` shape depends on `t`: an object for single-resource operations and an array for lists. `meta` carries the request allowance and pagination.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DataResponse'
+        '400':
+          description: Invalid `t` value, invalid parameter value or missing operation-specific parameter.
+        '401':
+          description: Missing or invalid `user` or `token`.
+        '403':
+          description: The league, dataset or operation is not available on the account plan.
+        '429':
+          description: Request allowance exhausted.
+        4XX:
+          $ref: '#/components/responses/ClientError'
+  /v2.2/markets/:
+    get:
+      summary: Markets
+      operationId: getMarkets
+      tags:
+        - Betting
+      description: |
+        Betting market catalogue used by the odds datasets, such as 1X2, Asian handicap and over/under.
+
+        ## Operations
+
+        The `t` query parameter selects the operation. Parameters not listed for an operation are ignored.
+
+        | `t` | Operation | Required | Optional |
+        | --- | --- | --- | --- |
+        | `info` | Market by ID. | `id` | — |
+
+        ## Examples
+
+        Market by ID:
+
+        ```http
+        GET /v2.2/markets/?user=USER&token=TOKEN&t=info&id=1
+        ```
+      x-operations:
+        - t: info
+          title: Market by ID
+          required:
+            - id
+          optional: []
+      parameters:
+        - $ref: '#/components/parameters/User'
+        - $ref: '#/components/parameters/Token'
+        - name: t
+          in: query
+          required: true
+          description: Operation selector. See the operations table.
+          example: info
+          schema:
+            type: string
+            enum:
+              - info
+            x-enumDescriptions:
+              info: Market by ID
+        - name: id
+          in: query
+          required: true
+          description: Market ID. Required by every operation.
+          schema:
+            type: string
+          example: '1'
+      responses:
+        '200':
+          description: 'The `data` shape depends on `t`: an object for single-resource operations and an array for lists. `meta` carries the request allowance and pagination.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DataResponse'
+        '400':
+          description: Invalid `t` value, invalid parameter value or missing operation-specific parameter.
+        '401':
+          description: Missing or invalid `user` or `token`.
+        '403':
+          description: The league, dataset or operation is not available on the account plan.
+        '429':
+          description: Request allowance exhausted.
+        4XX:
+          $ref: '#/components/responses/ClientError'
+  /v2.2/broadcast/:
+    get:
+      summary: Broadcast and TV channels
+      operationId: getBroadcasts
+      tags:
+        - Broadcast
+      description: |
+        TV schedules and the TV channel catalogue. Use these operations, the fixture include `broadcast` and the fixture operation `t=tv` to build "where to watch" features.
+
+        ## Operations
+
+        The `t` query parameter selects the operation. Parameters not listed for an operation are ignored. The theme column marks datasets that themed plans (Odds, Broadcast) include only for their own theme; Free and Standard plans include every theme for their leagues.
+
+        | `t` | Operation | Required | Optional | Theme |
+        | --- | --- | --- | --- | --- |
+        | `schedule` | Matches on TV by date. Matches broadcast on a date. Add `include=tvs` to embed the channel details in each match. | `d` | `include`, `utc`, `lang`, `page` | broadcast |
+        | `match_tvs` | TV channels of a match. | `id` | `country_broadcast_id` | broadcast |
+        | `list` | TV channels. All TV channels, optionally filtered by country or by having scheduled matches. Paginated. | — | `country_id`, `has_schedule`, `page` | broadcast |
+        | `info` | TV channel by ID. | `id` | — | broadcast |
+
+        ## Includes
+
+        Comma-separated dataset names for `include`, without spaces:
+
+        - `tvs`: channel details embedded in each match of `schedule`
+
+        ## Examples
+
+        Matches on TV by date:
+
+        ```http
+        GET /v2.2/broadcast/?user=USER&token=TOKEN&t=schedule&d=2026-08-30&include=tvs&utc=2
+        ```
+
+        TV channels of a match:
+
+        ```http
+        GET /v2.2/broadcast/?user=USER&token=TOKEN&t=match_tvs&id=2589310
+        ```
+
+        TV channels:
+
+        ```http
+        GET /v2.2/broadcast/?user=USER&token=TOKEN&t=list&country_id=15
+        ```
+
+        TV channel by ID:
+
+        ```http
+        GET /v2.2/broadcast/?user=USER&token=TOKEN&t=info&id=2
+        ```
+      x-operations:
+        - t: schedule
+          title: Matches on TV by date
+          required:
+            - d
+          optional:
+            - include
+            - utc
+            - lang
+            - page
+          theme: broadcast
+        - t: match_tvs
+          title: TV channels of a match
+          required:
+            - id
+          optional:
+            - country_broadcast_id
+          theme: broadcast
+        - t: list
+          title: TV channels
+          required: []
+          optional:
+            - country_id
+            - has_schedule
+            - page
+          theme: broadcast
+        - t: info
+          title: TV channel by ID
+          required:
+            - id
+          optional: []
+          theme: broadcast
+      parameters:
+        - $ref: '#/components/parameters/User'
+        - $ref: '#/components/parameters/Token'
+        - name: t
+          in: query
+          required: true
+          description: Operation selector. See the operations table.
+          example: schedule
+          schema:
+            type: string
+            enum:
+              - schedule
+              - match_tvs
+              - list
+              - info
+            x-enumDescriptions:
+              schedule: Matches on TV by date
+              match_tvs: TV channels of a match
+              list: TV channels
+              info: TV channel by ID
+        - name: id
+          in: query
+          required: false
+          description: TV channel ID for `info`; match ID for `match_tvs`. Required when `t` is `match_tvs`, `info`.
+          schema:
+            type: string
+          example: '2'
+        - name: d
+          in: query
+          required: false
+          description: Calendar date in `YYYY-MM-DD` format. Required when `t` is `schedule`.
+          schema:
+            type: string
+            format: date
+          example: '2026-08-30'
+        - name: country_id
+          in: query
+          required: false
+          description: Country ID. Optional for `list`.
+          schema:
+            type: string
+          example: '15'
+        - name: country_broadcast_id
+          in: query
+          required: false
+          description: Restrict the channels to one broadcast country. Optional for `match_tvs`.
+          schema:
+            type: string
+          example: '5'
+        - name: has_schedule
+          in: query
+          required: false
+          description: Set to `1` to return only channels with scheduled matches. Optional for `list`.
+          schema:
+            type: string
+          example: '1'
+        - name: include
+          in: query
+          required: false
+          description: 'Comma-separated datasets to embed in the response, without spaces. Supported values: `tvs`. See the includes section.'
+          example: tvs
+          schema:
+            type: string
+        - $ref: '#/components/parameters/Utc'
+        - $ref: '#/components/parameters/Lang'
+        - $ref: '#/components/parameters/Page'
+      responses:
+        '200':
+          description: 'The `data` shape depends on `t`: an object for single-resource operations and an array for lists. `meta` carries the request allowance and pagination.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DataResponse'
+        '400':
+          description: Invalid `t` value, invalid parameter value or missing operation-specific parameter.
+        '401':
+          description: Missing or invalid `user` or `token`.
+        '403':
+          description: The league, dataset or operation is not available on the account plan.
+        '429':
+          description: Request allowance exhausted.
+        4XX:
+          $ref: '#/components/responses/ClientError'
+  /v2.2/players/:
+    get:
+      summary: Players
+      operationId: getPlayers
+      tags:
+        - People
+      description: |
+        Player profiles with biography, current team, national team, market value and season roles.
+
+        ## Operations
+
+        The `t` query parameter selects the operation. Parameters not listed for an operation are ignored.
+
+        | `t` | Operation | Required | Optional |
+        | --- | --- | --- | --- |
+        | `info` | Player by ID. | `id` | — |
+        | `list` | Players by country. | `country_id` | `page` |
+
+        ## Examples
+
+        Player by ID:
+
+        ```http
+        GET /v2.2/players/?user=USER&token=TOKEN&t=info&id=11306
+        ```
+
+        Players by country:
+
+        ```http
+        GET /v2.2/players/?user=USER&token=TOKEN&t=list&country_id=4
+        ```
+      x-operations:
+        - t: info
+          title: Player by ID
+          required:
+            - id
+          optional: []
+        - t: list
+          title: Players by country
+          required:
+            - country_id
+          optional:
+            - page
+      parameters:
+        - $ref: '#/components/parameters/User'
+        - $ref: '#/components/parameters/Token'
+        - name: t
+          in: query
+          required: true
+          description: Operation selector. See the operations table.
+          example: info
+          schema:
+            type: string
+            enum:
+              - info
+              - list
+            x-enumDescriptions:
+              info: Player by ID
+              list: Players by country
+        - name: id
+          in: query
+          required: false
+          description: Player ID. Required when `t` is `info`.
+          schema:
+            type: string
+          example: '11306'
+        - name: country_id
+          in: query
+          required: false
+          description: Country ID. Required when `t` is `list`.
+          schema:
+            type: string
+          example: '4'
+        - $ref: '#/components/parameters/Page'
+      responses:
+        '200':
+          description: 'The `data` shape depends on `t`: an object for single-resource operations and an array for lists. `meta` carries the request allowance and pagination.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DataResponse'
+        '400':
+          description: Invalid `t` value, invalid parameter value or missing operation-specific parameter.
+        '401':
+          description: Missing or invalid `user` or `token`.
+        '403':
+          description: The league, dataset or operation is not available on the account plan.
+        '429':
+          description: Request allowance exhausted.
+        4XX:
+          $ref: '#/components/responses/ClientError'
+  /v2.2/coaches/:
+    get:
+      summary: Coaches
+      operationId: getCoaches
+      tags:
+        - People
+      description: |
+        Coach profiles.
+
+        ## Operations
+
+        The `t` query parameter selects the operation. Parameters not listed for an operation are ignored.
+
+        | `t` | Operation | Required | Optional |
+        | --- | --- | --- | --- |
+        | `info` | Coach by ID. | `id` | — |
+        | `list` | Coaches. All coaches, or the coaches of a country. Paginated. | — | `country_id`, `page` |
+
+        ## Examples
+
+        Coach by ID:
+
+        ```http
+        GET /v2.2/coaches/?user=USER&token=TOKEN&t=info&id=662
+        ```
+
+        Coaches:
+
+        ```http
+        GET /v2.2/coaches/?user=USER&token=TOKEN&t=list&country_id=25
+        ```
+      x-operations:
+        - t: info
+          title: Coach by ID
+          required:
+            - id
+          optional: []
+        - t: list
+          title: Coaches
+          required: []
+          optional:
+            - country_id
+            - page
+      parameters:
+        - $ref: '#/components/parameters/User'
+        - $ref: '#/components/parameters/Token'
+        - name: t
+          in: query
+          required: true
+          description: Operation selector. See the operations table.
+          example: info
+          schema:
+            type: string
+            enum:
+              - info
+              - list
+            x-enumDescriptions:
+              info: Coach by ID
+              list: Coaches
+        - name: id
+          in: query
+          required: false
+          description: Coach ID. Required when `t` is `info`.
+          schema:
+            type: string
+          example: '662'
+        - name: country_id
+          in: query
+          required: false
+          description: Country ID. Optional for `list`.
+          schema:
+            type: string
+          example: '25'
+        - $ref: '#/components/parameters/Page'
+      responses:
+        '200':
+          description: 'The `data` shape depends on `t`: an object for single-resource operations and an array for lists. `meta` carries the request allowance and pagination.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DataResponse'
+        '400':
+          description: Invalid `t` value, invalid parameter value or missing operation-specific parameter.
+        '401':
+          description: Missing or invalid `user` or `token`.
+        '403':
+          description: The league, dataset or operation is not available on the account plan.
+        '429':
+          description: Request allowance exhausted.
+        4XX:
+          $ref: '#/components/responses/ClientError'
+  /v2.2/referees/:
+    get:
+      summary: Referees
+      operationId: getReferees
+      tags:
+        - People
+      description: |
+        Referee profiles.
+
+        ## Operations
+
+        The `t` query parameter selects the operation. Parameters not listed for an operation are ignored.
+
+        | `t` | Operation | Required | Optional |
+        | --- | --- | --- | --- |
+        | `info` | Referee by ID. | `id` | — |
+
+        ## Examples
+
+        Referee by ID:
+
+        ```http
+        GET /v2.2/referees/?user=USER&token=TOKEN&t=info&id=372
+        ```
+      x-operations:
+        - t: info
+          title: Referee by ID
+          required:
+            - id
+          optional: []
+      parameters:
+        - $ref: '#/components/parameters/User'
+        - $ref: '#/components/parameters/Token'
+        - name: t
+          in: query
+          required: true
+          description: Operation selector. See the operations table.
+          example: info
+          schema:
+            type: string
+            enum:
+              - info
+            x-enumDescriptions:
+              info: Referee by ID
+        - name: id
+          in: query
+          required: true
+          description: Referee ID. Required by every operation.
+          schema:
+            type: string
+          example: '372'
+      responses:
+        '200':
+          description: 'The `data` shape depends on `t`: an object for single-resource operations and an array for lists. `meta` carries the request allowance and pagination.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DataResponse'
+              examples:
+                info:
+                  summary: Referee by ID
+                  value:
+                    data:
+                      id: '372'
+                      name: Deniz Aytekin
+                      common_name: Aytekin, Deniz
+                      firstname: Deniz
+                      lastname: Aytekin
+                      birthdate: 21/07/78
+                      img: https://cdn.soccersapi.com/images/soccer/referees/50/372.png
+                      country:
+                        id: 4
+                        name: Germany
+                        cc: de
+                    meta:
+                      requests_left: 2950
+                      user: your_username
+                      plan: Soccer API 50
+                      pages: 1
+                      page: 1
+                      count: 1
+                      total: 1
+        '400':
+          description: Invalid `t` value, invalid parameter value or missing operation-specific parameter.
+        '401':
+          description: Missing or invalid `user` or `token`.
+        '403':
+          description: The league, dataset or operation is not available on the account plan.
+        '429':
+          description: Request allowance exhausted.
+        4XX:
+          $ref: '#/components/responses/ClientError'
+  /v2.2/venues/:
+    get:
+      summary: Venues
+      operationId: getVenues
+      tags:
+        - Venues
+      description: |
+        Stadiums with capacity, city, coordinates and images in several sizes.
+
+        ## Operations
+
+        The `t` query parameter selects the operation. Parameters not listed for an operation are ignored.
+
+        | `t` | Operation | Required | Optional |
+        | --- | --- | --- | --- |
+        | `list` | Venues. All venues, or the venues of a country. Paginated. | — | `country_id`, `page` |
+        | `byseason` | Venues by season. Venues of the teams taking part in a season. | `season_id` | — |
+
+        ## Examples
+
+        Venues:
+
+        ```http
+        GET /v2.2/venues/?user=USER&token=TOKEN&t=list&country_id=15
+        ```
+
+        Venues by season:
+
+        ```http
+        GET /v2.2/venues/?user=USER&token=TOKEN&t=byseason&season_id=14192
+        ```
+      x-operations:
+        - t: list
+          title: Venues
+          required: []
+          optional:
+            - country_id
+            - page
+        - t: byseason
+          title: Venues by season
+          required:
+            - season_id
+          optional: []
+      parameters:
+        - $ref: '#/components/parameters/User'
+        - $ref: '#/components/parameters/Token'
+        - name: t
+          in: query
+          required: true
+          description: Operation selector. See the operations table.
+          example: list
+          schema:
+            type: string
+            enum:
+              - list
+              - byseason
+            x-enumDescriptions:
+              list: Venues
+              byseason: Venues by season
+        - name: country_id
+          in: query
+          required: false
+          description: Country ID. Optional for `list`.
+          schema:
+            type: string
+          example: '15'
+        - name: season_id
+          in: query
+          required: false
+          description: Season ID. Required when `t` is `byseason`.
+          schema:
+            type: string
+          example: '14192'
+        - $ref: '#/components/parameters/Page'
+      responses:
+        '200':
+          description: 'The `data` shape depends on `t`: an object for single-resource operations and an array for lists. `meta` carries the request allowance and pagination.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DataResponse'
+              examples:
+                list:
+                  summary: Venues
+                  value:
+                    data:
+                      - id: 191
+                        name: Cashpoint Arena
+                        capacity: 8500
+                        city: Altach
+                        address: null
+                        img: https://cdn.soccersapi.com/images/soccer/venues/191.png
+                        coordinates:
+                          lat: '47.353889'
+                          long: '9.636667'
+                        country:
+                          id: 15
+                          name: Austria
+                          continent: Europe
+                          sub_region: null
+                          long: null
+                          lat: null
+                          img: https://cdn.soccersapi.com/images/countries/30/at.png
+                          code: at
+                          cc: at
+                      - id: 192
+                        name: Lavanttal-Arena
+                        capacity: 7300
+                        city: Wolfsberg
+                        address: null
+                        img: https://cdn.soccersapi.com/images/soccer/venues/192.png
+                        coordinates:
+                          lat: '46.826258'
+                          long: '14.851989'
+                        country:
+                          id: 15
+                          name: Austria
+                          continent: Europe
+                          sub_region: null
+                          long: null
+                          lat: null
+                          img: https://cdn.soccersapi.com/images/countries/30/at.png
+                          code: at
+                          cc: at
+                      - id: 321
+                        name: Stadion Birkenwiese
+                        capacity: 12000
+                        city: Dornbirn
+                        address: Hochsterstrasse 78a
+                        img: https://cdn.soccersapi.com/images/soccer/venues/321.png
+                        coordinates:
+                          lat: '47.416498'
+                          long: '9.724090'
+                        country:
+                          id: 15
+                          name: Austria
+                          continent: Europe
+                          sub_region: null
+                          long: null
+                          lat: null
+                          img: https://cdn.soccersapi.com/images/countries/30/at.png
+                          code: at
+                          cc: at
+                    meta:
+                      requests_left: 2950
+                      user: your_username
+                      plan: Soccer API 50
+                      pages: 2
+                      page: 1
+                      count: 100
+                      total: 147
+                      msg: ''
+        '400':
+          description: Invalid `t` value, invalid parameter value or missing operation-specific parameter.
+        '401':
+          description: Missing or invalid `user` or `token`.
+        '403':
+          description: The league, dataset or operation is not available on the account plan.
+        '429':
+          description: Request allowance exhausted.
+        4XX:
+          $ref: '#/components/responses/ClientError'
+  /v2.2/media/:
+    get:
+      summary: Media highlights
+      operationId: getMedia
+      tags:
+        - Media
+      description: |
+        Video highlights by league, season, team, round, match or date. Beta: the response shape can still change. `data` is an array of highlight groups, each an array of highlight objects with title, thumbnail, URL and source.
+
+        ## Operations
+
+        The `t` query parameter selects the operation. Parameters not listed for an operation are ignored.
+
+        | `t` | Operation | Required | Optional |
+        | --- | --- | --- | --- |
+        | `league` | Highlights by league. | `id` | — |
+        | `season` | Highlights by season. | `id` | — |
+        | `team` | Highlights by team. | `id` | — |
+        | `round` | Highlights by round. | `id` | — |
+        | `event` | Highlights by match. | `id` | — |
+        | `date` | Highlights by date. | `d` | — |
+
+        ## Examples
+
+        Highlights by league:
+
+        ```http
+        GET /v2.2/media/?user=USER&token=TOKEN&t=league&id=637
+        ```
+
+        Highlights by season:
+
+        ```http
+        GET /v2.2/media/?user=USER&token=TOKEN&t=season&id=14341
+        ```
+
+        Highlights by team:
+
+        ```http
+        GET /v2.2/media/?user=USER&token=TOKEN&t=team&id=116
+        ```
+
+        Highlights by round:
+
+        ```http
+        GET /v2.2/media/?user=USER&token=TOKEN&t=round&id=182349
+        ```
+
+        Highlights by match:
+
+        ```http
+        GET /v2.2/media/?user=USER&token=TOKEN&t=event&id=1843815
+        ```
+
+        Highlights by date:
+
+        ```http
+        GET /v2.2/media/?user=USER&token=TOKEN&t=date&d=2026-08-30
+        ```
+      x-operations:
+        - t: league
+          title: Highlights by league
+          required:
+            - id
+          optional: []
+        - t: season
+          title: Highlights by season
+          required:
+            - id
+          optional: []
+        - t: team
+          title: Highlights by team
+          required:
+            - id
+          optional: []
+        - t: round
+          title: Highlights by round
+          required:
+            - id
+          optional: []
+        - t: event
+          title: Highlights by match
+          required:
+            - id
+          optional: []
+        - t: date
+          title: Highlights by date
+          required:
+            - d
+          optional: []
+      parameters:
+        - $ref: '#/components/parameters/User'
+        - $ref: '#/components/parameters/Token'
+        - name: t
+          in: query
+          required: true
+          description: Operation selector. See the operations table.
+          example: league
+          schema:
+            type: string
+            enum:
+              - league
+              - season
+              - team
+              - round
+              - event
+              - date
+            x-enumDescriptions:
+              league: Highlights by league
+              season: Highlights by season
+              team: Highlights by team
+              round: Highlights by round
+              event: Highlights by match
+              date: Highlights by date
+        - name: id
+          in: query
+          required: false
+          description: ID of the league, season, team, round or match selected by `t`. Required when `t` is `league`, `season`, `team`, `round`, `event`.
+          schema:
+            type: string
+          example: '637'
+        - name: d
+          in: query
+          required: false
+          description: Calendar date in `YYYY-MM-DD` format for `t=date`. Required when `t` is `date`.
+          schema:
+            type: string
+            format: date
+          example: '2026-08-30'
+      responses:
+        '200':
+          description: 'The `data` shape depends on `t`: an object for single-resource operations and an array for lists. `meta` carries the request allowance and pagination.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DataResponse'
+              examples:
+                league:
+                  summary: Highlights by league
+                  value:
+                    data:
+                      - - id: 1843815
+                          league_id: 637
+                          season_id: 14341
+                          home_id: 116
+                          away_id: 118
+                          round_id: 182349
+                          stage_id: 207
+                          group_id: 1
+                          startdate: '2024-11-24 20:00:00'
+                          title: ATHLETIC CLUB 1 - 0 REAL SOCIEDAD I RESUMEN LALIGA EA SPORTS
+                          image: https://i.ytimg.com/vi/aVy9O_x1Fe8/maxresdefault.jpg
+                          url: https://www.youtube.com/watch?v=aVy9O_x1Fe8
+                          source: www.youtube.com
+                        - id: 1843819
+                          league_id: 637
+                          season_id: 14341
+                          home_id: 121
+                          away_id: 113
+                          round_id: 182349
+                          stage_id: 207
+                          group_id: 1
+                          startdate: '2024-11-24 17:30:00'
+                          title: CD LEGANÉS 0 - 3 REAL MADRID I RESUMEN LALIGA EA SPORTS
+                          image: https://i.ytimg.com/vi/pQVtyVtkGfM/maxresdefault.jpg
+                          url: https://www.youtube.com/watch?v=pQVtyVtkGfM
+                          source: www.youtube.com
+                        - id: 1843819
+                          league_id: 637
+                          season_id: 14341
+                          home_id: 121
+                          away_id: 113
+                          round_id: 182349
+                          stage_id: 207
+                          group_id: 1
+                          startdate: '2024-11-24 17:30:00'
+                          title: CD LEGANÉS 0 - 3 REAL MADRID I RESUMEN LALIGA EA SPORTS
+                          image: https://i.ytimg.com/vi/9lStg3L28xQ/maxresdefault.jpg
+                          url: https://www.youtube.com/watch?v=9lStg3L28xQ
+                          source: www.youtube.com
+                    meta:
+                      requests_left: 2950
+                      user: your_username
+                      plan: Soccer API 50
+                      pages: 1
+                      page: 1
+                      total: 56
+                      msg: ''
+        '400':
+          description: Invalid `t` value, invalid parameter value or missing operation-specific parameter.
+        '401':
+          description: Missing or invalid `user` or `token`.
+        '403':
+          description: The league, dataset or operation is not available on the account plan.
+        '429':
+          description: Request allowance exhausted.
+        4XX:
+          $ref: '#/components/responses/ClientError'
 webhooks: {}
 components:
+  parameters:
+    User:
+      name: user
+      in: query
+      required: true
+      description: Account username.
+      example: '{{USERNAME}}'
+      schema:
+        type: string
+    Token:
+      name: token
+      in: query
+      required: true
+      description: API token generated in the account dashboard.
+      example: '{{TOKEN}}'
+      schema:
+        type: string
+    Utc:
+      name: utc
+      in: query
+      required: false
+      description: UTC offset applied to returned date/time values. Decimal offsets such as `4.5` are accepted. Omit it for the API default (UTC).
+      example: 2
+      schema:
+        type: number
+        minimum: -12
+        maximum: 14
+    Lang:
+      name: lang
+      in: query
+      required: false
+      description: Language code for localized names and labels where available, for example `en`, `es`, `de`, `fr`, `it`, `pt`, `tr`, `pl`, `ko` or `zh`.
+      example: en
+      schema:
+        type: string
+    Page:
+      name: page
+      in: query
+      required: false
+      description: Page number on paginated operations. The response reports `meta.page` and `meta.pages`.
+      example: 1
+      schema:
+        type: integer
+        minimum: 1
+    OddsFormat:
+      name: odds_format
+      in: query
+      required: false
+      description: 'Odds format on odds datasets: `decimal` (default), `fractional` or `american`.'
+      example: decimal
+      schema:
+        type: string
+        enum:
+          - decimal
+          - fractional
+          - american
   responses:
     ClientError:
       description: |-
@@ -2262,6 +3204,71 @@ components:
           schema:
             $ref: '#/components/schemas/ErrorResponse'
   schemas:
+    DataResponse:
+      type: object
+      required:
+        - data
+        - meta
+      description: Generic envelope. `data` is an object for single-resource operations and an array for lists; see the operation description for the shape.
+      properties:
+        data: {}
+        meta:
+          $ref: '#/components/schemas/ResponseMeta'
+      additionalProperties: true
+    SearchResult:
+      type: object
+      description: One search result. `type` tells which entity the ID belongs to.
+      properties:
+        id:
+          $ref: '#/components/schemas/FlexibleId'
+        name:
+          type: string
+        type:
+          type: string
+          description: Entity type, for example `match`, `league`, `team`, `player`, `referee`, `country`, `continent` or `channel`.
+        startdate:
+          type:
+            - string
+            - 'null'
+          description: Kickoff date and time for match results.
+        home:
+          type:
+            - string
+            - 'null'
+        away:
+          type:
+            - string
+            - 'null'
+        league_name:
+          type:
+            - string
+            - 'null'
+        country_name:
+          type:
+            - string
+            - 'null'
+        cc:
+          type:
+            - string
+            - 'null'
+          description: Country code.
+      required:
+        - id
+        - name
+        - type
+      additionalProperties: true
+    SearchResponse:
+      type: object
+      required:
+        - data
+        - meta
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/SearchResult'
+        meta:
+          $ref: '#/components/schemas/ResponseMeta'
     ErrorResponse:
       type: object
       properties:
