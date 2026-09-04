@@ -877,9 +877,9 @@ paths:
                     cc: at
                     type: match
                 meta:
-                  requests_left: 988930
-                  user: soccersapi2
-                  plan: Free Plan
+                  requests_left: 2950
+                  user: your_username
+                  plan: Soccer API 50
                   pages: 1
                   page: 1
                   count: 0
@@ -994,9 +994,9 @@ paths:
                   id: 2
                   name: Europe
                 meta:
-                  requests_left: 980858
-                  user: soccersapi2
-                  plan: Free Plan
+                  requests_left: 2950
+                  user: your_username
+                  plan: Soccer API 50
                   pages: 1
                   page: 1
                   msg: ''
@@ -1143,9 +1143,9 @@ paths:
                   img: https://cdn.soccersapi.com/images/countries/30/de.png
                   code: de
                 meta:
-                  requests_left: 967809
-                  user: soccersapi2
-                  plan: Free Plan
+                  requests_left: 2950
+                  user: your_username
+                  plan: Soccer API 50
                   pages: 1
                   page: 1
                   msg: ''
@@ -1444,9 +1444,9 @@ paths:
                       fee: '-'
                   departures: null
                 meta:
-                  requests_left: 968331
-                  user: soccersapi2
-                  plan: Soccer API +1000
+                  requests_left: 2950
+                  user: your_username
+                  plan: Soccer API 50
                   pages: 1
                   page: 1
                   count: 1
@@ -2508,9 +2508,9 @@ paths:
                     name: Germany
                     cc: de
                 meta:
-                  requests_left: 752743
-                  user: soccersapi2
-                  plan: Soccer 800 (M)
+                  requests_left: 2950
+                  user: your_username
+                  plan: Soccer API 50
                   pages: 1
                   page: 1
                   count: 1
@@ -4556,9 +4556,9 @@ paths:
                       code: at
                       cc: at
                 meta:
-                  requests_left: 976751
-                  user: soccersapi2
-                  plan: Free Plan
+                  requests_left: 2950
+                  user: your_username
+                  plan: Soccer API 50
                   pages: 2
                   page: 1
                   count: 100
@@ -5489,9 +5489,9 @@ paths:
                       url: https://www.youtube.com/watch?v=I6z4EVCuQIM
                       source: www.youtube.com
                 meta:
-                  requests_left: 991055
-                  user: soccersapi2
-                  plan: Soccer API +1000
+                  requests_left: 2950
+                  user: your_username
+                  plan: Soccer API 50
                   pages: 1
                   page: 1
                   total: 56
