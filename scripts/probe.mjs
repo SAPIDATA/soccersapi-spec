@@ -6,7 +6,9 @@
 //   node scripts/probe.mjs --only=fixtures  # substring filter on id/route
 //   node scripts/probe.mjs --dry           # print the URLs (token masked)
 //   node scripts/probe.mjs --delay=500     # ms between requests (default 250)
+//   node scripts/probe.mjs --ops=my.json   # custom operation list (same format)
 //
+// Credentials come from .env.local or .env (SOCCERSAPI_USER, SOCCERSAPI_TOKEN).
 // Responses are written to tmp/probe/<id>.json (git-ignored) together with
 // summary.json and summary.md. The token is never printed.
 
@@ -18,21 +20,25 @@ const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const BASE = process.env.SOCCERSAPI_BASE_URL || 'https://api.soccersapi.com';
 
 function loadEnv() {
-  const file = resolve(root, '.env');
-  if (!existsSync(file)) return;
-  for (const line of readFileSync(file, 'utf8').split(/\r?\n/)) {
-    const m = line.match(/^\s*(?:export\s+)?([A-Z0-9_]+)\s*=\s*(.*?)\s*$/);
-    if (!m || m[1] in process.env) continue;
-    process.env[m[1]] = m[2].replace(/^(['"])(.*)\1$/, '$2');
+  // .env.local wins over .env; both are git-ignored.
+  for (const name of ['.env.local', '.env']) {
+    const file = resolve(root, name);
+    if (!existsSync(file)) continue;
+    for (const line of readFileSync(file, 'utf8').split(/\r?\n/)) {
+      const m = line.match(/^\s*(?:export\s+)?([A-Z0-9_]+)\s*=\s*(.*?)\s*$/);
+      if (!m || m[1] in process.env) continue;
+      process.env[m[1]] = m[2].replace(/^(['"])(.*)\1$/, '$2');
+    }
   }
 }
 
 function args() {
-  const out = { only: '', dry: false, delay: 250 };
+  const out = { only: '', dry: false, delay: 250, ops: 'scripts/operations.json' };
   for (const a of process.argv.slice(2)) {
     if (a === '--dry') out.dry = true;
     else if (a.startsWith('--only=')) out.only = a.slice(7);
     else if (a.startsWith('--delay=')) out.delay = Number(a.slice(8)) || 0;
+    else if (a.startsWith('--ops=')) out.ops = a.slice(6);
   }
   return out;
 }
@@ -63,14 +69,14 @@ function shape(payload) {
 
 async function main() {
   loadEnv();
-  const { only, dry, delay } = args();
+  const { only, dry, delay, ops: opsFile } = args();
   const user = process.env.SOCCERSAPI_USER;
   const token = process.env.SOCCERSAPI_TOKEN;
   if (!dry && (!user || !token)) {
     console.error('Missing SOCCERSAPI_USER / SOCCERSAPI_TOKEN (see .env.example).');
     process.exit(1);
   }
-  const ops = JSON.parse(readFileSync(resolve(root, 'scripts/operations.json'), 'utf8'))
+  const ops = JSON.parse(readFileSync(resolve(root, opsFile), 'utf8'))
     .filter((op) => !only || op.id.includes(only) || op.route.includes(only));
   const outDir = resolve(root, 'tmp/probe');
   mkdirSync(outDir, { recursive: true });
@@ -84,8 +90,10 @@ async function main() {
       console.log(`${op.id.padEnd(34)} ${shown}`);
       continue;
     }
-    url.searchParams.set('user', user);
-    url.searchParams.set('token', token);
+    if (op.auth !== false) {
+      url.searchParams.set('user', user);
+      url.searchParams.set('token', token);
+    }
     const started = Date.now();
     const row = { id: op.id, request: shown, status: null, ms: null, error: null, shape: null };
     try {
@@ -99,7 +107,7 @@ async function main() {
       row.shape = shape(body);
     } catch (err) {
       row.ms = Date.now() - started;
-      row.error = String(err?.message || err).replace(token, '***');
+      row.error = String(err?.message || err).split(token).join('***');
     }
     results.push(row);
     const s = row.shape;

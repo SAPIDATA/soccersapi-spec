@@ -77,8 +77,7 @@
     "route": "/v2.2/continents/",
     "query": {
       "t": "list"
-    },
-    "verify": true
+    }
   },
   {
     "id": "continents.info",
@@ -169,8 +168,7 @@
     "query": {
       "t": "info",
       "id": "111"
-    },
-    "verify": true
+    }
   },
   {
     "id": "teams.list",
@@ -268,8 +266,7 @@
     "query": {
       "t": "info",
       "id": "26"
-    },
-    "verify": true
+    }
   },
   {
     "id": "groups.byseason",
@@ -287,8 +284,7 @@
     "query": {
       "t": "info",
       "id": "5108"
-    },
-    "verify": true
+    }
   },
   {
     "id": "rounds.byseason",
@@ -297,6 +293,15 @@
     "query": {
       "t": "byseason",
       "season_id": "406"
+    }
+  },
+  {
+    "id": "rounds.info",
+    "title": "Round by ID",
+    "route": "/v2.2/rounds/",
+    "query": {
+      "t": "info",
+      "id": "1994"
     }
   },
   {
@@ -315,8 +320,7 @@
     "query": {
       "t": "today",
       "utc": "2"
-    },
-    "verify": true
+    }
   },
   {
     "id": "livescores.tomorrow",
@@ -454,8 +458,7 @@
     "query": {
       "t": "match_comments",
       "id": "2589310"
-    },
-    "verify": true
+    }
   },
   {
     "id": "fixtures.match_sidelined",
@@ -539,8 +542,7 @@
     "query": {
       "t": "match",
       "id": "2589310"
-    },
-    "verify": true
+    }
   },
   {
     "id": "h2h.teams",
@@ -559,8 +561,7 @@
     "query": {
       "t": "match",
       "id": "2589310"
-    },
-    "verify": true
+    }
   },
   {
     "id": "leaders.topscorers",
@@ -581,12 +582,37 @@
     }
   },
   {
+    "id": "leaders.topcards",
+    "title": "Most cards",
+    "route": "/v2.2/leaders/",
+    "query": {
+      "t": "topcards",
+      "season_id": "12516"
+    }
+  },
+  {
+    "id": "bookmakers.list",
+    "title": "All bookmakers",
+    "route": "/v2.2/bookmakers/",
+    "query": {
+      "t": "list"
+    }
+  },
+  {
     "id": "bookmakers.info",
     "title": "Bookmaker by ID",
     "route": "/v2.2/bookmakers/",
     "query": {
       "t": "info",
       "id": "2"
+    }
+  },
+  {
+    "id": "markets.list",
+    "title": "All markets",
+    "route": "/v2.2/markets/",
+    "query": {
+      "t": "list"
     }
   },
   {
@@ -643,12 +669,11 @@
     "query": {
       "t": "info",
       "id": "11306"
-    },
-    "verify": true
+    }
   },
   {
     "id": "players.list",
-    "title": "Players by country",
+    "title": "Players",
     "route": "/v2.2/players/",
     "query": {
       "t": "list",
@@ -683,6 +708,15 @@
     }
   },
   {
+    "id": "referees.list",
+    "title": "Referees",
+    "route": "/v2.2/referees/",
+    "query": {
+      "t": "list",
+      "country_id": "4"
+    }
+  },
+  {
     "id": "venues.list",
     "title": "Venues",
     "route": "/v2.2/venues/",
@@ -698,6 +732,15 @@
     "query": {
       "t": "byseason",
       "season_id": "14192"
+    }
+  },
+  {
+    "id": "venues.info",
+    "title": "Venue by ID",
+    "route": "/v2.2/venues/",
+    "query": {
+      "t": "info",
+      "id": "191"
     }
   },
   {
