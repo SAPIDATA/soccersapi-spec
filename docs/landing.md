@@ -5,6 +5,11 @@ matches, events, lineups, statistics, odds, broadcasts and football entities.
 The exact competitions, datasets and fields available depend on the account
 plan, competition coverage and what the source has published for each match.
 
+Every route takes a `t` query parameter that selects the operation. The
+reference lists, for each route, the accepted `t` values with their required
+and optional parameters, a captured response example per operation and an
+interactive client to send requests with your own credentials.
+
 ---
 
 ## Getting started

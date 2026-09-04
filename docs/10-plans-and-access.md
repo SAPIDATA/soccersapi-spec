@@ -52,4 +52,5 @@ The reference groups operations by tag. Odds operations live under **Betting**
 and in the fixture operations `match_odds`, `match_oddsinplay` and
 `match_odds_info`. Broadcast operations live under **Broadcast** and in the
 fixture include `broadcast` and the operation `t=tv`. Everything else belongs
-to the core football data model available on every plan.
+to the core football data model available on every plan. The **Media** route is
+announced but not live yet and is marked "coming soon" in the reference.

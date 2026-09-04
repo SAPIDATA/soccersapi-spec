@@ -52,9 +52,10 @@ Full API reference and examples:
 👉 [docs.soccersapi.com](https://docs.soccersapi.com)
 
 Key starting points:
-- Introduction
-- Global Parameters
-- Recipes & Examples
+- [Introduction](./01-introduction.md)
+- [Shared Query Parameters](./05-global-query-parameters.md)
+- [Match Events and Dataset Includes](./09-match-events-and-includes.md)
+- [Plans and Data Access](./10-plans-and-access.md)
 
 ---
 
@@ -69,6 +70,7 @@ curl -L -g "https://api.soccersapi.com/v2.2/leagues/?user={{USERNAME}}&token={{T
 
 Replace `1005` with an enabled league ID from the account if necessary.
 
-Every v2.2 resource uses an operation selector such as `t=info`, `t=list` or
-`t=live`. Check the endpoint reference for the accepted value and any
-operation-specific parameters.
+Every v2.2 route uses an operation selector such as `t=info`, `t=list` or
+`t=live`. Each route in the reference has an operations table with the accepted
+values and the parameters each one requires; list operations return 100 items
+per page and report the page count in `meta.pages`.

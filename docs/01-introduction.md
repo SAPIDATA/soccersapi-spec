@@ -2,7 +2,9 @@
 
 SoccersAPI is a REST API for football data. Version 2.2 exposes resource routes
 such as `/livescores/`, `/fixtures/`, `/leagues/`, `/teams/` and `/players/`.
-Most routes use the required `t` query parameter to select an operation.
+Every route uses the required `t` query parameter to select an operation; the
+reference documents each route with a table of its `t` values and the
+parameters each one needs.
 
 Common product use cases include:
 
@@ -54,5 +56,8 @@ For plan or coverage questions, contact
    the difference between operation selectors and dataset includes.
 3. For live timelines, read [Match Events and Dataset
    Includes](./09-match-events-and-includes.md).
-4. Use the endpoint reference for the accepted `t` value and conditional
-   parameters of each resource route.
+4. Check [Plans and Data Access](./10-plans-and-access.md) to understand which
+   leagues and datasets the account can read.
+5. Use the reference for the accepted `t` values and conditional parameters of
+   each route, and the [Interactive API Explorer](./07-interactive-api-explorer.md)
+   to try them.

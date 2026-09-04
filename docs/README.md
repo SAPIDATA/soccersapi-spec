@@ -6,8 +6,10 @@ teams, seasons, players, coaches, referees, venues, statistics, head-to-head,
 bookmakers, markets, broadcasts and media.
 
 The file [`openapi.yaml`](./openapi.yaml) is the machine-readable API contract.
-SoccersAPI v2.2 uses a query operation selector (`t`) on resource routes, so the
-accepted `t` values and conditional parameters are documented on each route.
+SoccersAPI v2.2 uses a query operation selector (`t`) on resource routes. Each
+route documents every accepted `t` value with its required and optional
+parameters in an operations table, and repeats the same list in a machine-readable
+`x-operations` extension. Narrative guides are listed in [`docs-README.md`](./docs-README.md).
 
 ## Using the spec
 

@@ -68,6 +68,20 @@ each operation once and writes the responses and a status summary under
 or `--dry` to print the requests without calling the API. Never commit `.env`
 or the captured responses.
 
+## Documentation site
+
+The public documentation is a static [Scalar API Reference](https://github.com/scalar/scalar)
+built from the contract and the guides, with an interactive client that stores
+your `user` and `token` in the browser:
+
+```bash
+npm run docs:serve
+```
+
+Then open http://localhost:8090. `npm run docs:build` alone writes `dist/index.html`
+and `dist/openapi.docs.json`; the workflow in `.github/workflows/docs.yml`
+publishes the same build to GitHub Pages once Pages is enabled for the repository.
+
 ## Match events
 
 Use `include=events` to embed timelines in livescores or match-returning fixture

@@ -1,51 +1,43 @@
 # Interactive API Explorer
 
-You can run API calls directly inside our [API Documentation](https://docs.soccersapi.com/) using the built-in **Interactive API Explorer**.  
-This allows you to test endpoints in real time without leaving the docs.
+The reference lets you send real requests to the API from the browser. Every
+call goes straight to `api.soccersapi.com` with your own credentials, so the
+responses are exactly what your application will receive.
 
----
+## 1. Enter your credentials once
 
-## 1. Open an Endpoint Page
-Navigate to the endpoint you want to test (for example, **Get Countries**).  
+Open **Authentication** at the top of the reference and fill in `user` and
+`token`. The values are stored in your browser's local storage and reused by
+every request until you clear them; they are never sent anywhere except the
+API. Use a development token from
+[admin.soccersapi.com/api-tokens](https://admin.soccersapi.com/api-tokens).
 
-![Screenshot 2025-09-28 at 16.46.59.png](https://api.apidog.com/api/v1/projects/479149/resources/362655/image-preview)
+## 2. Pick the route and the operation
 
----
+Choose a route in the sidebar, for example **Fixtures**. Its operations table
+lists every accepted `t` value with the required and optional parameters. In
+the request panel select the `t` value and fill in the parameters that the
+operation needs; parameters that do not apply to the selected operation are
+ignored by the API.
 
-## 2. Click **Try It Out**
-At the top of the request panel, click the **Try It Out** button.  
+## 3. Send the request
 
-![Screenshot 2025-09-28 at 16.49.15.png](https://api.apidog.com/api/v1/projects/479149/resources/362656/image-preview)
+Press **Send**. The response panel shows the HTTP status, the response time and
+the JSON body. The **Examples** selector in the response section shows a
+captured response for each `t` value, so you can see the shape before calling.
 
----
+## 4. Copy the request
 
-## 3. Select the Environment
-Choose the default environment, which is already preloaded with:  
-- `{{BASE_URL}}` → `https://api.soccersapi.com`  
-- `{{USERNAME}}` → your account username  
-- `{{TOKEN}}` → your API token  
+The code snippet next to the request is generated for the language selected at
+the top of the panel (curl, JavaScript, Python and others) and includes the
+query parameters you filled in. Remove the credentials before sharing it.
 
+## Notes
 
-![Screenshot 2025-09-28 at 16.55.26.png](https://api.apidog.com/api/v1/projects/479149/resources/362667/image-preview)
-
----
-
-## 4. Send the Request
-Click **Send** to launch the request.  
-The **Response panel** will show:  
-- Status code (e.g., 200 OK, 401 Unauthorized)  
-- Response time  
-- Full JSON payload  
-
-
-![Screenshot 2025-09-28 at 16.53.41.png](https://api.apidog.com/api/v1/projects/479149/resources/362663/image-preview)
-
----
-
-## 5. Example: Test Countries Endpoint
-```bash
-curl -L -g "https://api.soccersapi.com/v2.2/countries/?user={{USERNAME}}&token={{TOKEN}}&t=list"
-```
-
-The explorer sends a real request and consumes account quota. Use a development
-token, and remove credentials before sharing generated code or response logs.
+- The token travels in the query string, as the API requires, so it appears in
+  browser history and server logs. Use a development token and rotate it if it
+  leaks.
+- Requests made from the explorer count against the request allowance of the
+  account; `meta.requests_left` shows what is left.
+- The explorer is a static page built from the OpenAPI contract with
+  `npm run docs:build`; see the repository README to run it locally.

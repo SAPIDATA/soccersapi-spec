@@ -4,6 +4,24 @@
 > Use the `include` parameter to embed related datasets in one call (for example `include=events,stats`) and reduce round trips. Dataset include names are different from standalone operation selectors such as `t=match_events`.
 > Use the `utc` parameter to get date/time values in your preferred timezone (for example `utc=4` or `utc=4.5`).
 
+## Documentation verification (2026-09-04)
+
+- Every operation of every route was exercised against production and the
+  reference now lists all accepted `t` values per route with their parameters,
+  response schemas and a captured example each.
+- Documented operations that were missing from the reference: `leaders`
+  `topcards`, `bookmakers` and `markets` `list`, `referees` `list`, `venues`
+  `info`, `rounds` `info`; `players`, `coaches`, `venues` and `referees` lists
+  work without `country_id`.
+- Pagination: 100 items per page on entity lists, livescores feeds,
+  `fixtures?t=schedule` and `broadcast?t=schedule`; `per_page` is not
+  supported. Season fixtures, leaders, match datasets and search return in
+  full.
+- `has_schedule` and `country_broadcast_id` have no effect and were removed.
+  `t=multiple` is not valid; use `t=sort&ids=`.
+- Media highlights are announced but not live yet; the route is marked
+  "coming soon".
+
 ## Documentation correction (2026-08-30)
 
 - Corrected match dataset include names to `events` and `stats`.
