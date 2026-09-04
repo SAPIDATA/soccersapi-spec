@@ -1,8 +1,18 @@
 # [v2.2] Release notes
 
 > Use the examples in the notes to test endpoints directly.
-> Use the &include= parameter to embed related datasets in one call (for example &include=match_events,match_stats) and reduce round trips.
->Use the &utc= parameter to get date/time values in your preferred timezone (for example &utc=4 or &utc=4.5).
+> Use the `include` parameter to embed related datasets in one call (for example `include=events,stats`) and reduce round trips. Dataset include names are different from standalone operation selectors such as `t=match_events`.
+> Use the `utc` parameter to get date/time values in your preferred timezone (for example `utc=4` or `utc=4.5`).
+
+## Documentation correction (2026-08-30)
+
+- Corrected match dataset include names to `events` and `stats`.
+- Clarified that `t=match_events` is the standalone event operation, not an
+  include value.
+- Corrected match-by-ID and batch selectors to `t=info&id=...` and
+  `t=sort&ids=...`.
+- Added the match-event response schema, scorer/assist nullability and live
+  publication guidance.
 
 ## 🛡️ API Token Usage (2025-11-04)
 - **API Token usage tracking** — monitor token consumption, see usage by endpoint, and review historical trends.
@@ -16,7 +26,7 @@
 - **Standings Live** endpoint — live/rolling standings while matches are in progress.  
 - **Broadcast / TV** improvements — TV-by-country, TV-by-match, fixtures-by-TV-channel.  
 - **Odds enhancements** — new bookmaker (Betika), per-bookmaker match odds endpoint and custom sort.  
-- **Includes** support: include `match_events` and `match_stats` inline in many endpoints.  
+- **Includes** support: include `events` and `stats` inline in match-returning endpoints.
 - **Language additions** and **default images** for missing entities.  
 - **Historical data** extended (up to 10 years).
 
@@ -69,14 +79,14 @@ Use for live leaderboard views and competition pages that need in-play table upd
 **New & improved**
 - `related_id` parameter in fixtures: track postponed / rescheduled / related events.  
 - `info` dataset added to today’s fixtures (federation decisions, special notes).  
-- **Includes** support across many endpoints — you can now request `&include=match_events,match_stats` inline in:  
-  - `Livescores`, `Fixtures`, `MatchByID`, `MatchByMultipleID`  
+- **Includes** support across match-returning operations — request `&include=events,stats` inline in:
+  - `Livescores`, fixture schedules, `t=info` (match by ID) and `t=sort` (multiple match IDs)
 - `timestamp` added to today’s match events for more precise timing.  
 - `aggregate_id` and `country_code` added in fixtures and MatchByID endpoints.
 
 **Usage tip**
 ```txt
-GET /v2.2/fixtures/?user=USER&token=TOKEN&t=match_by_id&id=XXXX&include=match_events,match_stats
+GET /v2.2/fixtures/?user=USER&token=TOKEN&t=info&id=XXXX&include=events,stats
 ```
 
 **Commentary**  
@@ -225,14 +235,14 @@ GET /v2.2/media/?user=USER&token=TOKEN&t=league&id=637
 ```
 - To get richer match payloads in one call:
 ```txt
-GET /v2.2/fixtures/?user=USER&token=TOKEN&t=match_by_id&id=XXXX&include=match_events,match_stats
+GET /v2.2/fixtures/?user=USER&token=TOKEN&t=info&id=XXXX&include=events,stats
 ```
 
 ---
 
 ## 📣 Final notes & recommendations
 - Use `&utc=` for timezone-correct responses where useful (e.g., `&utc=4` or `&utc=4.5`).  
-- Use `&include=` to avoid multiple roundtrips (match events / match stats / lineups).  
+- Use `&include=events,stats` to avoid separate match-event and match-stat round trips. Use `include=stats` on `t=match_lineups` when full per-player lineup statistics are required.
 - For heavy live polling (odds/last-minute updates), ensure your plan supports the required requests/hour.  
 - Media endpoints are **beta** — expect iterative improvements.
 

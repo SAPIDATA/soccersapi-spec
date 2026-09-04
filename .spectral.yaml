@@ -1,0 +1,16 @@
+extends:
+  - spectral:oas
+
+rules:
+  # SoccersAPI's canonical v2.2 routes use a trailing slash in production.
+  path-keys-no-trailing-slash: off
+  # Report documentation regressions without turning wording-only issues into
+  # CI blockers; structural OpenAPI errors still fail `lint:ci`.
+  operation-description: warn
+  operation-operationId: warn
+  operation-tags: warn
+  info-contact: warn
+  # Spectral 6's typed-enum rule crashes on valid OpenAPI 3.1 union `type`
+  # arrays that contain `null`; schema examples remain covered by OAS checks.
+  typed-enum: off
+  duplicated-entry-in-enum: off

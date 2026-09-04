@@ -1,0 +1,6 @@
+extends:
+  - recommended
+
+rules:
+  # The production API and all published examples use trailing slashes.
+  no-path-trailing-slash: off

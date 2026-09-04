@@ -1,23 +1,28 @@
 # Statuses
 
-| Status | Name            | Description                                                                 |
-|-------:|-----------------|-----------------------------------------------------------------------------|
-| 0      | Not Started     | The event has not started.                                                  |
-| 1      | In-play         | The event is currently in-play.                                             |
-| 11     | Half-time       | The event is at half-time.                                                   |
-| 12     | Extra-time      | The event is in extra time.                                                  |
-| 13     | Penalties       | The event is in a penalty shootout because extra time didn't determine a winner. |
-| 14     | Break-time      | Break before extra time or penalties.                                        |
-| 15     | Awarding        | Victory awarded to a contestant because there are no other contestants.      |
-| 2      | Update later    | Event data will be updated later.                                            |
-| 3      | Ended           | Event ended after 90 minutes.                                                |
-| 31     | After penalties | Event ended after a penalty shootout.                                        |
-| 32     | After extra-time| Event finished after extra time.                                             |
-| 4      | Postponed       | The event has been postponed.                                                |
-| 5      | Cancelled       | The event has been cancelled.                                                 |
-| 6      | Abandoned       | The event was abandoned and will continue later or another day.              |
-| 7      | Interrupted     | The event was interrupted (e.g., bad weather).                               |
-| 8      | Suspended       | The event has been suspended.                                                 |
-| 9      | Awarded         | Winner decided externally.                                                   |
-| 10     | Delayed         | The event is delayed.                                                         |
-| 17     | To be announced | The event has not been verified yet.                                         |
+| Status | Name | Description |
+| ---: | --- | --- |
+| 0 | Not Started | The match has not started. |
+| 1 | In Play | The match clock is running. |
+| 2 | Update Later | The provider has not finalized the match state/data yet. Do not treat this as not started or finished. |
+| 3 | Finished | The match finished in regular time. |
+| 4 | Postponed | The match did not start at the scheduled time and is awaiting/rescheduled for another date. |
+| 5 | Cancelled | The match was cancelled and is terminal. |
+| 6 | Abandoned | Play started but the match was abandoned. The displayed score is not necessarily a final result. |
+| 7 | Interrupted | Play is temporarily interrupted and may resume. |
+| 8 | Suspended | Play is suspended; resumption or an administrative decision is pending. |
+| 9 | Awarded | The result was awarded administratively. |
+| 10 | Delayed | Kickoff is delayed. |
+| 11 | Half Time | The match is at the half-time interval. |
+| 12 | Extra Time | Extra time is in play. |
+| 13 | Penalty Shootout | A penalty shootout is in play. |
+| 14 | Break Time | Interval before extra time, between extra-time periods or before penalties. |
+| 15 | Awarding | An administrative awarding decision is in progress; it is not yet a final awarded result. |
+| 17 | To Be Announced | The schedule or match state is not confirmed. |
+| 18 | Pending Update | A provider update is pending. Do not infer a regular match state. |
+| 31 | After Penalties | The match finished after a penalty shootout. |
+| 32 | After Extra Time | The match finished after extra time. |
+
+Status codes describe the match lifecycle, not items in the `events` timeline.
+Keep unknown future codes visible as an unknown state instead of coercing them
+to `0` (not started) or `3` (finished).

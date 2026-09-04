@@ -9,7 +9,8 @@
 - **Register**: [admin.soccersapi.com/register](https://admin.soccersapi.com/register)  
 - **Login**: [admin.soccersapi.com/login](https://admin.soccersapi.com/login)  
 
-Once registered, the **Free Plan** is automatically active (Austria Bundesliga, Australia A-League, Denmark Superligaen).
+Once registered, the dashboard shows the trial or plan currently assigned to
+the account and the leagues available to it.
 
 ---
 
@@ -37,8 +38,8 @@ Create and manage tokens here:
 Check and manage which leagues are active in your plan:  
 👉 [admin.soccersapi.com/leagues](https://admin.soccersapi.com/leagues)  
 
-- Free Plan leagues are pre-selected  
-- Paid plans allow you to select from hundreds of leagues  
+- The dashboard identifies the leagues currently active on the plan.
+- Eligible plans allow league selection from the available coverage.
 - Full coverage: [soccersapi.com/coverage](https://soccersapi.com/coverage)  
 
 ---
@@ -48,4 +49,9 @@ Use your **username** and **token** in every request.
 
 Example:
 ```bash
-curl -L -g "https://api.soccersapi.com/v2.2/countries/?user={{USERNAME}}&token={{TOKEN}}"
+curl -L -g "https://api.soccersapi.com/v2.2/countries/?user={{USERNAME}}&token={{TOKEN}}&t=list"
+```
+
+The trailing slash is recommended for consistency. Pass credentials as query
+parameters and never expose a production token in browser code, screenshots,
+support tickets or a public repository.

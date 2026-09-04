@@ -5,10 +5,9 @@ a REST API for football (soccer) data: search, livescores, fixtures, leagues,
 teams, seasons, players, coaches, referees, venues, statistics, head-to-head,
 bookmakers, markets, broadcasts and media.
 
-The file [`openapi.yaml`](./openapi.yaml) is a machine-readable description of
-every endpoint, its parameters, and its responses. You can use it to explore the
-API, generate client SDKs, set up request collections, or render your own
-documentation.
+The file [`openapi.yaml`](./openapi.yaml) is the machine-readable API contract.
+SoccersAPI v2.2 uses a query operation selector (`t`) on resource routes, so the
+accepted `t` values and conditional parameters are documented on each route.
 
 ## Using the spec
 
@@ -25,12 +24,16 @@ https://raw.githubusercontent.com/SAPIDATA/soccersapi-spec/main/openapi.yaml
 - **Docs viewers** (Redoc, Swagger UI, Scalar) — render an interactive reference
   from the spec.
 
+For Apidog, re-import or synchronize the root `openapi.yaml`; it is the
+source-of-truth contract. This copy under `docs/` is kept byte-for-byte
+identical for documentation publishing workflows.
+
 ## Authentication
 
 Every request requires your SoccersAPI credentials, passed as query parameters:
 
 ```
-https://api.soccersapi.com/v2.2/leagues/?user=YOUR_USERNAME&token=YOUR_TOKEN
+https://api.soccersapi.com/v2.2/leagues/?user=YOUR_USERNAME&token=YOUR_TOKEN&t=info&id=1005
 ```
 
 Get your credentials from your [SoccersAPI account](https://soccersapi.com).
@@ -39,3 +42,9 @@ Get your credentials from your [SoccersAPI account](https://soccersapi.com).
 
 This spec tracks the **v2.2** API. Endpoint paths are prefixed accordingly
 (e.g. `/v2.2/fixtures/`).
+
+## Match events
+
+Use `include=events` to embed timelines in livescores or match-returning fixture
+operations. Use `t=match_events&id=MATCH_ID` only for the standalone timeline.
+See [`09-match-events-and-includes.md`](./09-match-events-and-includes.md).

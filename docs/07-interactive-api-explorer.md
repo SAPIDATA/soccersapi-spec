@@ -44,4 +44,8 @@ The **Response panel** will show:
 
 ## 5. Example: Test Countries Endpoint
 ```bash
-curl -L -g "https://api.soccersapi.com/v2.2/countries/?user={{USERNAME}}&token={{TOKEN}}"
+curl -L -g "https://api.soccersapi.com/v2.2/countries/?user={{USERNAME}}&token={{TOKEN}}&t=list"
+```
+
+The explorer sends a real request and consumes account quota. Use a development
+token, and remove credentials before sharing generated code or response logs.

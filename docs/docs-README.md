@@ -13,3 +13,4 @@ These are the source of truth for the prose docs; edit them here.
 | 6 | Error & Rate Limits | [`06-error-and-rate-limits.md`](./06-error-and-rate-limits.md) |
 | 7 | Interactive API Explorer | [`07-interactive-api-explorer.md`](./07-interactive-api-explorer.md) |
 | 8 | Statuses | [`08-statuses.md`](./08-statuses.md) |
+| 9 | Match Events and Dataset Includes | [`09-match-events-and-includes.md`](./09-match-events-and-includes.md) |

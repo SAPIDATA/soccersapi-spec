@@ -6,6 +6,7 @@
   "scripts": {
     "lint": "spectral lint openapi.yaml --ruleset .spectral.yaml",
     "lint:ci": "spectral lint openapi.yaml --ruleset .spectral.yaml --fail-severity=error",
+    "lint:redocly": "redocly lint openapi.yaml",
     "bundle": "redocly bundle openapi.yaml -o dist/openapi.bundled.yaml",
     "preview": "redocly preview-docs openapi.yaml",
     "build:docs": "redocly build-docs openapi.yaml -o dist/index.html"
