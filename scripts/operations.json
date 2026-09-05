@@ -108,7 +108,7 @@
   },
   {
     "id": "leagues.list",
-    "title": "Leagues",
+    "title": "All leagues",
     "route": "/v2.2/leagues/",
     "query": {
       "t": "list",
@@ -673,7 +673,7 @@
   },
   {
     "id": "players.list",
-    "title": "Players",
+    "title": "All players",
     "route": "/v2.2/players/",
     "query": {
       "t": "list",
@@ -691,7 +691,7 @@
   },
   {
     "id": "coaches.list",
-    "title": "Coaches",
+    "title": "All coaches",
     "route": "/v2.2/coaches/",
     "query": {
       "t": "list",
@@ -709,7 +709,7 @@
   },
   {
     "id": "referees.list",
-    "title": "Referees",
+    "title": "All referees",
     "route": "/v2.2/referees/",
     "query": {
       "t": "list",
@@ -718,7 +718,7 @@
   },
   {
     "id": "venues.list",
-    "title": "Venues",
+    "title": "All venues",
     "route": "/v2.2/venues/",
     "query": {
       "t": "list",
