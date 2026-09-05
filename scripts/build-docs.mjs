@@ -134,6 +134,8 @@ const configuration = {
   searchHotKey: 'k',
   defaultHttpClient: { targetKey: 'shell', clientKey: 'curl' },
   authentication: { preferredSecurityScheme: [['user', 'token']] },
+  // Scalar's hosted AI assistant calls api.scalar.com; keep the site self-contained.
+  agent: { disabled: true },
   metaData: { title: `${BRAND.name} documentation`, description: 'Football data API reference with an interactive client.' },
 };
 
