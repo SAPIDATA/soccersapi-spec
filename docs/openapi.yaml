@@ -127,46 +127,65 @@ paths:
       x-operations:
         - t: match
           title: Search matches
+          purpose: Upcoming and recent matches whose teams or competition match `q`, with kickoff date, teams and league.
           required:
             - q
           optional:
             - utc
+          schema: SearchResponse
+          example: q=salzburg
         - t: league
           title: Search leagues
+          purpose: Leagues matching `q`, with country.
           required:
             - q
           optional: []
+          schema: SearchResponse
+          example: q=bundesliga
         - t: team
           title: Search teams
           required:
             - q
           optional: []
+          schema: SearchResponse
+          example: q=barcelona
         - t: player
           title: Search players
           required:
             - q
           optional: []
+          schema: SearchResponse
+          example: q=ronaldo
         - t: referee
           title: Search referees
           required:
             - q
           optional: []
+          schema: SearchResponse
+          example: q=clattenburg
         - t: country
           title: Search countries
           required:
             - q
           optional: []
+          schema: SearchResponse
+          example: q=austria
         - t: continent
           title: Search continents
           required:
             - q
           optional: []
+          schema: SearchResponse
+          example: q=europe
         - t: tv
           title: Search TV channels
+          purpose: TV channels matching `q`, for use with broadcast operations.
           required:
             - q
           optional: []
+          schema: SearchResponse
           theme: broadcast
+          example: q=dazn
       parameters:
         - $ref: '#/components/parameters/User'
         - $ref: '#/components/parameters/Token'
@@ -421,11 +440,15 @@ paths:
           title: All continents
           required: []
           optional: []
+          schema: DataResponse
+          example: ''
         - t: info
           title: Continent by ID
           required:
             - id
           optional: []
+          schema: DataResponse
+          example: id=2
       parameters:
         - $ref: '#/components/parameters/User'
         - $ref: '#/components/parameters/Token'
@@ -533,14 +556,20 @@ paths:
       x-operations:
         - t: list
           title: All countries
+          purpose: Every country. Paginated, 100 items per page.
           required: []
           optional:
             - page
+          schema: DataResponse
+          paginated: true
+          example: page=1
         - t: info
           title: Country by ID
           required:
             - id
           optional: []
+          schema: DataResponse
+          example: id=4
       parameters:
         - $ref: '#/components/parameters/User'
         - $ref: '#/components/parameters/Token'
@@ -691,36 +720,55 @@ paths:
       x-operations:
         - t: list
           title: Leagues
+          purpose: Leagues available to the account, optionally filtered by country. Paginated, 100 items per page.
           required: []
           optional:
             - country_id
             - page
+          schema: DataResponse
+          paginated: true
+          example: country_id=4
         - t: info
           title: League by ID
+          purpose: League profile with seasons and current season, stage and round.
           required:
             - id
           optional: []
+          schema: DataResponse
+          example: id=1005
         - t: sort
           title: Leagues by multiple IDs
+          purpose: Several league profiles in one request.
           required:
             - ids
           optional: []
+          schema: DataResponse
+          example: ids=974,1005,1609
         - t: standings
           title: Standings
+          purpose: League table for a season. Competitions with several tables (groups, splits) return one entry per table, identified by `number_standings`.
           required:
             - season_id
           optional: []
+          schema: StandingsResponse
+          example: season_id=406
         - t: standings_live
           title: Live standings
+          purpose: Rolling table that includes the matches currently in play.
           required:
             - season_id
           optional: []
+          schema: StandingsResponse
+          example: season_id=406
         - t: cup_draw
           title: Cup draw (tournament bracket)
+          purpose: Knockout bracket of a cup stage.
           required:
             - season_id
             - stage_id
           optional: []
+          schema: DataResponse
+          example: season_id=45&stage_id=26
       parameters:
         - $ref: '#/components/parameters/User'
         - $ref: '#/components/parameters/Token'
@@ -1151,51 +1199,78 @@ paths:
       x-operations:
         - t: info
           title: Team by ID
+          purpose: Team profile with venue, coach, kit colours, seasons and leagues.
           required:
             - id
           optional: []
+          schema: DataResponse
+          example: id=111
         - t: list
           title: Teams by country
+          purpose: Paginated, 100 items per page.
           required:
             - country_id
           optional:
             - page
+          schema: DataResponse
+          paginated: true
+          example: country_id=4
         - t: sort
           title: Teams by multiple IDs
           required:
             - ids
           optional: []
+          schema: DataResponse
+          example: ids=19,99,108
         - t: byseason
           title: Teams by season
+          purpose: Teams taking part in a season.
           required:
             - season_id
           optional: []
+          schema: DataResponse
+          example: season_id=13480
         - t: national
           title: National teams
+          purpose: Paginated, 100 items per page.
           required: []
           optional:
             - page
+          schema: DataResponse
+          paginated: true
+          example: ''
         - t: squad
           title: Team squad
+          purpose: Current squad, or the squad of a past season when `season_id` is given.
           required:
             - id
           optional:
             - season_id
+          schema: DataResponse
+          example: id=2868
         - t: transfers
           title: Team transfers
+          purpose: Arrivals and departures with fee and date.
           required:
             - id
           optional: []
+          schema: DataResponse
+          example: id=111
         - t: sidelined
           title: Team sidelined players
+          purpose: Injured and suspended players.
           required:
             - id
           optional: []
+          schema: DataResponse
+          example: id=111
         - t: trophies
           title: Team trophies
           required:
             - id
           optional: []
+          schema: DataResponse
+          example: id=111
       parameters:
         - $ref: '#/components/parameters/User'
         - $ref: '#/components/parameters/Token'
@@ -1603,6 +1678,8 @@ paths:
           required:
             - id
           optional: []
+          schema: DataResponse
+          example: id=406
       parameters:
         - $ref: '#/components/parameters/User'
         - $ref: '#/components/parameters/Token'
@@ -1709,11 +1786,15 @@ paths:
           required:
             - season_id
           optional: []
+          schema: DataResponse
+          example: season_id=2091
         - t: info
           title: Stage by ID
           required:
             - id
           optional: []
+          schema: DataResponse
+          example: id=26
       parameters:
         - $ref: '#/components/parameters/User'
         - $ref: '#/components/parameters/Token'
@@ -1839,11 +1920,15 @@ paths:
           required:
             - season_id
           optional: []
+          schema: DataResponse
+          example: season_id=7011
         - t: info
           title: Group by ID
           required:
             - id
           optional: []
+          schema: DataResponse
+          example: id=5108
       parameters:
         - $ref: '#/components/parameters/User'
         - $ref: '#/components/parameters/Token'
@@ -1967,11 +2052,15 @@ paths:
           required:
             - season_id
           optional: []
+          schema: DataResponse
+          example: season_id=406
         - t: info
           title: Round by ID
           required:
             - id
           optional: []
+          schema: DataResponse
+          example: id=1994
       parameters:
         - $ref: '#/components/parameters/User'
         - $ref: '#/components/parameters/Token'
@@ -2136,6 +2225,7 @@ paths:
       x-operations:
         - t: live
           title: Matches in play
+          purpose: Paginated, 100 items per page.
           required: []
           optional:
             - include
@@ -2143,8 +2233,12 @@ paths:
             - lang
             - odds_format
             - page
+          schema: MatchListResponse
+          paginated: true
+          example: include=events,stats
         - t: today
           title: Today's matches
+          purpose: Paginated, 100 items per page.
           required: []
           optional:
             - include
@@ -2152,8 +2246,12 @@ paths:
             - lang
             - odds_format
             - page
+          schema: MatchListResponse
+          paginated: true
+          example: utc=2
         - t: tomorrow
           title: Tomorrow's matches
+          purpose: Paginated, 100 items per page.
           required: []
           optional:
             - include
@@ -2161,8 +2259,12 @@ paths:
             - lang
             - odds_format
             - page
+          schema: MatchListResponse
+          paginated: true
+          example: ''
         - t: yesterday
           title: Yesterday's matches
+          purpose: Paginated, 100 items per page.
           required: []
           optional:
             - include
@@ -2170,8 +2272,12 @@ paths:
             - lang
             - odds_format
             - page
+          schema: MatchListResponse
+          paginated: true
+          example: ''
         - t: notstarted
           title: Today's matches not started
+          purpose: Paginated, 100 items per page.
           required: []
           optional:
             - include
@@ -2179,8 +2285,12 @@ paths:
             - lang
             - odds_format
             - page
+          schema: MatchListResponse
+          paginated: true
+          example: ''
         - t: ended
           title: Today's matches ended
+          purpose: Paginated, 100 items per page.
           required: []
           optional:
             - include
@@ -2188,6 +2298,9 @@ paths:
             - lang
             - odds_format
             - page
+          schema: MatchListResponse
+          paginated: true
+          example: ''
       parameters:
         - $ref: '#/components/parameters/User'
         - $ref: '#/components/parameters/Token'
@@ -3608,6 +3721,7 @@ paths:
       x-operations:
         - t: schedule
           title: Fixtures by date
+          purpose: Matches on a date, optionally narrowed to a country, league, season, stage, group or round. Paginated, 100 items per page.
           required:
             - d
           optional:
@@ -3622,8 +3736,12 @@ paths:
             - lang
             - odds_format
             - page
+          schema: MatchListResponse
+          paginated: true
+          example: d=2026-08-30&include=broadcast&utc=2
         - t: season
           title: Fixtures by season
+          purpose: Every match of a season in one response, optionally narrowed to a stage, group or team.
           required:
             - season_id
           optional:
@@ -3634,6 +3752,8 @@ paths:
             - utc
             - lang
             - odds_format
+          schema: MatchListResponse
+          example: season_id=7194&team_id=111&order=asc
         - t: round
           title: Fixtures by round
           required:
@@ -3644,24 +3764,33 @@ paths:
             - utc
             - lang
             - odds_format
+          schema: MatchListResponse
+          example: round_id=1994
         - t: last_next
           title: Team last and next fixtures
+          purpose: Recent results (`last`), matches in play (`current`) and upcoming matches (`next`) of a team. Does not accept `include`.
           required:
             - team_id
           optional:
             - utc
             - lang
+          schema: DataResponse
+          example: team_id=99
         - t: tv
           title: Fixtures by TV channel
+          purpose: Matches scheduled on a TV channel over the next two weeks.
           required:
             - tv_id
           optional:
             - include
             - utc
             - lang
+          schema: MatchListResponse
           theme: broadcast
+          example: tv_id=30
         - t: info
           title: Match by ID
+          purpose: One match with teams, league, venue, scores, status and clock.
           required:
             - id
           optional:
@@ -3669,6 +3798,8 @@ paths:
             - utc
             - lang
             - odds_format
+          schema: MatchDetailResponse
+          example: id=2589310&include=events,stats
         - t: sort
           title: Matches by multiple IDs
           required:
@@ -3677,47 +3808,68 @@ paths:
             - include
             - utc
             - lang
+          schema: MatchListResponse
+          example: ids=2589310,2589313&include=events
         - t: match_events
           title: Match events
+          purpose: Standalone event timeline of one match.
           required:
             - id
           optional: []
+          schema: MatchEventsResponse
+          example: id=2589310
         - t: match_lineups
           title: Match lineups
+          purpose: Formations and starting lineups with position and shirt number.
           required:
             - id
           optional:
             - lang
+          schema: LineupsResponse
+          example: id=2589310&include=stats
         - t: match_bench
           title: Match bench
           required:
             - id
           optional: []
+          schema: DataResponse
+          example: id=2589310
         - t: match_comments
           title: Match commentary
+          purpose: Text commentary of the match where covered.
           required:
             - id
           optional:
             - lang
+          schema: DataResponse
+          example: id=2589310
         - t: match_sidelined
           title: Match sidelined players
+          purpose: Injured and suspended players of both teams.
           required:
             - id
           optional: []
+          schema: DataResponse
+          example: id=2589310
         - t: match_odds
           title: Pre-match odds
+          purpose: Pre-match odds by bookmaker and market.
           required:
             - id
           optional:
             - odds_format
+          schema: MatchOddsResponse
           theme: odds
+          example: id=2589310
         - t: match_oddsinplay
           title: In-play odds
           required:
             - id
           optional:
             - odds_format
+          schema: MatchOddsResponse
           theme: odds
+          example: id=2589310
         - t: match_odds_info
           title: Match odds by bookmaker
           required:
@@ -3725,7 +3877,9 @@ paths:
             - bookmaker_id
           optional:
             - odds_format
+          schema: DataResponse
           theme: odds
+          example: id=2589310&bookmaker_id=1
       parameters:
         - $ref: '#/components/parameters/User'
         - $ref: '#/components/parameters/Token'
@@ -5421,19 +5575,27 @@ paths:
           required:
             - id
           optional: []
+          schema: DataResponse
+          example: id=1005
         - t: season
           title: League statistics by season
+          purpose: Season totals such as goals, cards and goal lines.
           required:
             - id
           optional: []
+          schema: DataResponse
+          example: id=12588
         - t: team
           title: Team statistics by season
           required:
             - id
             - season_id
           optional: []
+          schema: DataResponse
+          example: id=98&season_id=406
         - t: player
           title: Player statistics
+          purpose: Season statistics with `id` and `season_id`, or single-match statistics with `player_id` and `match_id`.
           required: []
           optional:
             - id
@@ -5441,11 +5603,16 @@ paths:
             - player_id
             - match_id
             - lang
+          schema: DataResponse
+          example: id=18103&season_id=12516
         - t: match
           title: Match statistics
+          purpose: Team statistics of one match, one entry per team.
           required:
             - id
           optional: []
+          schema: MatchStatsResponse
+          example: id=2589310
       parameters:
         - $ref: '#/components/parameters/User'
         - $ref: '#/components/parameters/Token'
@@ -6180,11 +6347,16 @@ paths:
             - team1
             - team2
           optional: []
+          schema: DataResponse
+          example: team1=99&team2=113
         - t: match
           title: Match head to head
+          purpose: Previous meetings of the two teams of a match.
           required:
             - id
           optional: []
+          schema: DataResponse
+          example: id=2589310
       parameters:
         - $ref: '#/components/parameters/User'
         - $ref: '#/components/parameters/Token'
@@ -6736,16 +6908,23 @@ paths:
           required:
             - season_id
           optional: []
+          schema: DataResponse
+          example: season_id=12516
         - t: topassists
           title: Top assists
           required:
             - season_id
           optional: []
+          schema: DataResponse
+          example: season_id=12516
         - t: topcards
           title: Most cards
+          purpose: Yellow, yellow-red and red cards per player.
           required:
             - season_id
           optional: []
+          schema: DataResponse
+          example: season_id=12516
       parameters:
         - $ref: '#/components/parameters/User'
         - $ref: '#/components/parameters/Token'
@@ -6954,11 +7133,15 @@ paths:
           title: All bookmakers
           required: []
           optional: []
+          schema: DataResponse
+          example: ''
         - t: info
           title: Bookmaker by ID
           required:
             - id
           optional: []
+          schema: DataResponse
+          example: id=2
       parameters:
         - $ref: '#/components/parameters/User'
         - $ref: '#/components/parameters/Token'
@@ -7069,13 +7252,18 @@ paths:
       x-operations:
         - t: list
           title: All markets
+          purpose: 'The eight markets in use: 1X2, over/under goal line, Asian handicap, first-half variants, Asian corners and half-time result.'
           required: []
           optional: []
+          schema: DataResponse
+          example: ''
         - t: info
           title: Market by ID
           required:
             - id
           optional: []
+          schema: DataResponse
+          example: id=1
       parameters:
         - $ref: '#/components/parameters/User'
         - $ref: '#/components/parameters/Token'
@@ -7203,6 +7391,7 @@ paths:
       x-operations:
         - t: schedule
           title: Matches on TV by date
+          purpose: Matches broadcast on a date. Add `include=tvs` to embed the channel details in each match. Paginated, 100 items per page.
           required:
             - d
           optional:
@@ -7210,26 +7399,38 @@ paths:
             - utc
             - lang
             - page
+          schema: MatchListResponse
+          paginated: true
           theme: broadcast
+          example: d=2026-08-30&include=tvs&utc=2
         - t: match_tvs
           title: TV channels of a match
+          purpose: Every channel showing the match, with its country. Not paginated.
           required:
             - id
           optional: []
+          schema: TvChannelListResponse
           theme: broadcast
+          example: id=2589310
         - t: list
           title: TV channels
+          purpose: All TV channels, optionally filtered by country. Paginated, 100 items per page.
           required: []
           optional:
             - country_id
             - page
+          schema: TvChannelListResponse
+          paginated: true
           theme: broadcast
+          example: country_id=15
         - t: info
           title: TV channel by ID
           required:
             - id
           optional: []
+          schema: TvChannelDetailResponse
           theme: broadcast
+          example: id=2
       parameters:
         - $ref: '#/components/parameters/User'
         - $ref: '#/components/parameters/Token'
@@ -7647,12 +7848,18 @@ paths:
           required:
             - id
           optional: []
+          schema: DataResponse
+          example: id=11306
         - t: list
           title: Players
+          purpose: All players, or the players of a country. Paginated, 100 items per page.
           required: []
           optional:
             - country_id
             - page
+          schema: DataResponse
+          paginated: true
+          example: country_id=4
       parameters:
         - $ref: '#/components/parameters/User'
         - $ref: '#/components/parameters/Token'
@@ -7851,12 +8058,18 @@ paths:
           required:
             - id
           optional: []
+          schema: DataResponse
+          example: id=662
         - t: list
           title: Coaches
+          purpose: All coaches, or the coaches of a country. Paginated, 100 items per page.
           required: []
           optional:
             - country_id
             - page
+          schema: DataResponse
+          paginated: true
+          example: country_id=25
       parameters:
         - $ref: '#/components/parameters/User'
         - $ref: '#/components/parameters/Token'
@@ -8011,12 +8224,18 @@ paths:
           required:
             - id
           optional: []
+          schema: DataResponse
+          example: id=372
         - t: list
           title: Referees
+          purpose: All referees, or the referees of a country. Paginated, 100 items per page.
           required: []
           optional:
             - country_id
             - page
+          schema: DataResponse
+          paginated: true
+          example: country_id=4
       parameters:
         - $ref: '#/components/parameters/User'
         - $ref: '#/components/parameters/Token'
@@ -8166,20 +8385,29 @@ paths:
       x-operations:
         - t: list
           title: Venues
+          purpose: All venues, or the venues of a country. Paginated, 100 items per page.
           required: []
           optional:
             - country_id
             - page
+          schema: DataResponse
+          paginated: true
+          example: country_id=15
         - t: byseason
           title: Venues by season
+          purpose: Venues of the teams taking part in a season.
           required:
             - season_id
           optional: []
+          schema: DataResponse
+          example: season_id=14192
         - t: info
           title: Venue by ID
           required:
             - id
           optional: []
+          schema: DataResponse
+          example: id=191
       parameters:
         - $ref: '#/components/parameters/User'
         - $ref: '#/components/parameters/Token'
@@ -8439,31 +8667,43 @@ paths:
           required:
             - id
           optional: []
+          schema: DataResponse
+          example: id=637
         - t: season
           title: Highlights by season
           required:
             - id
           optional: []
+          schema: DataResponse
+          example: id=14341
         - t: team
           title: Highlights by team
           required:
             - id
           optional: []
+          schema: DataResponse
+          example: id=116
         - t: round
           title: Highlights by round
           required:
             - id
           optional: []
+          schema: DataResponse
+          example: id=182349
         - t: event
           title: Highlights by match
           required:
             - id
           optional: []
+          schema: DataResponse
+          example: id=1843815
         - t: date
           title: Highlights by date
           required:
             - d
           optional: []
+          schema: DataResponse
+          example: d=2026-08-30
       parameters:
         - $ref: '#/components/parameters/User'
         - $ref: '#/components/parameters/Token'
