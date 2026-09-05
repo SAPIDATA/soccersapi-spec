@@ -52,6 +52,6 @@ Example:
 curl -L -g "https://api.soccersapi.com/v2.2/countries/?user={{USERNAME}}&token={{TOKEN}}&t=list"
 ```
 
-The trailing slash is recommended for consistency. Pass credentials as query
-parameters and never expose a production token in browser code, screenshots,
-support tickets or a public repository.
+Routes work with or without the trailing slash; the reference uses it for
+consistency. Pass credentials as query parameters and never expose a production
+token in browser code, screenshots, support tickets or a public repository.

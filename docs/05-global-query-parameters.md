@@ -8,7 +8,7 @@ apply only where the endpoint reference lists them.
 | `user` | string | Yes | `{{USERNAME}}` | Account username. |
 | `token` | string | Yes | `{{TOKEN}}` | API token from the account dashboard. |
 | `lang` | string | No | `en` | Localizes catalogue names (countries, continents, leagues). Match, event and statistics payloads are not translated. |
-| `utc` | number | No | `2`, `4.5`, `-3` | UTC offset applied to supported date/time values. Decimal offsets are accepted. |
+| `utc` | number | No | `2`, `4.5`, `-3` | UTC offset applied to supported date/time values; `time.timezone` reports it (`UTC+4.5`). Invalid values fall back to UTC. |
 | `include` | string | No | `events,stats` | Comma-separated datasets, with no spaces. Values and support depend on the operation. |
 | `page` | integer | No | `1` | Page number on paginated operations. Pages hold 100 items; the response reports `meta.page`, `meta.pages`, `meta.count` and `meta.total`. |
 | `odds_format` | string | No | `decimal` | Odds format on odds datasets: `decimal` (default), `fractional` or `american`. |
@@ -17,7 +17,8 @@ apply only where the endpoint reference lists them.
 
 List operations return at most 100 items per page and cannot change the page
 size: `per_page` and `nopag` are ignored. Read `meta.pages` and request the
-following pages with `page`. The paginated operations are the country, league,
+following pages with `page`, starting at 1; a page beyond the last returns an
+empty `data` array with the same `meta.total`. The paginated operations are the country, league,
 team, player, coach, referee, venue and TV channel lists, every livescores feed,
 `fixtures?t=schedule` and `broadcast?t=schedule`. Season fixtures, leaders,
 match datasets and search results are returned in full; search reports
@@ -35,10 +36,10 @@ The most common match datasets are:
 
 | Include value | Returned property | Typical support |
 | --- | --- | --- |
-| `events` | `events` | Livescores, fixture schedules, `fixtures?t=info`, `fixtures?t=sort`. |
-| `stats` | `stats` | Livescores, fixture schedules, `fixtures?t=info`, `fixtures?t=sort`. |
-| `odds_prematch` | `odds_prematch` | Livescores/fixtures where the plan and match coverage provide odds. |
-| `odds_inplay` | `odds_inplay` | Live matches where the plan and match coverage provide in-play odds. |
+| `events` | `events` | Livescores and `fixtures?t=schedule`, `season`, `round`, `info`, `sort`. |
+| `stats` | `stats` | Livescores and `fixtures?t=schedule`, `season`, `round`, `info`, `sort`. |
+| `odds_prematch` | `odds_prematch` | Livescores and fixture operations where the plan and match coverage provide odds. |
+| `odds_inplay` | `odds_inplay` | Livescores and `fixtures?t=info` for matches in play where the plan and coverage provide in-play odds. |
 | `broadcast` | `broadcast` | `fixtures?t=schedule`, `season`, `round`, `info` and `sort`: TV channels showing the match, each with its country. Not supported by livescores or `last_next`. |
 | `tvs` | `tvs` | `broadcast?t=schedule`: embeds the channel details in each match. |
 

@@ -25,6 +25,7 @@ objects:
 | `/v2.2/livescores/` | `t=live` | Live matches and their events. |
 | `/v2.2/livescores/` | `t=today`, `tomorrow`, `yesterday`, `notstarted` or `ended` | Day/status feed; event arrays can be empty when no events exist. |
 | `/v2.2/fixtures/` | `t=schedule` | Date-based fixture list. |
+| `/v2.2/fixtures/` | `t=season` or `t=round` | Season or round fixture list. |
 | `/v2.2/fixtures/` | `t=info` | One match by `id`. |
 | `/v2.2/fixtures/` | `t=sort` | Multiple matches by comma-separated `ids`. |
 

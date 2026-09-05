@@ -3,7 +3,8 @@
 ## Common HTTP errors
 
 - **400 Bad Request** — invalid `t` value, invalid parameter value or a missing
-  operation-specific parameter.
+  operation-specific parameter, for example a date not in `YYYY-MM-DD`, a
+  non-numeric `id` or a search term under 3 characters.
 - **401 Unauthorized** — missing or invalid `user`/`token`.
 - **403 Forbidden** — the requested league or dataset is not included in the
   account plan.

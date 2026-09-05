@@ -66,11 +66,11 @@ paths:
         | --- | --- | --- | --- | --- |
         | `match` | Search matches. Upcoming and recent matches whose teams or competition match `q`, with kickoff date, teams and league. | `q` | `utc` | core |
         | `league` | Search leagues. Leagues matching `q`, with country. | `q` | — | core |
-        | `team` | Search teams. | `q` | — | core |
-        | `player` | Search players. | `q` | — | core |
-        | `referee` | Search referees. | `q` | — | core |
-        | `country` | Search countries. | `q` | — | core |
-        | `continent` | Search continents. | `q` | — | core |
+        | `team` | Search teams. Teams whose name matches `q`. | `q` | — | core |
+        | `player` | Search players. Players whose name matches `q`. | `q` | — | core |
+        | `referee` | Search referees. Referees whose name matches `q`. | `q` | — | core |
+        | `country` | Search countries. Countries whose name matches `q`, with country code. | `q` | — | core |
+        | `continent` | Search continents. Continents whose name matches `q`. | `q` | — | core |
         | `tv` | Search TV channels. TV channels matching `q`, for use with broadcast operations. | `q` | — | broadcast |
 
         `t=channel` is accepted as an alias of `t=tv`. Search responses are not paginated and report `meta.count` and `meta.total` as `0`; use the length of `data`.
@@ -144,6 +144,7 @@ paths:
           example: q=bundesliga
         - t: team
           title: Search teams
+          purpose: Teams whose name matches `q`.
           required:
             - q
           optional: []
@@ -151,6 +152,7 @@ paths:
           example: q=barcelona
         - t: player
           title: Search players
+          purpose: Players whose name matches `q`.
           required:
             - q
           optional: []
@@ -158,6 +160,7 @@ paths:
           example: q=ronaldo
         - t: referee
           title: Search referees
+          purpose: Referees whose name matches `q`.
           required:
             - q
           optional: []
@@ -165,6 +168,7 @@ paths:
           example: q=clattenburg
         - t: country
           title: Search countries
+          purpose: Countries whose name matches `q`, with country code.
           required:
             - q
           optional: []
@@ -172,6 +176,7 @@ paths:
           example: q=austria
         - t: continent
           title: Search continents
+          purpose: Continents whose name matches `q`.
           required:
             - q
           optional: []
@@ -217,7 +222,7 @@ paths:
         - name: q
           in: query
           required: true
-          description: 'Search text: part of a team, league, player, referee, country, continent or TV channel name. Required by every operation.'
+          description: 'Search text: part of a team, league, player, referee, country, continent or TV channel name. At least 3 characters; shorter terms return `400`. Required by every operation.'
           schema:
             type: string
           example: salzburg
@@ -419,8 +424,8 @@ paths:
 
         | `t` | Operation | Required | Optional |
         | --- | --- | --- | --- |
-        | `list` | All continents. | — | — |
-        | `info` | Continent by ID. | `id` | — |
+        | `list` | All continents. The seven continents of the data model. | — | — |
+        | `info` | Continent by ID. One continent. | `id` | — |
 
         ## Examples
 
@@ -438,12 +443,14 @@ paths:
       x-operations:
         - t: list
           title: All continents
+          purpose: The seven continents of the data model.
           required: []
           optional: []
           schema: DataResponse
           example: ''
         - t: info
           title: Continent by ID
+          purpose: One continent.
           required:
             - id
           optional: []
@@ -538,7 +545,7 @@ paths:
         | `t` | Operation | Required | Optional |
         | --- | --- | --- | --- |
         | `list` | All countries. Every country. Paginated, 100 items per page. | — | `page` |
-        | `info` | Country by ID. | `id` | — |
+        | `info` | Country by ID. One country with continent, ISO code and flag image. | `id` | — |
 
         ## Examples
 
@@ -565,6 +572,7 @@ paths:
           example: page=1
         - t: info
           title: Country by ID
+          purpose: One country with continent, ISO code and flag image.
           required:
             - id
           optional: []
@@ -671,7 +679,7 @@ paths:
 
         | `t` | Operation | Required | Optional |
         | --- | --- | --- | --- |
-        | `list` | Leagues. Leagues available to the account, optionally filtered by country. Paginated, 100 items per page. | — | `country_id`, `page` |
+        | `list` | All leagues. Leagues available to the account, optionally filtered by country. Paginated, 100 items per page. | — | `country_id`, `page` |
         | `info` | League by ID. League profile with seasons and current season, stage and round. | `id` | — |
         | `sort` | Leagues by multiple IDs. Several league profiles in one request. | `ids` | — |
         | `standings` | Standings. League table for a season. Competitions with several tables (groups, splits) return one entry per table, identified by `number_standings`. | `season_id` | — |
@@ -682,7 +690,7 @@ paths:
 
         ## Examples
 
-        Leagues:
+        All leagues:
 
         ```http
         GET /v2.2/leagues/?user=USER&token=TOKEN&t=list&country_id=4
@@ -719,7 +727,7 @@ paths:
         ```
       x-operations:
         - t: list
-          title: Leagues
+          title: All leagues
           purpose: Leagues available to the account, optionally filtered by country. Paginated, 100 items per page.
           required: []
           optional:
@@ -787,7 +795,7 @@ paths:
               - standings_live
               - cup_draw
             x-enumDescriptions:
-              list: Leagues
+              list: All leagues
               info: League by ID
               sort: Leagues by multiple IDs
               standings: Standings
@@ -848,7 +856,7 @@ paths:
                   - $ref: '#/components/schemas/StandingsResponse'
               examples:
                 list:
-                  summary: Leagues
+                  summary: All leagues
                   value:
                     data:
                       - id: '6225'
@@ -1133,13 +1141,13 @@ paths:
         | --- | --- | --- | --- |
         | `info` | Team by ID. Team profile with venue, coach, kit colours, seasons and leagues. | `id` | — |
         | `list` | Teams by country. Paginated, 100 items per page. | `country_id` | `page` |
-        | `sort` | Teams by multiple IDs. | `ids` | — |
+        | `sort` | Teams by multiple IDs. Several team profiles in one request. | `ids` | — |
         | `byseason` | Teams by season. Teams taking part in a season. | `season_id` | — |
         | `national` | National teams. Paginated, 100 items per page. | — | `page` |
         | `squad` | Team squad. Current squad, or the squad of a past season when `season_id` is given. | `id` | `season_id` |
         | `transfers` | Team transfers. Arrivals and departures with fee and date. | `id` | — |
         | `sidelined` | Team sidelined players. Injured and suspended players. | `id` | — |
-        | `trophies` | Team trophies. | `id` | — |
+        | `trophies` | Team trophies. Titles won by the team, with the seasons of each one. | `id` | — |
 
         ## Examples
 
@@ -1217,6 +1225,7 @@ paths:
           example: country_id=4
         - t: sort
           title: Teams by multiple IDs
+          purpose: Several team profiles in one request.
           required:
             - ids
           optional: []
@@ -1266,6 +1275,7 @@ paths:
           example: id=111
         - t: trophies
           title: Team trophies
+          purpose: Titles won by the team, with the seasons of each one.
           required:
             - id
           optional: []
@@ -1663,7 +1673,7 @@ paths:
 
         | `t` | Operation | Required | Optional |
         | --- | --- | --- | --- |
-        | `info` | Season by ID. | `id` | — |
+        | `info` | Season by ID. One season with its dates, league, stages, rounds and current stage and round. | `id` | — |
 
         ## Examples
 
@@ -1675,6 +1685,7 @@ paths:
       x-operations:
         - t: info
           title: Season by ID
+          purpose: One season with its dates, league, stages, rounds and current stage and round.
           required:
             - id
           optional: []
@@ -1764,8 +1775,8 @@ paths:
 
         | `t` | Operation | Required | Optional |
         | --- | --- | --- | --- |
-        | `byseason` | Stages by season. | `season_id` | — |
-        | `info` | Stage by ID. | `id` | — |
+        | `byseason` | Stages by season. Stages of a season, flagged with whether they have standings or a cup draw. | `season_id` | — |
+        | `info` | Stage by ID. One stage. | `id` | — |
 
         ## Examples
 
@@ -1783,6 +1794,7 @@ paths:
       x-operations:
         - t: byseason
           title: Stages by season
+          purpose: Stages of a season, flagged with whether they have standings or a cup draw.
           required:
             - season_id
           optional: []
@@ -1790,6 +1802,7 @@ paths:
           example: season_id=2091
         - t: info
           title: Stage by ID
+          purpose: One stage.
           required:
             - id
           optional: []
@@ -1898,8 +1911,8 @@ paths:
 
         | `t` | Operation | Required | Optional |
         | --- | --- | --- | --- |
-        | `byseason` | Groups by season. | `season_id` | — |
-        | `info` | Group by ID. | `id` | — |
+        | `byseason` | Groups by season. Groups of a season, listed under their stage. | `season_id` | — |
+        | `info` | Group by ID. One group. | `id` | — |
 
         ## Examples
 
@@ -1917,6 +1930,7 @@ paths:
       x-operations:
         - t: byseason
           title: Groups by season
+          purpose: Groups of a season, listed under their stage.
           required:
             - season_id
           optional: []
@@ -1924,6 +1938,7 @@ paths:
           example: season_id=7011
         - t: info
           title: Group by ID
+          purpose: One group.
           required:
             - id
           optional: []
@@ -2030,8 +2045,8 @@ paths:
 
         | `t` | Operation | Required | Optional |
         | --- | --- | --- | --- |
-        | `byseason` | Rounds by season. | `season_id` | — |
-        | `info` | Round by ID. | `id` | — |
+        | `byseason` | Rounds by season. Rounds of a season with the current one flagged. | `season_id` | — |
+        | `info` | Round by ID. One round. | `id` | — |
 
         ## Examples
 
@@ -2049,6 +2064,7 @@ paths:
       x-operations:
         - t: byseason
           title: Rounds by season
+          purpose: Rounds of a season with the current one flagged.
           required:
             - season_id
           optional: []
@@ -2056,6 +2072,7 @@ paths:
           example: season_id=406
         - t: info
           title: Round by ID
+          purpose: One round.
           required:
             - id
           optional: []
@@ -3601,25 +3618,25 @@ paths:
         | --- | --- | --- | --- | --- |
         | `schedule` | Fixtures by date. Matches on a date, optionally narrowed to a country, league, season, stage, group or round. Paginated, 100 items per page. | `d` | `country_id`, `league_id`, `season_id`, `stage_id`, `group_id`, `round_id`, `include`, `utc`, `lang`, `odds_format`, `page` | core |
         | `season` | Fixtures by season. Every match of a season in one response, optionally narrowed to a stage, group or team. | `season_id` | `stage_id`, `group_id`, `team_id`, `include`, `utc`, `lang`, `odds_format` | core |
-        | `round` | Fixtures by round. | `round_id` | `team_id`, `include`, `utc`, `lang`, `odds_format` | core |
+        | `round` | Fixtures by round. Every match of a round, optionally narrowed to a team. | `round_id` | `team_id`, `include`, `utc`, `lang`, `odds_format` | core |
         | `last_next` | Team last and next fixtures. Recent results (`last`), matches in play (`current`) and upcoming matches (`next`) of a team. Does not accept `include`. | `team_id` | `utc`, `lang` | core |
         | `tv` | Fixtures by TV channel. Matches scheduled on a TV channel over the next two weeks. | `tv_id` | `include`, `utc`, `lang` | broadcast |
         | `info` | Match by ID. One match with teams, league, venue, scores, status and clock. | `id` | `include`, `utc`, `lang`, `odds_format` | core |
-        | `sort` | Matches by multiple IDs. | `ids` | `include`, `utc`, `lang` | core |
+        | `sort` | Matches by multiple IDs. Several matches in one request, for example to refresh the matches shown on screen. | `ids` | `include`, `utc`, `lang` | core |
         | `match_events` | Match events. Standalone event timeline of one match. | `id` | — | core |
         | `match_lineups` | Match lineups. Formations and starting lineups with position and shirt number. | `id` | `lang` | core |
-        | `match_bench` | Match bench. | `id` | — | core |
+        | `match_bench` | Match bench. Substitutes of both teams with shirt number and position. | `id` | — | core |
         | `match_comments` | Match commentary. Text commentary of the match where covered. | `id` | `lang` | core |
         | `match_sidelined` | Match sidelined players. Injured and suspended players of both teams. | `id` | — | core |
         | `match_odds` | Pre-match odds. Pre-match odds by bookmaker and market. | `id` | `odds_format` | odds |
-        | `match_oddsinplay` | In-play odds. | `id` | `odds_format` | odds |
-        | `match_odds_info` | Match odds by bookmaker. | `id`, `bookmaker_id` | `odds_format` | odds |
+        | `match_oddsinplay` | In-play odds. Live odds by market and bookmaker, with the score and minute they refer to. | `id` | `odds_format` | odds |
+        | `match_odds_info` | Match odds by bookmaker. Odds history of one bookmaker for the match, by market. | `id`, `bookmaker_id` | `odds_format` | odds |
 
         ## Includes
 
         Comma-separated dataset names for `include`, without spaces:
 
-        - `events`: match timeline; `schedule`, `season`, `round`, `last_next`, `tv`, `info` and `sort`
+        - `events`: match timeline; supported by `schedule`, `season`, `round`, `info` and `sort`
         - `stats`: team match statistics, one entry per team
         - `broadcast`: TV channels showing the match (broadcast theme)
         - `odds_prematch`: pre-match odds (odds theme)
@@ -3756,6 +3773,7 @@ paths:
           example: season_id=7194&team_id=111&order=asc
         - t: round
           title: Fixtures by round
+          purpose: Every match of a round, optionally narrowed to a team.
           required:
             - round_id
           optional:
@@ -3802,6 +3820,7 @@ paths:
           example: id=2589310&include=events,stats
         - t: sort
           title: Matches by multiple IDs
+          purpose: Several matches in one request, for example to refresh the matches shown on screen.
           required:
             - ids
           optional:
@@ -3829,6 +3848,7 @@ paths:
           example: id=2589310&include=stats
         - t: match_bench
           title: Match bench
+          purpose: Substitutes of both teams with shirt number and position.
           required:
             - id
           optional: []
@@ -3863,6 +3883,7 @@ paths:
           example: id=2589310
         - t: match_oddsinplay
           title: In-play odds
+          purpose: Live odds by market and bookmaker, with the score and minute they refer to.
           required:
             - id
           optional:
@@ -3872,6 +3893,7 @@ paths:
           example: id=2589310
         - t: match_odds_info
           title: Match odds by bookmaker
+          purpose: Odds history of one bookmaker for the match, by market.
           required:
             - id
             - bookmaker_id
@@ -3939,7 +3961,7 @@ paths:
         - name: d
           in: query
           required: false
-          description: Calendar date in `YYYY-MM-DD` format, interpreted in the `utc` offset when given. Required when `t` is `schedule`.
+          description: Calendar date in `YYYY-MM-DD` format, interpreted in the `utc` offset when given. Any other format returns `400`. Required when `t` is `schedule`.
           schema:
             type: string
             format: date
@@ -5532,9 +5554,9 @@ paths:
 
         | `t` | Operation | Required | Optional |
         | --- | --- | --- | --- |
-        | `league` | League statistics, current season. | `id` | — |
+        | `league` | League statistics, current season. Season totals of the current season of a league: matches, goals, cards, clean sheets, goal ranges and goal lines. | `id` | — |
         | `season` | League statistics by season. Season totals such as goals, cards and goal lines. | `id` | — |
-        | `team` | Team statistics by season. | `id`, `season_id` | — |
+        | `team` | Team statistics by season. Goals scored and conceded, clean sheets, cards and goal ranges of a team in a season. | `id`, `season_id` | — |
         | `player` | Player statistics. Season statistics with `id` and `season_id`, or single-match statistics with `player_id` and `match_id`. | — | `id`, `season_id`, `player_id`, `match_id`, `lang` |
         | `match` | Match statistics. Team statistics of one match, one entry per team. | `id` | — |
 
@@ -5572,6 +5594,7 @@ paths:
       x-operations:
         - t: league
           title: League statistics, current season
+          purpose: 'Season totals of the current season of a league: matches, goals, cards, clean sheets, goal ranges and goal lines.'
           required:
             - id
           optional: []
@@ -5587,6 +5610,7 @@ paths:
           example: id=12588
         - t: team
           title: Team statistics by season
+          purpose: Goals scored and conceded, clean sheets, cards and goal ranges of a team in a season.
           required:
             - id
             - season_id
@@ -6324,7 +6348,7 @@ paths:
 
         | `t` | Operation | Required | Optional |
         | --- | --- | --- | --- |
-        | `teams` | Team vs team. | `team1`, `team2` | — |
+        | `teams` | Team vs team. Previous meetings of two teams with the result and form of each one. | `team1`, `team2` | — |
         | `match` | Match head to head. Previous meetings of the two teams of a match. | `id` | — |
 
         ## Examples
@@ -6343,6 +6367,7 @@ paths:
       x-operations:
         - t: teams
           title: Team vs team
+          purpose: Previous meetings of two teams with the result and form of each one.
           required:
             - team1
             - team2
@@ -6879,8 +6904,8 @@ paths:
 
         | `t` | Operation | Required | Optional |
         | --- | --- | --- | --- |
-        | `topscorers` | Top scorers. | `season_id` | — |
-        | `topassists` | Top assists. | `season_id` | — |
+        | `topscorers` | Top scorers. Players ranked by goals, with home and away split and penalties. | `season_id` | — |
+        | `topassists` | Top assists. Players ranked by assists. | `season_id` | — |
         | `topcards` | Most cards. Yellow, yellow-red and red cards per player. | `season_id` | — |
 
         ## Examples
@@ -6905,6 +6930,7 @@ paths:
       x-operations:
         - t: topscorers
           title: Top scorers
+          purpose: Players ranked by goals, with home and away split and penalties.
           required:
             - season_id
           optional: []
@@ -6912,6 +6938,7 @@ paths:
           example: season_id=12516
         - t: topassists
           title: Top assists
+          purpose: Players ranked by assists.
           required:
             - season_id
           optional: []
@@ -7112,8 +7139,8 @@ paths:
 
         | `t` | Operation | Required | Optional |
         | --- | --- | --- | --- |
-        | `list` | All bookmakers. | — | — |
-        | `info` | Bookmaker by ID. | `id` | — |
+        | `list` | All bookmakers. Every bookmaker with its logo. | — | — |
+        | `info` | Bookmaker by ID. One bookmaker. | `id` | — |
 
         ## Examples
 
@@ -7131,12 +7158,14 @@ paths:
       x-operations:
         - t: list
           title: All bookmakers
+          purpose: Every bookmaker with its logo.
           required: []
           optional: []
           schema: DataResponse
           example: ''
         - t: info
           title: Bookmaker by ID
+          purpose: One bookmaker.
           required:
             - id
           optional: []
@@ -7234,7 +7263,7 @@ paths:
         | `t` | Operation | Required | Optional |
         | --- | --- | --- | --- |
         | `list` | All markets. The eight markets in use: 1X2, over/under goal line, Asian handicap, first-half variants, Asian corners and half-time result. | — | — |
-        | `info` | Market by ID. | `id` | — |
+        | `info` | Market by ID. One betting market. | `id` | — |
 
         ## Examples
 
@@ -7259,6 +7288,7 @@ paths:
           example: ''
         - t: info
           title: Market by ID
+          purpose: One betting market.
           required:
             - id
           optional: []
@@ -7355,7 +7385,7 @@ paths:
         | `schedule` | Matches on TV by date. Matches broadcast on a date. Add `include=tvs` to embed the channel details in each match. Paginated, 100 items per page. | `d` | `include`, `utc`, `lang`, `page` | broadcast |
         | `match_tvs` | TV channels of a match. Every channel showing the match, with its country. Not paginated. | `id` | — | broadcast |
         | `list` | TV channels. All TV channels, optionally filtered by country. Paginated, 100 items per page. | — | `country_id`, `page` | broadcast |
-        | `info` | TV channel by ID. | `id` | — | broadcast |
+        | `info` | TV channel by ID. One TV channel with type, logo, website and country. | `id` | — | broadcast |
 
         ## Includes
 
@@ -7425,6 +7455,7 @@ paths:
           example: country_id=15
         - t: info
           title: TV channel by ID
+          purpose: One TV channel with type, logo, website and country.
           required:
             - id
           optional: []
@@ -7826,8 +7857,8 @@ paths:
 
         | `t` | Operation | Required | Optional |
         | --- | --- | --- | --- |
-        | `info` | Player by ID. | `id` | — |
-        | `list` | Players. All players, or the players of a country. Paginated, 100 items per page. | — | `country_id`, `page` |
+        | `info` | Player by ID. Player profile with biography, current team, market value, leagues and roles by season. | `id` | — |
+        | `list` | All players. All players, or the players of a country. Paginated, 100 items per page. | — | `country_id`, `page` |
 
         ## Examples
 
@@ -7837,7 +7868,7 @@ paths:
         GET /v2.2/players/?user=USER&token=TOKEN&t=info&id=11306
         ```
 
-        Players:
+        All players:
 
         ```http
         GET /v2.2/players/?user=USER&token=TOKEN&t=list&country_id=4
@@ -7845,13 +7876,14 @@ paths:
       x-operations:
         - t: info
           title: Player by ID
+          purpose: Player profile with biography, current team, market value, leagues and roles by season.
           required:
             - id
           optional: []
           schema: DataResponse
           example: id=11306
         - t: list
-          title: Players
+          title: All players
           purpose: All players, or the players of a country. Paginated, 100 items per page.
           required: []
           optional:
@@ -7875,7 +7907,7 @@ paths:
               - list
             x-enumDescriptions:
               info: Player by ID
-              list: Players
+              list: All players
         - name: id
           in: query
           required: false
@@ -7955,7 +7987,7 @@ paths:
                       total: 1
                       msg: ''
                 list:
-                  summary: Players
+                  summary: All players
                   value:
                     data:
                       - id: 195
@@ -8036,8 +8068,8 @@ paths:
 
         | `t` | Operation | Required | Optional |
         | --- | --- | --- | --- |
-        | `info` | Coach by ID. | `id` | — |
-        | `list` | Coaches. All coaches, or the coaches of a country. Paginated, 100 items per page. | — | `country_id`, `page` |
+        | `info` | Coach by ID. Coach profile with current team and country. | `id` | — |
+        | `list` | All coaches. All coaches, or the coaches of a country. Paginated, 100 items per page. | — | `country_id`, `page` |
 
         ## Examples
 
@@ -8047,7 +8079,7 @@ paths:
         GET /v2.2/coaches/?user=USER&token=TOKEN&t=info&id=662
         ```
 
-        Coaches:
+        All coaches:
 
         ```http
         GET /v2.2/coaches/?user=USER&token=TOKEN&t=list&country_id=25
@@ -8055,13 +8087,14 @@ paths:
       x-operations:
         - t: info
           title: Coach by ID
+          purpose: Coach profile with current team and country.
           required:
             - id
           optional: []
           schema: DataResponse
           example: id=662
         - t: list
-          title: Coaches
+          title: All coaches
           purpose: All coaches, or the coaches of a country. Paginated, 100 items per page.
           required: []
           optional:
@@ -8085,7 +8118,7 @@ paths:
               - list
             x-enumDescriptions:
               info: Coach by ID
-              list: Coaches
+              list: All coaches
         - name: id
           in: query
           required: false
@@ -8137,7 +8170,7 @@ paths:
                       total: 1
                       msg: ''
                 list:
-                  summary: Coaches
+                  summary: All coaches
                   value:
                     data:
                       - id: 3
@@ -8202,8 +8235,8 @@ paths:
 
         | `t` | Operation | Required | Optional |
         | --- | --- | --- | --- |
-        | `info` | Referee by ID. | `id` | — |
-        | `list` | Referees. All referees, or the referees of a country. Paginated, 100 items per page. | — | `country_id`, `page` |
+        | `info` | Referee by ID. Referee profile with country. | `id` | — |
+        | `list` | All referees. All referees, or the referees of a country. Paginated, 100 items per page. | — | `country_id`, `page` |
 
         ## Examples
 
@@ -8213,7 +8246,7 @@ paths:
         GET /v2.2/referees/?user=USER&token=TOKEN&t=info&id=372
         ```
 
-        Referees:
+        All referees:
 
         ```http
         GET /v2.2/referees/?user=USER&token=TOKEN&t=list&country_id=4
@@ -8221,13 +8254,14 @@ paths:
       x-operations:
         - t: info
           title: Referee by ID
+          purpose: Referee profile with country.
           required:
             - id
           optional: []
           schema: DataResponse
           example: id=372
         - t: list
-          title: Referees
+          title: All referees
           purpose: All referees, or the referees of a country. Paginated, 100 items per page.
           required: []
           optional:
@@ -8251,7 +8285,7 @@ paths:
               - list
             x-enumDescriptions:
               info: Referee by ID
-              list: Referees
+              list: All referees
         - name: id
           in: query
           required: false
@@ -8300,7 +8334,7 @@ paths:
                       total: 1
                       msg: ''
                 list:
-                  summary: Referees
+                  summary: All referees
                   value:
                     data:
                       - id: 22
@@ -8359,13 +8393,13 @@ paths:
 
         | `t` | Operation | Required | Optional |
         | --- | --- | --- | --- |
-        | `list` | Venues. All venues, or the venues of a country. Paginated, 100 items per page. | — | `country_id`, `page` |
+        | `list` | All venues. All venues, or the venues of a country. Paginated, 100 items per page. | — | `country_id`, `page` |
         | `byseason` | Venues by season. Venues of the teams taking part in a season. | `season_id` | — |
-        | `info` | Venue by ID. | `id` | — |
+        | `info` | Venue by ID. One venue with capacity, city, coordinates and image. | `id` | — |
 
         ## Examples
 
-        Venues:
+        All venues:
 
         ```http
         GET /v2.2/venues/?user=USER&token=TOKEN&t=list&country_id=15
@@ -8384,7 +8418,7 @@ paths:
         ```
       x-operations:
         - t: list
-          title: Venues
+          title: All venues
           purpose: All venues, or the venues of a country. Paginated, 100 items per page.
           required: []
           optional:
@@ -8403,6 +8437,7 @@ paths:
           example: season_id=14192
         - t: info
           title: Venue by ID
+          purpose: One venue with capacity, city, coordinates and image.
           required:
             - id
           optional: []
@@ -8423,7 +8458,7 @@ paths:
               - byseason
               - info
             x-enumDescriptions:
-              list: Venues
+              list: All venues
               byseason: Venues by season
               info: Venue by ID
         - name: id
@@ -8457,7 +8492,7 @@ paths:
                 $ref: '#/components/schemas/DataResponse'
               examples:
                 list:
-                  summary: Venues
+                  summary: All venues
                   value:
                     data:
                       - id: 191
@@ -8616,12 +8651,12 @@ paths:
 
         | `t` | Operation | Required | Optional |
         | --- | --- | --- | --- |
-        | `league` | Highlights by league. | `id` | — |
-        | `season` | Highlights by season. | `id` | — |
-        | `team` | Highlights by team. | `id` | — |
-        | `round` | Highlights by round. | `id` | — |
-        | `event` | Highlights by match. | `id` | — |
-        | `date` | Highlights by date. | `d` | — |
+        | `league` | Highlights by league. Highlight videos of the matches of a league. | `id` | — |
+        | `season` | Highlights by season. Highlight videos of the matches of a season. | `id` | — |
+        | `team` | Highlights by team. Highlight videos of the matches of a team. | `id` | — |
+        | `round` | Highlights by round. Highlight videos of the matches of a round. | `id` | — |
+        | `event` | Highlights by match. Highlight videos of one match. | `id` | — |
+        | `date` | Highlights by date. Highlight videos of the matches of a date. | `d` | — |
 
         ## Examples
 
@@ -8664,6 +8699,7 @@ paths:
       x-operations:
         - t: league
           title: Highlights by league
+          purpose: Highlight videos of the matches of a league.
           required:
             - id
           optional: []
@@ -8671,6 +8707,7 @@ paths:
           example: id=637
         - t: season
           title: Highlights by season
+          purpose: Highlight videos of the matches of a season.
           required:
             - id
           optional: []
@@ -8678,6 +8715,7 @@ paths:
           example: id=14341
         - t: team
           title: Highlights by team
+          purpose: Highlight videos of the matches of a team.
           required:
             - id
           optional: []
@@ -8685,6 +8723,7 @@ paths:
           example: id=116
         - t: round
           title: Highlights by round
+          purpose: Highlight videos of the matches of a round.
           required:
             - id
           optional: []
@@ -8692,6 +8731,7 @@ paths:
           example: id=182349
         - t: event
           title: Highlights by match
+          purpose: Highlight videos of one match.
           required:
             - id
           optional: []
@@ -8699,6 +8739,7 @@ paths:
           example: id=1843815
         - t: date
           title: Highlights by date
+          purpose: Highlight videos of the matches of a date.
           required:
             - d
           optional: []
@@ -8835,7 +8876,7 @@ components:
       name: utc
       in: query
       required: false
-      description: UTC offset applied to returned date/time values. Decimal offsets such as `4.5` are accepted. Omit it for the API default (UTC).
+      description: UTC offset applied to returned date/time values; `time.timezone` reports it, for example `UTC+4.5`. Decimal offsets are accepted and invalid values fall back to UTC.
       example: 2
       schema:
         type: number
@@ -8853,7 +8894,7 @@ components:
       name: page
       in: query
       required: false
-      description: Page number on paginated operations. The response reports `meta.page` and `meta.pages`.
+      description: Page number on paginated operations, starting at 1. The response reports `meta.page` and `meta.pages`; a page beyond the last returns an empty `data`.
       example: 1
       schema:
         type: integer

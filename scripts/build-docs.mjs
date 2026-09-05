@@ -8,7 +8,7 @@
 // becomes its own page (path `/v2.2/route/?t=value`, which Scalar sends as the
 // real URL), the full route documentation moves to the tag header, and
 // user/token become security schemes so the client stores them once.
-import { readFileSync, writeFileSync, mkdirSync, readdirSync } from 'node:fs';
+import { readFileSync, writeFileSync, mkdirSync, readdirSync, copyFileSync } from 'node:fs';
 import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { createRequire } from 'node:module';
@@ -16,7 +16,7 @@ import { createRequire } from 'node:module';
 const require = createRequire(import.meta.url);
 const yaml = require('js-yaml');
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
-const SCALAR_VERSION = process.env.SCALAR_VERSION || 'latest';
+const SCALAR_VERSION = process.env.SCALAR_VERSION || '1.67.0';
 
 const BRAND = {
   name: 'SoccersAPI',
@@ -30,6 +30,7 @@ const BRAND = {
     { label: 'Coverage', href: 'https://soccersapi.com/coverage' },
     { label: 'Pricing', href: 'https://soccersapi.com/pricing' },
     { label: 'Dashboard', href: 'https://admin.soccersapi.com' },
+    { label: 'OpenAPI', href: 'openapi.yaml' },
   ],
 };
 
@@ -124,6 +125,7 @@ const spec = {
 
 mkdirSync(resolve(root, 'dist'), { recursive: true });
 writeFileSync(resolve(root, 'dist/openapi.docs.json'), JSON.stringify(spec, null, 2));
+copyFileSync(resolve(root, 'openapi.yaml'), resolve(root, 'dist/openapi.yaml'));
 
 const configuration = {
   persistAuth: true,
@@ -136,6 +138,9 @@ const configuration = {
   authentication: { preferredSecurityScheme: [['user', 'token']] },
   // Scalar's hosted AI assistant calls api.scalar.com; keep the site self-contained.
   agent: { disabled: true },
+  // The download button would serve the derived docs spec; the header links to the canonical file.
+  hideDownloadButton: true,
+  documentDownloadType: 'none',
   metaData: { title: `${BRAND.name} documentation`, description: 'Football data API reference with an interactive client.' },
 };
 
