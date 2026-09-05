@@ -7,7 +7,7 @@ apply only where the endpoint reference lists them.
 | --- | --- | --- | --- | --- |
 | `user` | string | Yes | `{{USERNAME}}` | Account username. |
 | `token` | string | Yes | `{{TOKEN}}` | API token from the account dashboard. |
-| `lang` | string | No | `en` | Localizes supported names/labels. Availability varies by dataset. |
+| `lang` | string | No | `en` | Localizes catalogue names (countries, continents, leagues). Match, event and statistics payloads are not translated. |
 | `utc` | number | No | `2`, `4.5`, `-3` | UTC offset applied to supported date/time values. Decimal offsets are accepted. |
 | `include` | string | No | `events,stats` | Comma-separated datasets, with no spaces. Values and support depend on the operation. |
 | `page` | integer | No | `1` | Page number on paginated operations. Pages hold 100 items; the response reports `meta.page`, `meta.pages`, `meta.count` and `meta.total`. |

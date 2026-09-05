@@ -3487,14 +3487,14 @@ paths:
         | `t` | Operation | Required | Optional | Theme |
         | --- | --- | --- | --- | --- |
         | `schedule` | Fixtures by date. Matches on a date, optionally narrowed to a country, league, season, stage, group or round. Paginated, 100 items per page. | `d` | `country_id`, `league_id`, `season_id`, `stage_id`, `group_id`, `round_id`, `include`, `utc`, `lang`, `odds_format`, `page` | core |
-        | `season` | Fixtures by season. Every match of a season in one response, optionally narrowed to a stage, group or team. | `season_id` | `stage_id`, `group_id`, `team_id`, `order`, `include`, `utc`, `lang`, `odds_format` | core |
+        | `season` | Fixtures by season. Every match of a season in one response, optionally narrowed to a stage, group or team. | `season_id` | `stage_id`, `group_id`, `team_id`, `include`, `utc`, `lang`, `odds_format` | core |
         | `round` | Fixtures by round. | `round_id` | `team_id`, `include`, `utc`, `lang`, `odds_format` | core |
         | `last_next` | Team last and next fixtures. Recent results (`last`), matches in play (`current`) and upcoming matches (`next`) of a team. Does not accept `include`. | `team_id` | `utc`, `lang` | core |
         | `tv` | Fixtures by TV channel. Matches scheduled on a TV channel over the next two weeks. | `tv_id` | `include`, `utc`, `lang` | broadcast |
         | `info` | Match by ID. One match with teams, league, venue, scores, status and clock. | `id` | `include`, `utc`, `lang`, `odds_format` | core |
         | `sort` | Matches by multiple IDs. | `ids` | `include`, `utc`, `lang` | core |
         | `match_events` | Match events. Standalone event timeline of one match. | `id` | — | core |
-        | `match_lineups` | Match lineups. Formations and starting lineups. Add `include=stats` for per-player statistics, omitted by default for speed. | `id` | `include`, `lang` | core |
+        | `match_lineups` | Match lineups. Formations and starting lineups with position and shirt number. | `id` | `lang` | core |
         | `match_bench` | Match bench. | `id` | — | core |
         | `match_comments` | Match commentary. Text commentary of the match where covered. | `id` | `lang` | core |
         | `match_sidelined` | Match sidelined players. Injured and suspended players of both teams. | `id` | — | core |
@@ -3507,12 +3507,12 @@ paths:
         Comma-separated dataset names for `include`, without spaces:
 
         - `events`: match timeline; `schedule`, `season`, `round`, `last_next`, `tv`, `info` and `sort`
-        - `stats`: team match statistics on match-returning operations; per-player statistics on `match_lineups`
+        - `stats`: team match statistics, one entry per team
         - `broadcast`: TV channels showing the match (broadcast theme)
         - `odds_prematch`: pre-match odds (odds theme)
         - `odds_inplay`: in-play odds for matches in play (odds theme)
 
-        The match-detail operation is `t=info`; `match_by_id` is not a valid value and `/v2.2/matches/` is not a v2.2 route. Dataset names such as `events` belong in `include`; `match_events` is an operation, not an include value. IDs can be JSON numbers or numeric strings depending on the operation: treat them as opaque and normalize before strict comparisons.
+        The release notes announce `include=stats` on `match_lineups` for per-player statistics; verification on 2026-09-04 returned no extra data, so it is not documented as a parameter. The `order` parameter shown in the public reference has no effect either. The match-detail operation is `t=info`; `match_by_id` is not a valid value and `/v2.2/matches/` is not a v2.2 route. Dataset names such as `events` belong in `include`; `match_events` is an operation, not an include value. IDs can be JSON numbers or numeric strings depending on the operation: treat them as opaque and normalize before strict comparisons.
 
         ## Examples
 
@@ -3630,7 +3630,6 @@ paths:
             - stage_id
             - group_id
             - team_id
-            - order
             - include
             - utc
             - lang
@@ -3688,7 +3687,6 @@ paths:
           required:
             - id
           optional:
-            - include
             - lang
         - t: match_bench
           title: Match bench
@@ -3855,16 +3853,6 @@ paths:
           schema:
             type: string
           example: '1'
-        - name: order
-          in: query
-          required: false
-          description: Sort order of the fixture list by kickoff time. Optional for `season`.
-          schema:
-            type: string
-            enum:
-              - asc
-              - desc
-          example: asc
         - name: include
           in: query
           required: false
@@ -8617,7 +8605,7 @@ components:
       name: lang
       in: query
       required: false
-      description: Language code for localized names and labels where available, for example `en`, `es`, `de`, `fr`, `it`, `pt`, `tr`, `pl`, `ko` or `zh`.
+      description: Language code for localized names, for example `en`, `es`, `de`, `fr`, `it`, `pt`, `tr`, `pl`, `ko` or `zh`. Verified on country, continent and league catalogue names; match and statistics payloads are not translated.
       example: en
       schema:
         type: string

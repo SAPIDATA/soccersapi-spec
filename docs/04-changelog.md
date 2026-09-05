@@ -67,6 +67,9 @@ Use these endpoints for “Where to watch” features. You can filter broadcasts
 GET /v2.2/broadcast/?user=USER&token=TOKEN&t=match_tvs&id=1910954&country_broadcast_id=5
 ```
 
+> Verification note (2026-09-04): `country_broadcast_id` currently has no
+> effect; `t=match_tvs` returns the channels of every country.
+
 ---
 
 ## 🎞️ Media (beta)
@@ -80,6 +83,9 @@ GET /v2.2/media/?user=USER&token=TOKEN&t=league&id=637
 
 **Commentary**  
 Good for editorial UIs, highlight carousels and social previews. Beta feature — expect small improvements.
+
+> Verification note (2026-09-04): the media route is not live yet and is
+> marked "coming soon" in the reference.
 
 ---
 
@@ -120,6 +126,7 @@ GET /v2.2/fixtures/?user=USER&token=TOKEN&t=info&id=XXXX&include=events,stats
 - Player seasons & roles in Player by ID.  
 - Team seasons and extended `leagues` array in Team by ID.  
 - Basic player stats included in Match Lineups endpoint (default: formation without per-player stats; add `&include=stats` for full stats).
+  *Verification note (2026-09-04): `include=stats` returned no per-player statistics on the matches tested.*
 
 **Commentary**  
 Easier to render detailed player/team pages without additional joins. For performance, lineups omit heavy per-player stats by default.
