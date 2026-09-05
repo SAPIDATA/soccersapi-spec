@@ -12,13 +12,13 @@ every request until you clear them; they are never sent anywhere except the
 API. Use a development token from
 [admin.soccersapi.com/api-tokens](https://admin.soccersapi.com/api-tokens).
 
-## 2. Pick the route and the operation
+## 2. Pick the operation
 
-Choose a route in the sidebar, for example **Fixtures**. Its operations table
-lists every accepted `t` value with the required and optional parameters. In
-the request panel select the `t` value and fill in the parameters that the
-operation needs; parameters that do not apply to the selected operation are
-ignored by the API.
+Open a route in the sidebar, for example **Fixtures**, and choose the operation
+you need, such as **Match by ID** or **Fixtures by date**. Each operation page
+shows only the parameters that apply to it; the `t` value is already part of
+the request. The route header above the operations keeps the full operations
+table, the include values and the request examples of the route.
 
 ## 3. Send the request
 

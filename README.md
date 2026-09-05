@@ -71,8 +71,10 @@ or the captured responses.
 ## Documentation site
 
 The public documentation is a static [Scalar API Reference](https://github.com/scalar/scalar)
-built from the contract and the guides, with an interactive client that stores
-your `user` and `token` in the browser:
+built from the contract and the guides, themed for SoccersAPI, with one sidebar
+entry per operation (each `t` value of a route becomes its own page, while the
+route header keeps the full operations table) and an interactive client that
+stores your `user` and `token` in the browser:
 
 ```bash
 npm run docs:serve
