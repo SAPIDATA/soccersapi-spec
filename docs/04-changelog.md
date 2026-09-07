@@ -32,7 +32,21 @@
 - Added the match-event response schema, scorer/assist nullability and live
   publication guidance.
 
-## 🛡️ API Token Usage (2025-11-04)
+## 🏟️ Venues by Season
+- **Venues by Season** — added `t=byseason` to the **Venues** endpoint to return the venues linked to a specific season.
+- **Season venue data** — use `season_id` to fetch the basic venue information from the season venue list.
+
+**Example**
+```txt
+GET /v2.2/venues/?user=USER&token=TOKEN&t=byseason&season_id=14192
+```
+
+## ⚡ Performance & Team Kit Colors
+- **Performance improvements** — optimized API response times and improved overall request handling for a faster experience.
+- **Team kit colors** — added `kit` colors to the **Teams by ID** endpoint for richer team visual data.
+- **Minor updates** — applied small fixes, refinements, and stability improvements across the API.
+
+## 🛡️ API Token Usage
 - **API Token usage tracking** — monitor token consumption, see usage by endpoint, and review historical trends.
 - **Token dashboard** — quick overview of all tokens and their activity.
 - **Usage insights** — identify high-traffic endpoints and optimize token allocation.

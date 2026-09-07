@@ -1,0 +1,48 @@
+name: Sync changelog into OpenAPI
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - docs/04-changelog.md
+      - scripts/sync-changelog.js
+      - .github/workflows/sync-changelog.yml
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Sync changelog
+        run: npm run sync:changelog
+
+      - name: Validate generated files
+        run: |
+          git diff --check -- openapi.yaml docs/openapi.yaml
+          diff -q openapi.yaml docs/openapi.yaml
+
+      - name: Commit generated OpenAPI files
+        run: |
+          if git diff --quiet -- openapi.yaml docs/openapi.yaml; then
+            echo "No OpenAPI changelog changes to commit."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add openapi.yaml docs/openapi.yaml
+          git commit -m "Sync changelog into OpenAPI"
+          git push
