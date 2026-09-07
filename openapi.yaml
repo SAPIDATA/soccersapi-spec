@@ -16,6 +16,22 @@ info:
     > Use the `include` parameter to embed related datasets in one call (for example `include=events,stats`) and reduce round trips. Dataset include names are different from standalone operation selectors such as `t=match_events`.
     > Use the `utc` parameter to get date/time values in your preferred timezone (for example `utc=4` or `utc=4.5`).
 
+    ## Plan datasets (2026-09-07)
+
+    - Every plan reads the catalogue (search, geography, leagues, seasons, stages,
+      groups, rounds, team profiles and lists) and the match feeds (livescores and
+      fixture lists and details) for the leagues it covers.
+    - Standard and World Cup plans include every operation and every include; Free
+      plans carry the Standard datasets for their leagues.
+    - Odds plans add the odds operations, bookmakers, markets and the
+      `odds_prematch` and `odds_inplay` includes; Broadcast plans add the
+      broadcast operations, fixtures by TV channel and the `broadcast` and `tvs`
+      includes.
+    - Requests outside the plan answer `403` with the reason in `meta.msg`:
+      `League not available for your plan.`, `Endpoint not available for your
+      plan.` or `Include not available for your plan.`. See
+      [Plans and Data Access](./10-plans-and-access.md).
+
     ## Documentation verification (2026-09-04)
 
     - Every operation of every route was exercised against production and the
