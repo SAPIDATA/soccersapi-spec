@@ -7,6 +7,7 @@
 //   node scripts/probe.mjs --dry           # print the URLs (token masked)
 //   node scripts/probe.mjs --delay=500     # ms between requests (default 250)
 //   node scripts/probe.mjs --ops=my.json   # custom operation list (same format)
+//   node scripts/probe.mjs --env=.env.odds --out=tmp/probe-odds   # other account, other output dir
 //
 // An operation may carry `expect` (default 200) for routes announced ahead of
 // release, and `auth: false` to send the request without credentials.
@@ -22,9 +23,9 @@ import { fileURLToPath } from 'node:url';
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const BASE = process.env.SOCCERSAPI_BASE_URL || 'https://api.soccersapi.com';
 
-function loadEnv() {
-  // .env.local wins over .env; both are git-ignored.
-  for (const name of ['.env.local', '.env']) {
+function loadEnv(extra) {
+  // .env.local wins over .env; both are git-ignored. --env=<file> takes precedence over both.
+  for (const name of [extra, '.env.local', '.env'].filter(Boolean)) {
     const file = resolve(root, name);
     if (!existsSync(file)) continue;
     for (const line of readFileSync(file, 'utf8').split(/\r?\n/)) {
@@ -36,12 +37,14 @@ function loadEnv() {
 }
 
 function args() {
-  const out = { only: '', dry: false, delay: 250, ops: 'scripts/operations.json' };
+  const out = { only: '', dry: false, delay: 250, ops: 'scripts/operations.json', env: '', out: 'tmp/probe' };
   for (const a of process.argv.slice(2)) {
     if (a === '--dry') out.dry = true;
     else if (a.startsWith('--only=')) out.only = a.slice(7);
     else if (a.startsWith('--delay=')) out.delay = Number(a.slice(8)) || 0;
     else if (a.startsWith('--ops=')) out.ops = a.slice(6);
+    else if (a.startsWith('--env=')) out.env = a.slice(6);
+    else if (a.startsWith('--out=')) out.out = a.slice(6);
   }
   return out;
 }
@@ -71,8 +74,8 @@ function shape(payload) {
 }
 
 async function main() {
-  loadEnv();
-  const { only, dry, delay, ops: opsFile } = args();
+  const { only, dry, delay, ops: opsFile, env: envFile, out: outRel } = args();
+  loadEnv(envFile);
   const user = process.env.SOCCERSAPI_USER;
   const token = process.env.SOCCERSAPI_TOKEN;
   if (!dry && (!user || !token)) {
@@ -81,7 +84,7 @@ async function main() {
   }
   const ops = JSON.parse(readFileSync(resolve(root, opsFile), 'utf8'))
     .filter((op) => !only || op.id.includes(only) || op.route.includes(only));
-  const outDir = resolve(root, 'tmp/probe');
+  const outDir = resolve(root, outRel);
   mkdirSync(outDir, { recursive: true });
   const results = [];
 
@@ -129,7 +132,7 @@ async function main() {
   }
   writeFileSync(resolve(outDir, 'summary.md'), md.join('\n') + '\n');
   const ok = results.filter((r) => r.status === (ops.find((o) => o.id === r.id)?.expect ?? 200)).length;
-  console.log(`\n${ok}/${results.length} operations returned the expected status. Details in tmp/probe/summary.md`);
+  console.log(`\n${ok}/${results.length} operations returned the expected status. Details in ${outRel}/summary.md`);
 }
 
 main().catch((err) => {

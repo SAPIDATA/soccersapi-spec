@@ -6,8 +6,10 @@
   operation-specific parameter, for example a date not in `YYYY-MM-DD`, a
   non-numeric `id` or a search term under 3 characters.
 - **401 Unauthorized** — missing or invalid `user`/`token`.
-- **403 Forbidden** — the requested league or dataset is not included in the
-  account plan.
+- **403 Forbidden** — the league is outside the account plan (`meta.msg` =
+  `League not available for your plan.`) or the operation is reserved to
+  Standard plans (`meta.msg` = `Endpoint not available for your plan.`); see
+  [Plans and Data Access](./10-plans-and-access.md).
 - **404 Not Found** — endpoint or resource does not exist; check the route and
   resource ID.
 - **429 Too Many Requests** — request limit exceeded.
@@ -21,6 +23,7 @@ The body shape depends on where the request failed:
 | --- | --- | --- |
 | 401 | `{"ok": false, "message": "…"}` | `{"ok":false,"message":"User or token incorrect!"}` |
 | 400 | Normal envelope with an empty `data` and the reason in `meta.msg` | `{"data":[],"meta":{"…":"…","msg":"Invalid 't' parameter value"}}` |
+| 403 | Normal envelope with an empty `data` and the reason in `meta.msg` | `{"data":[],"meta":{"…":"…","msg":"League not available for your plan."}}` |
 | 404 (unknown resource) | Normal envelope with an empty `data` object and `meta.msg` | `{"data":{},"meta":{"…":"…","msg":"League not found"}}` |
 | 404 (unknown route) | `{"msg": "Endpoint not found"}` | |
 

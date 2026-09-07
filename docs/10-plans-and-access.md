@@ -34,14 +34,27 @@ exhausted the API returns `429`. Poll live feeds at a fixed cadence and use
 `include` to embed related datasets instead of issuing separate calls; see
 [Errors and Request Limits](./06-error-and-rate-limits.md) for backoff rules.
 
+## Standard-only operations
+
+| Route | Operations | Other plans receive |
+| --- | --- | --- |
+| `teams` | `transfers`, `trophies` | `403`, `meta.msg` = `Endpoint not available for your plan.` |
+| `leaders` | `topscorers`, `topassists`, `topcards` | `403`, `meta.msg` = `Endpoint not available for your plan.` |
+
+The reference marks these operations with a *Standard plans only* badge.
+
 ## How access shows up in responses
 
 | Situation | Response |
 | --- | --- |
-| Endpoint or dataset not in the plan | `403` with an explanatory `msg`. |
-| League not enabled on the account | `403`, or an empty `data` array on list feeds. |
+| League not in the plan (`leagues?t=info`, `standings`, `fixtures?t=season`, `teams?t=byseason`, `fixtures?t=schedule&league_id=…`) | `403` with an empty `data` and `meta.msg` = `League not available for your plan.` |
+| Operation reserved to Standard plans | `403` with an empty `data` and `meta.msg` = `Endpoint not available for your plan.` |
+| Match feed without a league filter | `200` with only the matches of the leagues in the plan. |
 | Dataset not covered for a match or competition | `200` with an empty array or `null` fields. |
 | Request allowance exhausted | `429`. |
+
+`leagues?t=list` returns only the leagues the account can read, so it is the
+reliable way for an application to build its competition menu.
 
 Clients should treat `403` as a configuration problem to surface to the account
 owner, and empty or `null` data as normal coverage variance.
