@@ -16,6 +16,8 @@ Common product use cases include:
 - Pre-match and in-play odds where enabled.
 - Broadcast listings and media/highlight metadata where available.
 
+![Anatomy of a request: route, credentials, the t operation selector, its parameters, includes and options](./img/request-anatomy.svg)
+
 Every request requires an account username (`user`) and API token (`token`).
 Successful responses normally contain `data` and `meta`; `meta` reports request
 quota and pagination information.

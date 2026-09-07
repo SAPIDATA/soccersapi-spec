@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 190" width="960" height="190" role="img" aria-label="Anatomy of a SoccersAPI request URL">
+  <style>
+    .u { font: 500 15px 'IBM Plex Mono', ui-monospace, monospace; fill: #0b1f16; }
+    .h { fill: #19c96b; }
+    .l { font: 11.5px 'Onest', system-ui, sans-serif; fill: #5b6b63; }
+    .k { font: 600 11.5px 'Onest', system-ui, sans-serif; fill: #0f7a44; }
+    .a { stroke: #7f958a; stroke-width: 1.2; fill: none; }
+  </style>
+  <rect x="24" y="52" width="912" height="40" rx="8" fill="#f2f6f4" stroke="#cfd9d3"/>
+  <text class="u" x="40" y="78">https://api.soccersapi.com/v2.2/<tspan class="h" style="fill:#0f7a44;font-weight:600">fixtures</tspan>/?user=…&amp;token=…&amp;<tspan class="h" style="fill:#0f7a44;font-weight:600">t=schedule</tspan>&amp;<tspan class="h" style="fill:#0f7a44;font-weight:600">d=2026-09-07</tspan>&amp;<tspan class="h" style="fill:#0f7a44;font-weight:600">include=broadcast</tspan>&amp;utc=2</text>
+  <path class="a" d="M330 92V118"/><text class="k" x="240" y="134">Route</text><text class="l" x="240" y="150">one of 22 resources, all GET</text>
+  <path class="a" d="M470 92V118"/><text class="k" x="420" y="134">Credentials</text><text class="l" x="420" y="150">user and token on every request</text>
+  <path class="a" d="M600 92V118"/><text class="k" x="580" y="134">Operation</text><text class="l" x="580" y="150">t selects what the route does</text>
+  <path class="a" d="M715 92V118"/><text class="k" x="700" y="134">Its parameters</text><text class="l" x="700" y="150">listed per operation</text>
+  <path class="a" d="M870 92V118"/><text class="k" x="820" y="134">Includes and options</text><text class="l" x="820" y="150">datasets · utc · lang · page</text>
+  <text class="l" x="24" y="30">Every call has the same shape:</text>
+  <text class="l" x="24" y="180">Response: { "data": …, "meta": { "requests_left", "plan", "page", "pages", "count", "total", "msg" } }</text>
+</svg>

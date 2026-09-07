@@ -67,8 +67,9 @@ const guideFiles = readdirSync(docsDir).filter((f) => /^\d{2}-.*\.md$/.test(f)).
 const titleOf = (md) => (md.match(/^#\s+(.+)$/m) || [, ''])[1].trim();
 const guides = guideFiles.map((f) => { const md = readFileSync(resolve(docsDir, f), 'utf8').trim(); const title = titleOf(md); return { file: f, title, slug: /^04-/.test(f) ? 'changelog' : slug(title), md }; });
 const guideBySlugFile = Object.fromEntries(guides.map((g) => [g.file, g]));
-const relinkSite = (md) => md.replace(/\]\(\.\/(\d{2}-[^)#]+\.md)(#[^)]*)?\)/g, (m, file, hash) => (guideBySlugFile[file] ? `](/guides/${guideBySlugFile[file].slug}/${hash || ''})` : m));
-const relinkHash = (md) => md.replace(/\]\(\.\/(\d{2}-[^)#]+\.md)(#[^)]*)?\)/g, (m, file) => (guideBySlugFile[file] ? `](#description/${guideBySlugFile[file].slug})` : m));
+const relinkImg = (md) => md.replace(/\]\(\.\/img\//g, '](/img/');
+const relinkSite = (md) => relinkImg(md).replace(/\]\(\.\/(\d{2}-[^)#]+\.md)(#[^)]*)?\)/g, (m, file, hash) => (guideBySlugFile[file] ? `](/guides/${guideBySlugFile[file].slug}/${hash || ''})` : m));
+const relinkHash = (md) => relinkImg(md).replace(/\]\(\.\/(\d{2}-[^)#]+\.md)(#[^)]*)?\)/g, (m, file) => (guideBySlugFile[file] ? `](#description/${guideBySlugFile[file].slug})` : m));
 marked.use({ renderer: { heading({ tokens, depth }) { const text = this.parser.parseInline(tokens); return `<h${depth} id="${slug(text.replace(/<[^>]+>/g, ''))}">${text}</h${depth}>\n`; } } });
 const md2html = (md) => marked.parse(md);
 const inline = (md) => marked.parseInline(md || '');
@@ -139,6 +140,7 @@ const spec = {
 };
 rmSync(dist, { recursive: true, force: true });
 mkdirSync(dist, { recursive: true });
+if (existsSync(resolve(docsDir, 'img'))) { mkdirSync(resolve(dist, 'img'), { recursive: true }); for (const f of readdirSync(resolve(docsDir, 'img'))) copyFileSync(resolve(docsDir, 'img', f), resolve(dist, 'img', f)); }
 write('openapi.docs.json', JSON.stringify(spec, null, 2));
 copyFileSync(resolve(root, 'openapi.yaml'), resolve(dist, 'openapi.yaml'));
 
@@ -251,6 +253,7 @@ const pageCss = `${headerCss}
     .btn { display: inline-block; padding: 10px 16px; border-radius: 6px; text-decoration: none; font-weight: 600; font-size: 14px; }
     .btn-primary { background: ${BRAND.accent}; color: #fff; } .btn-primary:hover { background: ${BRAND.accentHover}; }
     .btn-secondary { background: #fff; color: ${BRAND.text}; border: 1px solid ${BRAND.border}; }
+    img { max-width: 100%; height: auto; background: #fff; border: 1px solid ${BRAND.border}; border-radius: 8px; }
     table { border-collapse: collapse; width: 100%; font-size: 14px; background: #fff; } th, td { text-align: left; padding: 9px 10px; border: 1px solid ${BRAND.border}; vertical-align: top; } th { background: #eef2f0; }
     code { font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 13px; background: #eef2f0; padding: 1px 5px; border-radius: 4px; }
     pre { background: ${BRAND.dark}; color: #e8f5ee; padding: 14px 16px; border-radius: 8px; overflow-x: auto; font-size: 13px; line-height: 1.5; } pre code { background: none; color: inherit; padding: 0; }

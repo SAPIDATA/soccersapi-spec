@@ -15,3 +15,6 @@ These are the source of truth for the prose docs; edit them here.
 | 8 | Statuses | [`08-statuses.md`](./08-statuses.md) |
 | 9 | Match Events and Dataset Includes | [`09-match-events-and-includes.md`](./09-match-events-and-includes.md) |
 | 10 | Plans and Data Access | [`10-plans-and-access.md`](./10-plans-and-access.md) |
+| 11 | Recipes | [`11-recipes.md`](./11-recipes.md) |
+| 12 | Data Model | [`12-data-model.md`](./12-data-model.md) |
+| 13 | The Match Object | [`13-match-object.md`](./13-match-object.md) |

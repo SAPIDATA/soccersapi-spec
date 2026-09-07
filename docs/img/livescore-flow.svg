@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 250" width="960" height="250" role="img" aria-label="Call sequence for a livescore screen with its polling cadence">
+  <style>
+    .box { fill: #ffffff; stroke: #cfd9d3; stroke-width: 1.2; rx: 8; }
+    .live { fill: #eaf9f0; stroke: #19c96b; stroke-width: 1.4; rx: 8; }
+    .t { font: 600 13px 'Onest', 'Segoe UI', system-ui, sans-serif; fill: #0b1f16; }
+    .s { font: 11px 'IBM Plex Mono', ui-monospace, monospace; fill: #0f7a44; }
+    .l { font: 11px 'Onest', system-ui, sans-serif; fill: #5b6b63; }
+    .a { stroke: #7f958a; stroke-width: 1.4; fill: none; marker-end: url(#m2); }
+  </style>
+  <defs><marker id="m2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#7f958a"/></marker></defs>
+  <g>
+    <rect class="box" x="24" y="40" width="200" height="92"/>
+    <text class="t" x="38" y="64">1 · Leagues of the plan</text>
+    <text class="s" x="38" y="86">leagues?t=list&amp;page=n</text>
+    <text class="l" x="38" y="106">once a day · build the menu</text>
+    <text class="l" x="38" y="122">paginated, 100 per page</text>
+  </g>
+  <g>
+    <rect class="box" x="264" y="40" width="200" height="92"/>
+    <text class="t" x="278" y="64">2 · Today's matches</text>
+    <text class="s" x="278" y="86">livescores?t=today&amp;utc=2</text>
+    <text class="l" x="278" y="106">every few minutes · all pages</text>
+    <text class="l" x="278" y="122">group by league, sort by time</text>
+  </g>
+  <g>
+    <rect class="live" x="504" y="40" width="200" height="92"/>
+    <text class="t" x="518" y="64">3 · Live snapshot</text>
+    <text class="s" x="518" y="86">livescores?t=live</text>
+    <text class="s" x="518" y="100">&amp;include=events,stats</text>
+    <text class="l" x="518" y="122">every 30–60 s · merge by id</text>
+  </g>
+  <g>
+    <rect class="box" x="744" y="40" width="192" height="92"/>
+    <text class="t" x="758" y="64">4 · Match detail</text>
+    <text class="s" x="758" y="86">fixtures?t=info&amp;id=…</text>
+    <text class="s" x="758" y="100">match_lineups · match_bench</text>
+    <text class="l" x="758" y="122">on open · on demand</text>
+  </g>
+  <path class="a" d="M224 86H262"/><path class="a" d="M464 86H502"/><path class="a" d="M704 86H742"/>
+  <path class="a" d="M604 132V172H364V134"/><text class="l" x="392" y="190">score changes update the list from step 2; events and attribution can arrive a poll later</text>
+  <text class="l" x="24" y="230">Status codes drive the UI: 0 not started · 1 in play (status_period, time.minute) · 11 half time · 3 finished · 31 after penalties · 4 postponed · 5 cancelled</text>
+</svg>
