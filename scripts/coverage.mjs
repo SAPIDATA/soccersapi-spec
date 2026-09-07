@@ -124,7 +124,11 @@ async function sweepLeague(l) {
 
 async function main() {
   mkdirSync(OUT, { recursive: true });
-  const leagues = await allLeagues();
+  // Cache the discovery (142 requests) so --resume runs go straight to the leagues.
+  const cache = resolve(OUT, 'leagues.json');
+  let leagues;
+  if (args.resume && existsSync(cache)) leagues = JSON.parse(readFileSync(cache, 'utf8'));
+  else { leagues = await allLeagues(); writeFileSync(cache, JSON.stringify(leagues)); }
   const todo = (LIMIT ? leagues.slice(0, LIMIT) : leagues).filter((l) => !(args.resume && existsSync(resolve(OUT, `${l.id}.json`))));
   console.log(`${leagues.length} leagues in the plan; sweeping ${todo.length} (${requests} requests so far)`);
   const started = Date.now();
