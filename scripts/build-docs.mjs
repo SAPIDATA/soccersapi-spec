@@ -65,7 +65,7 @@ const GROUPS = [
 const docsDir = resolve(root, 'docs');
 const guideFiles = readdirSync(docsDir).filter((f) => /^\d{2}-.*\.md$/.test(f)).sort();
 const titleOf = (md) => (md.match(/^#\s+(.+)$/m) || [, ''])[1].trim();
-const guides = guideFiles.map((f) => { const md = readFileSync(resolve(docsDir, f), 'utf8').trim(); const title = titleOf(md); return { file: f, title, slug: slug(title), md }; });
+const guides = guideFiles.map((f) => { const md = readFileSync(resolve(docsDir, f), 'utf8').trim(); const title = titleOf(md); return { file: f, title, slug: /^04-/.test(f) ? 'changelog' : slug(title), md }; });
 const guideBySlugFile = Object.fromEntries(guides.map((g) => [g.file, g]));
 const relinkSite = (md) => md.replace(/\]\(\.\/(\d{2}-[^)#]+\.md)(#[^)]*)?\)/g, (m, file, hash) => (guideBySlugFile[file] ? `](/guides/${guideBySlugFile[file].slug}/${hash || ''})` : m));
 const relinkHash = (md) => md.replace(/\]\(\.\/(\d{2}-[^)#]+\.md)(#[^)]*)?\)/g, (m, file) => (guideBySlugFile[file] ? `](#description/${guideBySlugFile[file].slug})` : m));
@@ -304,6 +304,7 @@ const legacy = JSON.parse(readFileSync(resolve(root, 'scripts/legacy-urls.json')
 const redirects = ['# Legacy Apidog URLs (docs.soccersapi.com before the switch) -> new pages'];
 for (const [from, to] of Object.entries(legacy)) redirects.push(`${from} ${to} 301`, `${from}.md ${to} 301`);
 redirects.push('', '# Trailing-slash and index normalisation', '/index.html / 301');
+for (const to of new Set(Object.values(legacy))) if (!existsSync(resolve(dist, to.replace(/^\//, ''), 'index.html'))) throw new Error(`Redirect target without a page: ${to}`);
 write('_redirects', redirects.join('\n') + '\n');
 write('_headers', `/*\n  X-Content-Type-Options: nosniff\n  Referrer-Policy: strict-origin-when-cross-origin\n  X-Frame-Options: SAMEORIGIN\n  Permissions-Policy: camera=(), microphone=(), geolocation=()\n\n/vendor/*\n  Cache-Control: public, max-age=31536000, immutable\n\n/openapi.yaml\n  Content-Type: application/yaml; charset=utf-8\n  Access-Control-Allow-Origin: *\n  Cache-Control: public, max-age=300\n\n/openapi.docs.json\n  Access-Control-Allow-Origin: *\n  Cache-Control: public, max-age=300\n\n/llms.txt\n  Content-Type: text/plain; charset=utf-8\n\n/llms-full.txt\n  Content-Type: text/plain; charset=utf-8\n`);
 write('404.html', page({ title: 'Page not found', description: 'The page does not exist. Browse the SoccersAPI documentation.', path: '/404.html', crumbs: [{ label: 'Docs', href: '/' }], body: `<h1>Page not found</h1><p class="lead">The address does not match any page of the documentation.</p><p class="actions"><a class="btn btn-primary" href="/">Open the reference</a><a class="btn btn-secondary" href="/guides/">Guides</a></p><h2>Routes</h2><ul class="ops">${routes.map((r) => `<li><a href="${r.url}">${esc(r.name)}</a></li>`).join('')}</ul>` }));
