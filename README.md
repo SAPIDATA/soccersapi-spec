@@ -70,19 +70,37 @@ or the captured responses.
 
 ## Documentation site
 
-The public documentation is a static [Scalar API Reference](https://github.com/scalar/scalar)
-built from the contract and the guides, themed for SoccersAPI, with one sidebar
-entry per operation (each `t` value of a route becomes its own page, while the
-route header keeps the full operations table) and an interactive client that
-stores your `user` and `token` in the browser:
+The public documentation is a static site built from the contract and the
+guides by `scripts/build-docs.mjs`: a [Scalar API Reference](https://github.com/scalar/scalar)
+with one sidebar entry per operation and an interactive client that stores
+`user` and `token` in the browser, plus a static page per operation, route and
+guide with its own URL and meta tags, `sitemap.xml`, `robots.txt`, `llms.txt`
+and `llms-full.txt`. Run it locally with:
 
 ```bash
 npm run docs:serve
 ```
 
-Then open http://localhost:8090. `npm run docs:build` alone writes `dist/index.html`
-and `dist/openapi.docs.json`; the workflow in `.github/workflows/docs.yml`
-publishes the same build to GitHub Pages once Pages is enabled for the repository.
+Then open http://localhost:8090. `npm run docs:build` writes everything to
+`dist/`; the Scalar bundle is downloaded once into `tmp/vendor/` and served
+from the site. Environment variables: `SCALAR_VERSION` (pinned in the script),
+`DOCS_SITE_URL` (canonical URLs, default `https://docs.soccersapi.com`),
+`DOCS_ANALYTICS=0` to leave out the Google tag, `DOCS_SCALAR_CDN=1` to load
+Scalar from jsdelivr instead of the vendored file.
+
+### Hosting on Cloudflare Pages
+
+`.github/workflows/docs.yml` builds on every push and pull request and deploys
+`dist/` with Wrangler: pushes to `main` go to production, pull requests get a
+preview URL. It needs two repository secrets, `CLOUDFLARE_API_TOKEN` (Pages
+edit permission) and `CLOUDFLARE_ACCOUNT_ID`, and a Pages project named
+`soccersapi-docs`. Alternatively connect the repository in the Cloudflare
+dashboard with build command `npm run docs:build` and output directory `dist`.
+
+To serve the site at `docs.soccersapi.com`, add the custom domain to the Pages
+project and point the DNS record to it. `dist/_redirects` sends every URL of
+the previous documentation (listed in `scripts/legacy-urls.json`) to the new
+page with a 301, and `dist/_headers` sets caching and security headers.
 
 ## Match events
 

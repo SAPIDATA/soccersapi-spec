@@ -9,13 +9,14 @@
     "lint:redocly": "redocly lint openapi.yaml",
     "probe": "node scripts/probe.mjs",
     "docs:build": "node scripts/build-docs.mjs",
-    "docs:serve": "npm run docs:build && python3 -m http.server 8090 -d dist",
+    "docs:serve": "DOCS_ANALYTICS=0 npm run docs:build && python3 -m http.server 8090 -d dist",
     "bundle": "redocly bundle openapi.yaml -o dist/openapi.bundled.yaml",
     "preview": "redocly preview-docs openapi.yaml",
     "build:redoc": "redocly build-docs openapi.yaml -o dist/redoc.html"
   },
   "devDependencies": {
+    "@redocly/cli": "^1.34.0",
     "@stoplight/spectral-cli": "^6.16.0",
-    "@redocly/cli": "^1.34.0"
+    "marked": "^16.4.2"
   }
 }
