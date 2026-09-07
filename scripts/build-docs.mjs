@@ -21,10 +21,11 @@ const SCALAR_VERSION = process.env.SCALAR_VERSION || '1.67.0';
 const BRAND = {
   name: 'SoccersAPI',
   site: 'https://soccersapi.com',
-  logo: 'https://soccersapi.com/assets/images/logo-dark.svg',
+  logo: 'https://soccersapi.com/assets/images/logo-light.svg',
+  logoOnDark: 'https://soccersapi.com/assets/images/logo-dark.svg',
   favicon: 'https://soccersapi.com/favicon/assets/images/soccersapi-icon.webp',
   accent: '#19c96b', accentHover: '#15b05d', dark: '#06110c', darkSoft: '#0b1a12', darkHover: '#103b2a',
-  text: '#020617', pageBg: '#f6f8f7',
+  text: '#020617', pageBg: '#f6f8f7', border: '#e5e7eb', muted: '#5b6b63',
   links: [
     { label: 'Website', href: 'https://soccersapi.com' },
     { label: 'Coverage', href: 'https://soccersapi.com/coverage' },
@@ -130,6 +131,7 @@ copyFileSync(resolve(root, 'openapi.yaml'), resolve(root, 'dist/openapi.yaml'));
 const configuration = {
   persistAuth: true,
   proxyUrl: '',
+  darkMode: false,
   layout: 'modern',
   theme: 'none',
   hideModels: false,
@@ -147,17 +149,17 @@ const configuration = {
 const css = `
 :root { --scalar-font: 'Onest', ui-sans-serif, system-ui, sans-serif; --scalar-font-code: 'IBM Plex Mono', ui-monospace, monospace; --scalar-radius: 6px; --scalar-radius-lg: 10px; --scalar-radius-xl: 14px; }
 .light-mode {
-  --scalar-color-accent: ${BRAND.accent}; --scalar-background-accent: rgba(25, 201, 107, .12);
-  --scalar-background-1: #ffffff; --scalar-background-2: ${BRAND.pageBg}; --scalar-background-3: #eaf0ec;
-  --scalar-color-1: ${BRAND.text}; --scalar-color-2: #3d4a43; --scalar-color-3: #6b7a72; --scalar-border-color: #dfe6e2;
-  --scalar-button-1: ${BRAND.accent}; --scalar-button-1-color: ${BRAND.dark}; --scalar-button-1-hover: ${BRAND.accentHover};
-  --scalar-sidebar-background-1: ${BRAND.dark}; --scalar-sidebar-color-1: #e8f5ee; --scalar-sidebar-color-2: #9db5a7; --scalar-sidebar-color-active: ${BRAND.accent};
-  --scalar-sidebar-item-hover-background: ${BRAND.darkHover}; --scalar-sidebar-item-hover-color: #ffffff; --scalar-sidebar-item-active-background: ${BRAND.darkHover};
-  --scalar-sidebar-border-color: #123324; --scalar-sidebar-search-background: ${BRAND.darkSoft}; --scalar-sidebar-search-border-color: #1c4431; --scalar-sidebar-search-color: #e8f5ee;
-  --scalar-sidebar-indent-border: #1c4431; --scalar-sidebar-indent-border-hover: #2a5c43; --scalar-sidebar-indent-border-active: ${BRAND.accent};
+  --scalar-color-accent: ${BRAND.accent}; --scalar-background-accent: rgba(25, 201, 107, .12); --scalar-color-green: ${BRAND.accent};
+  --scalar-background-1: #ffffff; --scalar-background-2: ${BRAND.pageBg}; --scalar-background-3: #eef2f0;
+  --scalar-color-1: ${BRAND.text}; --scalar-color-2: #3d4a43; --scalar-color-3: ${BRAND.muted}; --scalar-border-color: ${BRAND.border};
+  --scalar-button-1: ${BRAND.accent}; --scalar-button-1-color: #ffffff; --scalar-button-1-hover: ${BRAND.accentHover};
+  --scalar-sidebar-background-1: ${BRAND.pageBg}; --scalar-sidebar-color-1: ${BRAND.text}; --scalar-sidebar-color-2: ${BRAND.muted}; --scalar-sidebar-color-active: #0f7a44;
+  --scalar-sidebar-item-hover-background: #e9efec; --scalar-sidebar-item-hover-color: ${BRAND.text}; --scalar-sidebar-item-active-background: rgba(25, 201, 107, .14);
+  --scalar-sidebar-border-color: ${BRAND.border}; --scalar-sidebar-search-background: #ffffff; --scalar-sidebar-search-border-color: ${BRAND.border}; --scalar-sidebar-search-color: ${BRAND.text};
+  --scalar-sidebar-indent-border: #dfe6e2; --scalar-sidebar-indent-border-hover: #c9d4ce; --scalar-sidebar-indent-border-active: ${BRAND.accent};
 }
 .dark-mode {
-  --scalar-color-accent: ${BRAND.accent}; --scalar-background-accent: rgba(25, 201, 107, .16);
+  --scalar-color-accent: ${BRAND.accent}; --scalar-background-accent: rgba(25, 201, 107, .16); --scalar-color-green: ${BRAND.accent};
   --scalar-background-1: ${BRAND.dark}; --scalar-background-2: ${BRAND.darkSoft}; --scalar-background-3: ${BRAND.darkHover};
   --scalar-color-1: #e8f5ee; --scalar-color-2: #b5c9bd; --scalar-color-3: #8ea698; --scalar-border-color: #1c4431;
   --scalar-button-1: ${BRAND.accent}; --scalar-button-1-color: ${BRAND.dark}; --scalar-button-1-hover: ${BRAND.accentHover};
@@ -165,13 +167,13 @@ const css = `
   --scalar-sidebar-item-hover-background: ${BRAND.darkHover}; --scalar-sidebar-item-active-background: ${BRAND.darkHover}; --scalar-sidebar-border-color: #123324;
   --scalar-sidebar-search-background: ${BRAND.darkSoft}; --scalar-sidebar-search-border-color: #1c4431; --scalar-sidebar-search-color: #e8f5ee;
 }
-.sidebar-heading-type, .scalar-api-reference h1, .scalar-api-reference h2 { font-family: 'Sora', 'Onest', sans-serif; }
+.scalar-api-reference h1, .scalar-api-reference h2, .section-header, .sidebar-heading-type { font-family: 'Sora', 'Onest', sans-serif; letter-spacing: -0.01em; }
 `;
 
 const header = `
   <header class="sapi-header">
-    <a class="sapi-brand" href="${BRAND.site}"><img src="${BRAND.logo}" alt="${BRAND.name}" height="26"><span>Documentation</span></a>
-    <nav>${BRAND.links.map((l) => `<a href="${l.href}">${l.label}</a>`).join('')}</nav>
+    <a class="sapi-brand" href="${BRAND.site}"><img src="${BRAND.logo}" alt="${BRAND.name}" height="28"><span>Docs</span></a>
+    <nav>${BRAND.links.map((l) => `<a href="${l.href}">${l.label}</a>`).join('')}<a class="sapi-cta" href="https://admin.soccersapi.com/register">Start free trial</a></nav>
   </header>`;
 
 const html = `<!doctype html>
@@ -184,13 +186,15 @@ const html = `<!doctype html>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700&family=Sora:wght@600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
   <style>
-    body { margin: 0; background: ${BRAND.dark}; font-family: 'Onest', ui-sans-serif, system-ui, sans-serif; }
-    .sapi-header { position: sticky; top: 0; z-index: 50; display: flex; align-items: center; justify-content: space-between; gap: 16px; height: 52px; padding: 0 20px; background: ${BRAND.dark}; border-bottom: 1px solid #123324; font: 500 14px/1 'Onest', system-ui, sans-serif; }
-    .sapi-brand { display: flex; align-items: center; gap: 12px; color: #e8f5ee; text-decoration: none; }
-    .sapi-brand span { padding-left: 12px; border-left: 1px solid #1c4431; color: #9db5a7; font-weight: 500; }
-    .sapi-header nav { display: flex; gap: 20px; }
-    .sapi-header nav a { color: #b5c9bd; text-decoration: none; }
-    .sapi-header nav a:hover { color: ${BRAND.accent}; }
+    body { margin: 0; background: ${BRAND.pageBg}; font-family: 'Onest', ui-sans-serif, system-ui, sans-serif; }
+    .sapi-header { position: sticky; top: 0; z-index: 50; display: flex; align-items: center; justify-content: space-between; gap: 16px; height: 60px; padding: 0 24px; background: #ffffff; border-bottom: 1px solid ${BRAND.border}; font: 500 14px/1 'Onest', system-ui, sans-serif; }
+    .sapi-brand { display: flex; align-items: center; gap: 12px; color: ${BRAND.text}; text-decoration: none; }
+    .sapi-brand span { padding-left: 12px; border-left: 1px solid ${BRAND.border}; color: ${BRAND.muted}; font-weight: 500; }
+    .sapi-header nav { display: flex; align-items: center; gap: 22px; }
+    .sapi-header nav a { color: ${BRAND.text}; text-decoration: none; }
+    .sapi-header nav a:hover { color: #0f7a44; }
+    .sapi-header nav a.sapi-cta { background: ${BRAND.accent}; color: #ffffff; padding: 9px 16px; border-radius: 6px; font-weight: 600; }
+    .sapi-header nav a.sapi-cta:hover { background: ${BRAND.accentHover}; color: #ffffff; }
     #app { min-height: calc(100vh - 52px); }
     ${css}
   </style>
