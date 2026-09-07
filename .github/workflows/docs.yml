@@ -1,20 +1,17 @@
-name: Docs — build & deploy to Cloudflare Pages
+name: Docs — build check
+
+# Cloudflare Pages builds and deploys the site itself from the connected
+# repository (project soccersapi-docs: main to production, other branches and
+# pull requests to preview URLs). This workflow only proves that the docs build
+# succeeds and keeps the output around for review.
 
 on:
-  push:
-    branches: [main]
   pull_request:
     branches: [main]
   workflow_dispatch:
 
 permissions:
   contents: read
-  deployments: write
-  pull-requests: write
-
-concurrency:
-  group: docs-${{ github.ref }}
-  cancel-in-progress: true
 
 jobs:
   build:
@@ -27,27 +24,9 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm run lint:ci
-      - run: npm run docs:build
+      - run: DOCS_ANALYTICS=0 npm run docs:build
       - uses: actions/upload-artifact@v4
         with:
           name: docs-site
           path: dist
           retention-days: 7
-
-  deploy:
-    needs: build
-    runs-on: ubuntu-latest
-    # Requires the CLOUDFLARE_API_TOKEN and CLOUDFLARE_ACCOUNT_ID repository secrets
-    # and a Pages project named soccersapi-docs. Pushes to main deploy production;
-    # pull requests deploy a preview URL.
-    if: ${{ github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository }}
-    steps:
-      - uses: actions/download-artifact@v4
-        with:
-          name: docs-site
-          path: dist
-      - uses: cloudflare/wrangler-action@v3
-        with:
-          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          command: pages deploy dist --project-name=soccersapi-docs --branch=${{ github.head_ref || github.ref_name }} --commit-dirty=true

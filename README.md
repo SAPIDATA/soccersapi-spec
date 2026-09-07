@@ -90,17 +90,18 @@ Scalar from jsdelivr instead of the vendored file.
 
 ### Hosting on Cloudflare Pages
 
-`.github/workflows/docs.yml` builds on every push and pull request and deploys
-`dist/` with Wrangler: pushes to `main` go to production, pull requests get a
-preview URL. It needs two repository secrets, `CLOUDFLARE_API_TOKEN` (Pages
-edit permission) and `CLOUDFLARE_ACCOUNT_ID`, and a Pages project named
-`soccersapi-docs`. Alternatively connect the repository in the Cloudflare
-dashboard with build command `npm run docs:build` and output directory `dist`.
+The site is served by the Cloudflare Pages project `soccersapi-docs`, connected
+to this repository: every push to `main` builds `npm run docs:build` with
+`NODE_VERSION=20` and publishes `dist/` to production
+(https://soccersapi-docs.pages.dev); other branches and pull requests get
+preview URLs. `.github/workflows/docs.yml` only checks that the build succeeds
+on pull requests.
 
 To serve the site at `docs.soccersapi.com`, add the custom domain to the Pages
-project and point the DNS record to it. `dist/_redirects` sends every URL of
-the previous documentation (listed in `scripts/legacy-urls.json`) to the new
-page with a 301, and `dist/_headers` sets caching and security headers.
+project and point the DNS record to `soccersapi-docs.pages.dev`. `dist/_redirects`
+sends every URL of the previous documentation (listed in
+`scripts/legacy-urls.json`) to the new page with a 301, and `dist/_headers` sets
+caching and security headers.
 
 ## Match events
 
