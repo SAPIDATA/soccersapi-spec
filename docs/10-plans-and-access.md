@@ -1,69 +1,80 @@
 # Plans and Data Access
 
 Every SoccersAPI account has a plan. The plan decides three things: which
-leagues the account can read, how many requests it can make, and, for themed
-plans, which datasets are available. Prices, allowances and trial terms change
-over time; the [pricing page](https://soccersapi.com/pricing) and the account
-dashboard are authoritative. This page explains how the plan model affects API
-responses so that clients can handle it correctly.
+leagues the account can read, which operations and datasets it can request,
+and how many requests it can make per hour. Prices and allowances change over
+time; the [pricing page](https://soccersapi.com/pricing) and the account
+dashboard are authoritative. This page is the contract for how the plan model
+shows up in API responses.
 
 ## Plan families
 
-| Family | What it includes | Typical use |
+| Family | Leagues | Operations and datasets |
 | --- | --- | --- |
-| Free | 3 leagues, a daily request allowance, access to every endpoint. | Prototypes and evaluation. |
-| Standard (`Soccer API 3` … `Soccer API +1000`) | Every endpoint and dataset for the number of leagues in the plan. Request volume is set by the tier: Basic, Advanced or Premium (hourly limits). | Livescore apps, fixtures, stats, TV listings and odds for a chosen set of competitions. |
-| Themed (`Soccer API World Cup`, `Soccer API Odds`, `Soccer API Broadcast`) | All leagues, focused on one data theme. Same billing and request tiers as Standard. | Products built around a single dataset, such as an odds comparison or a "where to watch" service. |
+| Free | 3 leagues chosen in the dashboard, with a daily request allowance. | The Standard datasets. |
+| Standard (`Soccer API 3` … `Soccer API +1000`) | The number of leagues in the plan, chosen in the dashboard. | Every operation and every include. |
+| World Cup | The FIFA World Cup competitions. | Every operation and every include, like Standard. |
+| Odds | Every league with odds coverage. | The catalogue, the match feeds and the odds datasets. |
+| Broadcast | Every league with TV coverage. | The catalogue, the match feeds and the broadcast datasets. |
 
-A Standard plan is the right choice when a product mixes datasets, for example a
-TV schedule that also shows live scores and lineups. Themed plans trade breadth
-of datasets for breadth of leagues.
+Themed plans trade breadth of datasets for breadth of leagues: they cover
+every league that carries their theme, but only return the datasets of that
+theme on top of the shared catalogue and match feeds.
 
-## League selection
+## What every plan can read
 
-Standard plans read only the leagues enabled in the dashboard under
-[Leagues](https://admin.soccersapi.com/leagues). Requests for a league outside
-the selection return `403`. Entity endpoints such as countries, continents,
-bookmakers and markets are catalogue data and are not filtered by league.
+- **Catalogue**: search, continents, countries, leagues (`list`, `info`,
+  `sort`), seasons, stages, groups, rounds, and teams (`info`, `list`, `sort`,
+  `byseason`, `national`).
+- **Match feeds**: every livescores feed and the fixture lists and match
+  details (`schedule`, `season`, `round`, `last_next`, `info`, `sort`), without
+  includes other than those of the plan.
 
-## Request allowance
+## Datasets by plan
 
-Every successful response reports the remaining allowance in
-`meta.requests_left` and the plan name in `meta.plan`. When the allowance is
-exhausted the API returns `429`. Poll live feeds at a fixed cadence and use
-`include` to embed related datasets instead of issuing separate calls; see
-[Errors and Request Limits](./06-error-and-rate-limits.md) for backoff rules.
-
-## Standard-only operations
-
-| Route | Operations | Other plans receive |
+| Dataset | Operations and includes | Plans |
 | --- | --- | --- |
-| `teams` | `transfers`, `trophies` | `403`, `meta.msg` = `Endpoint not available for your plan.` |
-| `leaders` | `topscorers`, `topassists`, `topcards` | `403`, `meta.msg` = `Endpoint not available for your plan.` |
+| Match events, lineups, bench, commentary, sidelined | `fixtures?t=match_events`, `match_lineups`, `match_bench`, `match_comments`, `match_sidelined`; includes `events`, `stats` | Standard, World Cup |
+| Standings and cup draws | `leagues?t=standings`, `standings_live`, `cup_draw` | Standard, World Cup |
+| Statistics, head to head, leaders | every `stats`, `h2h` and `leaders` operation | Standard, World Cup |
+| Team squads, transfers, sidelined, trophies | `teams?t=squad`, `transfers`, `sidelined`, `trophies` | Standard, World Cup |
+| People and venues | every `players`, `coaches`, `referees` and `venues` operation | Standard, World Cup |
+| Odds | `fixtures?t=match_odds`, `match_oddsinplay`, `match_odds_info`; `bookmakers` and `markets`; includes `odds_prematch`, `odds_inplay` | Standard, World Cup, Odds |
+| Broadcast | every `broadcast` operation; `fixtures?t=tv`; includes `broadcast`, `tvs` | Standard, World Cup, Broadcast |
+| Media highlights (coming soon) | every `media` operation | Standard, World Cup |
 
-The reference marks these operations with a *Standard plans only* badge.
+Free plans carry the Standard datasets. The reference shows the plans of every
+operation in its operations table and on each operation page, and the contract
+carries them in `x-operations[].plans` and `x-includes` so that tools can read
+them.
+
+## Which leagues does my plan include?
+
+`leagues?t=list` returns only the leagues the account can read, so it is the
+reliable way for an application to build its competition menu. Every match
+feed (`livescores`, `fixtures?t=schedule`, `broadcast?t=schedule`) is filtered
+the same way and never includes matches of leagues outside the plan.
 
 ## How access shows up in responses
 
 | Situation | Response |
 | --- | --- |
 | League not in the plan (`leagues?t=info`, `standings`, `fixtures?t=season`, `teams?t=byseason`, `fixtures?t=schedule&league_id=…`) | `403` with an empty `data` and `meta.msg` = `League not available for your plan.` |
-| Operation reserved to Standard plans | `403` with an empty `data` and `meta.msg` = `Endpoint not available for your plan.` |
+| Operation not in the plan | `403` with an empty `data` and `meta.msg` = `Endpoint not available for your plan.` |
+| Include not in the plan | `403` with an empty `data` and `meta.msg` = `Include not available for your plan.` |
 | Match feed without a league filter | `200` with only the matches of the leagues in the plan. |
 | Dataset not covered for a match or competition | `200` with an empty array or `null` fields. |
 | Request allowance exhausted | `429`. |
 
-`leagues?t=list` returns only the leagues the account can read, so it is the
-reliable way for an application to build its competition menu.
+Treat `403` as a configuration problem to surface to the account owner, with
+the `meta.msg` text as the explanation, and empty or `null` data as normal
+coverage variance. Every successful response also reports the plan name in
+`meta.plan` and the remaining allowance in `meta.requests_left`.
 
-Clients should treat `403` as a configuration problem to surface to the account
-owner, and empty or `null` data as normal coverage variance.
+## Request allowance
 
-## Reference operations by theme
-
-The reference groups operations by tag. Odds operations live under **Betting**
-and in the fixture operations `match_odds`, `match_oddsinplay` and
-`match_odds_info`. Broadcast operations live under **Broadcast** and in the
-fixture include `broadcast` and the operation `t=tv`. Everything else belongs
-to the core football data model available on every plan. The **Media** route is
-announced but not live yet and is marked "coming soon" in the reference.
+Standard and themed plans share the same request tiers (Basic, Advanced,
+Premium) with hourly limits. When the allowance is exhausted the API returns
+`429`. Poll live feeds at a fixed cadence and use `include` to embed related
+datasets instead of issuing separate calls; see
+[Errors and Request Limits](./06-error-and-rate-limits.md) for backoff rules.

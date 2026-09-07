@@ -424,6 +424,12 @@ paths:
           optional:
             - utc
           schema: SearchResponse
+          plans:
+            - free
+            - standard
+            - worldcup
+            - odds
+            - broadcast
           example: q=salzburg
         - t: league
           title: Search leagues
@@ -432,6 +438,12 @@ paths:
             - q
           optional: []
           schema: SearchResponse
+          plans:
+            - free
+            - standard
+            - worldcup
+            - odds
+            - broadcast
           example: q=bundesliga
         - t: team
           title: Search teams
@@ -440,6 +452,12 @@ paths:
             - q
           optional: []
           schema: SearchResponse
+          plans:
+            - free
+            - standard
+            - worldcup
+            - odds
+            - broadcast
           example: q=barcelona
         - t: player
           title: Search players
@@ -448,6 +466,12 @@ paths:
             - q
           optional: []
           schema: SearchResponse
+          plans:
+            - free
+            - standard
+            - worldcup
+            - odds
+            - broadcast
           example: q=ronaldo
         - t: referee
           title: Search referees
@@ -456,6 +480,12 @@ paths:
             - q
           optional: []
           schema: SearchResponse
+          plans:
+            - free
+            - standard
+            - worldcup
+            - odds
+            - broadcast
           example: q=clattenburg
         - t: country
           title: Search countries
@@ -464,6 +494,12 @@ paths:
             - q
           optional: []
           schema: SearchResponse
+          plans:
+            - free
+            - standard
+            - worldcup
+            - odds
+            - broadcast
           example: q=austria
         - t: continent
           title: Search continents
@@ -472,6 +508,12 @@ paths:
             - q
           optional: []
           schema: SearchResponse
+          plans:
+            - free
+            - standard
+            - worldcup
+            - odds
+            - broadcast
           example: q=europe
         - t: tv
           title: Search TV channels
@@ -480,6 +522,12 @@ paths:
             - q
           optional: []
           schema: SearchResponse
+          plans:
+            - free
+            - standard
+            - worldcup
+            - odds
+            - broadcast
           example: q=dazn
       parameters:
         - $ref: '#/components/parameters/User'
@@ -694,7 +742,7 @@ paths:
         '401':
           description: Missing or invalid `user` or `token`.
         '403':
-          description: 'Not included in the account plan. The envelope carries the reason in `meta.msg`: `League not available for your plan.` when the league is outside the plan, or `Endpoint not available for your plan.` for operations reserved to Standard plans.'
+          description: 'Not included in the account plan. The envelope carries the reason in `meta.msg`: `League not available for your plan.` when the league is outside the plan, `Endpoint not available for your plan.` when the operation is not in the plan, or `Include not available for your plan.` when a requested dataset is not in the plan.'
         '429':
           description: Request allowance exhausted.
         4XX:
@@ -737,6 +785,12 @@ paths:
           required: []
           optional: []
           schema: DataResponse
+          plans:
+            - free
+            - standard
+            - worldcup
+            - odds
+            - broadcast
           example: ''
         - t: info
           title: Continent by ID
@@ -745,6 +799,12 @@ paths:
             - id
           optional: []
           schema: DataResponse
+          plans:
+            - free
+            - standard
+            - worldcup
+            - odds
+            - broadcast
           example: id=2
       parameters:
         - $ref: '#/components/parameters/User'
@@ -814,7 +874,7 @@ paths:
         '401':
           description: Missing or invalid `user` or `token`.
         '403':
-          description: 'Not included in the account plan. The envelope carries the reason in `meta.msg`: `League not available for your plan.` when the league is outside the plan, or `Endpoint not available for your plan.` for operations reserved to Standard plans.'
+          description: 'Not included in the account plan. The envelope carries the reason in `meta.msg`: `League not available for your plan.` when the league is outside the plan, `Endpoint not available for your plan.` when the operation is not in the plan, or `Include not available for your plan.` when a requested dataset is not in the plan.'
         '429':
           description: Request allowance exhausted.
         4XX:
@@ -859,6 +919,12 @@ paths:
             - page
           schema: DataResponse
           paginated: true
+          plans:
+            - free
+            - standard
+            - worldcup
+            - odds
+            - broadcast
           example: page=1
         - t: info
           title: Country by ID
@@ -867,6 +933,12 @@ paths:
             - id
           optional: []
           schema: DataResponse
+          plans:
+            - free
+            - standard
+            - worldcup
+            - odds
+            - broadcast
           example: id=4
       parameters:
         - $ref: '#/components/parameters/User'
@@ -949,7 +1021,7 @@ paths:
         '401':
           description: Missing or invalid `user` or `token`.
         '403':
-          description: 'Not included in the account plan. The envelope carries the reason in `meta.msg`: `League not available for your plan.` when the league is outside the plan, or `Endpoint not available for your plan.` for operations reserved to Standard plans.'
+          description: 'Not included in the account plan. The envelope carries the reason in `meta.msg`: `League not available for your plan.` when the league is outside the plan, `Endpoint not available for your plan.` when the operation is not in the plan, or `Include not available for your plan.` when a requested dataset is not in the plan.'
         '429':
           description: Request allowance exhausted.
         4XX:
@@ -965,16 +1037,16 @@ paths:
 
         ## Operations
 
-        The `t` query parameter selects the operation. Parameters not listed for an operation are ignored.
+        The `t` query parameter selects the operation. Parameters not listed for an operation are ignored. The plans column lists the plans that include the operation for the leagues they cover; Free plans carry the Standard datasets. A plan outside the list receives `403` with `meta.msg` = `Endpoint not available for your plan.`
 
-        | `t` | Operation | Required | Optional |
-        | --- | --- | --- | --- |
-        | `list` | All leagues. Leagues available to the account, optionally filtered by country. Paginated, 100 items per page. | — | `country_id`, `page` |
-        | `info` | League by ID. League profile with seasons and current season, stage and round. | `id` | — |
-        | `sort` | Leagues by multiple IDs. Several league profiles in one request. | `ids` | — |
-        | `standings` | Standings. League table for a season. Competitions with several tables (groups, splits) return one entry per table, identified by `number_standings`. | `season_id` | — |
-        | `standings_live` | Live standings. Rolling table that includes the matches currently in play. | `season_id` | — |
-        | `cup_draw` | Cup draw (tournament bracket). Knockout bracket of a cup stage. | `season_id`, `stage_id` | — |
+        | `t` | Operation | Required | Optional | Plans |
+        | --- | --- | --- | --- | --- |
+        | `list` | All leagues. Leagues available to the account, optionally filtered by country. Paginated, 100 items per page. | — | `country_id`, `page` | All plans |
+        | `info` | League by ID. League profile with seasons and current season, stage and round. | `id` | — | All plans |
+        | `sort` | Leagues by multiple IDs. Several league profiles in one request. | `ids` | — | All plans |
+        | `standings` | Standings. League table for a season. Competitions with several tables (groups, splits) return one entry per table, identified by `number_standings`. | `season_id` | — | Standard, World Cup |
+        | `standings_live` | Live standings. Rolling table that includes the matches currently in play. | `season_id` | — | Standard, World Cup |
+        | `cup_draw` | Cup draw (tournament bracket). Knockout bracket of a cup stage. | `season_id`, `stage_id` | — | Standard, World Cup |
 
         The public reference shows `t=multiple&id=…` on one page for the batch lookup; `t=sort&ids=…` is the form shared with teams and fixtures.
 
@@ -1025,6 +1097,12 @@ paths:
             - page
           schema: DataResponse
           paginated: true
+          plans:
+            - free
+            - standard
+            - worldcup
+            - odds
+            - broadcast
           example: country_id=4
         - t: info
           title: League by ID
@@ -1033,6 +1111,12 @@ paths:
             - id
           optional: []
           schema: DataResponse
+          plans:
+            - free
+            - standard
+            - worldcup
+            - odds
+            - broadcast
           example: id=1005
         - t: sort
           title: Leagues by multiple IDs
@@ -1041,6 +1125,12 @@ paths:
             - ids
           optional: []
           schema: DataResponse
+          plans:
+            - free
+            - standard
+            - worldcup
+            - odds
+            - broadcast
           example: ids=974,1005,1609
         - t: standings
           title: Standings
@@ -1049,6 +1139,10 @@ paths:
             - season_id
           optional: []
           schema: StandingsResponse
+          plans:
+            - free
+            - standard
+            - worldcup
           example: season_id=406
         - t: standings_live
           title: Live standings
@@ -1057,6 +1151,10 @@ paths:
             - season_id
           optional: []
           schema: StandingsResponse
+          plans:
+            - free
+            - standard
+            - worldcup
           example: season_id=406
         - t: cup_draw
           title: Cup draw (tournament bracket)
@@ -1066,6 +1164,10 @@ paths:
             - stage_id
           optional: []
           schema: DataResponse
+          plans:
+            - free
+            - standard
+            - worldcup
           example: season_id=45&stage_id=26
       parameters:
         - $ref: '#/components/parameters/User'
@@ -1409,7 +1511,7 @@ paths:
         '401':
           description: Missing or invalid `user` or `token`.
         '403':
-          description: 'Not included in the account plan. The envelope carries the reason in `meta.msg`: `League not available for your plan.` when the league is outside the plan, or `Endpoint not available for your plan.` for operations reserved to Standard plans.'
+          description: 'Not included in the account plan. The envelope carries the reason in `meta.msg`: `League not available for your plan.` when the league is outside the plan, `Endpoint not available for your plan.` when the operation is not in the plan, or `Include not available for your plan.` when a requested dataset is not in the plan.'
         '429':
           description: Request allowance exhausted.
         4XX:
@@ -1425,19 +1527,19 @@ paths:
 
         ## Operations
 
-        The `t` query parameter selects the operation. Parameters not listed for an operation are ignored. Operations marked *Standard only* are reserved to Standard plans; other plans receive `403` with `meta.msg` = `Endpoint not available for your plan.`
+        The `t` query parameter selects the operation. Parameters not listed for an operation are ignored. The plans column lists the plans that include the operation for the leagues they cover; Free plans carry the Standard datasets. A plan outside the list receives `403` with `meta.msg` = `Endpoint not available for your plan.`
 
         | `t` | Operation | Required | Optional | Plans |
         | --- | --- | --- | --- | --- |
-        | `info` | Team by ID. Team profile with venue, coach, kit colours, seasons and leagues. | `id` | — | All |
-        | `list` | Teams by country. Paginated, 100 items per page. | `country_id` | `page` | All |
-        | `sort` | Teams by multiple IDs. Several team profiles in one request. | `ids` | — | All |
-        | `byseason` | Teams by season. Teams taking part in a season. | `season_id` | — | All |
-        | `national` | National teams. Paginated, 100 items per page. | — | `page` | All |
-        | `squad` | Team squad. Current squad, or the squad of a past season when `season_id` is given. | `id` | `season_id` | All |
-        | `transfers` | Team transfers. Arrivals and departures with fee and date. | `id` | — | Standard only |
-        | `sidelined` | Team sidelined players. Injured and suspended players. | `id` | — | All |
-        | `trophies` | Team trophies. Titles won by the team, with the seasons of each one. | `id` | — | Standard only |
+        | `info` | Team by ID. Team profile with venue, coach, kit colours, seasons and leagues. | `id` | — | All plans |
+        | `list` | Teams by country. Paginated, 100 items per page. | `country_id` | `page` | All plans |
+        | `sort` | Teams by multiple IDs. Several team profiles in one request. | `ids` | — | All plans |
+        | `byseason` | Teams by season. Teams taking part in a season. | `season_id` | — | All plans |
+        | `national` | National teams. Paginated, 100 items per page. | — | `page` | All plans |
+        | `squad` | Team squad. Current squad, or the squad of a past season when `season_id` is given. | `id` | `season_id` | Standard, World Cup |
+        | `transfers` | Team transfers. Arrivals and departures with fee and date. | `id` | — | Standard, World Cup |
+        | `sidelined` | Team sidelined players. Injured and suspended players. | `id` | — | Standard, World Cup |
+        | `trophies` | Team trophies. Titles won by the team, with the seasons of each one. | `id` | — | Standard, World Cup |
 
         ## Examples
 
@@ -1502,6 +1604,12 @@ paths:
             - id
           optional: []
           schema: DataResponse
+          plans:
+            - free
+            - standard
+            - worldcup
+            - odds
+            - broadcast
           example: id=111
         - t: list
           title: Teams by country
@@ -1512,6 +1620,12 @@ paths:
             - page
           schema: DataResponse
           paginated: true
+          plans:
+            - free
+            - standard
+            - worldcup
+            - odds
+            - broadcast
           example: country_id=4
         - t: sort
           title: Teams by multiple IDs
@@ -1520,6 +1634,12 @@ paths:
             - ids
           optional: []
           schema: DataResponse
+          plans:
+            - free
+            - standard
+            - worldcup
+            - odds
+            - broadcast
           example: ids=19,99,108
         - t: byseason
           title: Teams by season
@@ -1528,6 +1648,12 @@ paths:
             - season_id
           optional: []
           schema: DataResponse
+          plans:
+            - free
+            - standard
+            - worldcup
+            - odds
+            - broadcast
           example: season_id=13480
         - t: national
           title: National teams
@@ -1537,6 +1663,12 @@ paths:
             - page
           schema: DataResponse
           paginated: true
+          plans:
+            - free
+            - standard
+            - worldcup
+            - odds
+            - broadcast
           example: ''
         - t: squad
           title: Team squad
@@ -1546,6 +1678,10 @@ paths:
           optional:
             - season_id
           schema: DataResponse
+          plans:
+            - free
+            - standard
+            - worldcup
           example: id=2868
         - t: transfers
           title: Team transfers
@@ -1555,7 +1691,9 @@ paths:
           optional: []
           schema: DataResponse
           plans:
+            - free
             - standard
+            - worldcup
           example: id=111
         - t: sidelined
           title: Team sidelined players
@@ -1564,6 +1702,10 @@ paths:
             - id
           optional: []
           schema: DataResponse
+          plans:
+            - free
+            - standard
+            - worldcup
           example: id=111
         - t: trophies
           title: Team trophies
@@ -1573,7 +1715,9 @@ paths:
           optional: []
           schema: DataResponse
           plans:
+            - free
             - standard
+            - worldcup
           example: id=111
       parameters:
         - $ref: '#/components/parameters/User'
@@ -1947,7 +2091,7 @@ paths:
         '401':
           description: Missing or invalid `user` or `token`.
         '403':
-          description: 'Not included in the account plan. The envelope carries the reason in `meta.msg`: `League not available for your plan.` when the league is outside the plan, or `Endpoint not available for your plan.` for operations reserved to Standard plans.'
+          description: 'Not included in the account plan. The envelope carries the reason in `meta.msg`: `League not available for your plan.` when the league is outside the plan, `Endpoint not available for your plan.` when the operation is not in the plan, or `Include not available for your plan.` when a requested dataset is not in the plan.'
         '429':
           description: Request allowance exhausted.
         4XX:
@@ -1984,6 +2128,12 @@ paths:
             - id
           optional: []
           schema: DataResponse
+          plans:
+            - free
+            - standard
+            - worldcup
+            - odds
+            - broadcast
           example: id=406
       parameters:
         - $ref: '#/components/parameters/User'
@@ -2049,7 +2199,7 @@ paths:
         '401':
           description: Missing or invalid `user` or `token`.
         '403':
-          description: 'Not included in the account plan. The envelope carries the reason in `meta.msg`: `League not available for your plan.` when the league is outside the plan, or `Endpoint not available for your plan.` for operations reserved to Standard plans.'
+          description: 'Not included in the account plan. The envelope carries the reason in `meta.msg`: `League not available for your plan.` when the league is outside the plan, `Endpoint not available for your plan.` when the operation is not in the plan, or `Include not available for your plan.` when a requested dataset is not in the plan.'
         '429':
           description: Request allowance exhausted.
         4XX:
@@ -2093,6 +2243,12 @@ paths:
             - season_id
           optional: []
           schema: DataResponse
+          plans:
+            - free
+            - standard
+            - worldcup
+            - odds
+            - broadcast
           example: season_id=2091
         - t: info
           title: Stage by ID
@@ -2101,6 +2257,12 @@ paths:
             - id
           optional: []
           schema: DataResponse
+          plans:
+            - free
+            - standard
+            - worldcup
+            - odds
+            - broadcast
           example: id=26
       parameters:
         - $ref: '#/components/parameters/User'
@@ -2185,7 +2347,7 @@ paths:
         '401':
           description: Missing or invalid `user` or `token`.
         '403':
-          description: 'Not included in the account plan. The envelope carries the reason in `meta.msg`: `League not available for your plan.` when the league is outside the plan, or `Endpoint not available for your plan.` for operations reserved to Standard plans.'
+          description: 'Not included in the account plan. The envelope carries the reason in `meta.msg`: `League not available for your plan.` when the league is outside the plan, `Endpoint not available for your plan.` when the operation is not in the plan, or `Include not available for your plan.` when a requested dataset is not in the plan.'
         '429':
           description: Request allowance exhausted.
         4XX:
@@ -2229,6 +2391,12 @@ paths:
             - season_id
           optional: []
           schema: DataResponse
+          plans:
+            - free
+            - standard
+            - worldcup
+            - odds
+            - broadcast
           example: season_id=7011
         - t: info
           title: Group by ID
@@ -2237,6 +2405,12 @@ paths:
             - id
           optional: []
           schema: DataResponse
+          plans:
+            - free
+            - standard
+            - worldcup
+            - odds
+            - broadcast
           example: id=5108
       parameters:
         - $ref: '#/components/parameters/User'
@@ -2319,7 +2493,7 @@ paths:
         '401':
           description: Missing or invalid `user` or `token`.
         '403':
-          description: 'Not included in the account plan. The envelope carries the reason in `meta.msg`: `League not available for your plan.` when the league is outside the plan, or `Endpoint not available for your plan.` for operations reserved to Standard plans.'
+          description: 'Not included in the account plan. The envelope carries the reason in `meta.msg`: `League not available for your plan.` when the league is outside the plan, `Endpoint not available for your plan.` when the operation is not in the plan, or `Include not available for your plan.` when a requested dataset is not in the plan.'
         '429':
           description: Request allowance exhausted.
         4XX:
@@ -2363,6 +2537,12 @@ paths:
             - season_id
           optional: []
           schema: DataResponse
+          plans:
+            - free
+            - standard
+            - worldcup
+            - odds
+            - broadcast
           example: season_id=406
         - t: info
           title: Round by ID
@@ -2371,6 +2551,12 @@ paths:
             - id
           optional: []
           schema: DataResponse
+          plans:
+            - free
+            - standard
+            - worldcup
+            - odds
+            - broadcast
           example: id=1994
       parameters:
         - $ref: '#/components/parameters/User'
@@ -2456,7 +2642,7 @@ paths:
         '401':
           description: Missing or invalid `user` or `token`.
         '403':
-          description: 'Not included in the account plan. The envelope carries the reason in `meta.msg`: `League not available for your plan.` when the league is outside the plan, or `Endpoint not available for your plan.` for operations reserved to Standard plans.'
+          description: 'Not included in the account plan. The envelope carries the reason in `meta.msg`: `League not available for your plan.` when the league is outside the plan, `Endpoint not available for your plan.` when the operation is not in the plan, or `Include not available for your plan.` when a requested dataset is not in the plan.'
         '429':
           description: Request allowance exhausted.
         4XX:
@@ -2487,10 +2673,10 @@ paths:
 
         Comma-separated dataset names for `include`, without spaces:
 
-        - `events`: match timeline (goals, cards, substitutions); see the Match Events guide
-        - `stats`: team match statistics, one entry per team
-        - `odds_prematch`: pre-match odds where the plan and match coverage provide them (odds theme)
-        - `odds_inplay`: in-play odds for matches in play (odds theme)
+        - `events`: match timeline (goals, cards, substitutions); see the Match Events guide — Standard, World Cup plans
+        - `stats`: team match statistics, one entry per team — Standard, World Cup plans
+        - `odds_prematch`: pre-match odds where match coverage provides them — Standard, World Cup, Odds plans
+        - `odds_inplay`: in-play odds for matches in play — Standard, World Cup, Odds plans
 
         ## Live publication behavior
 
@@ -2533,6 +2719,33 @@ paths:
         ```http
         GET /v2.2/livescores/?user=USER&token=TOKEN&t=ended
         ```
+      x-includes:
+        events:
+          description: match timeline (goals, cards, substitutions); see the Match Events guide
+          plans:
+            - free
+            - standard
+            - worldcup
+        stats:
+          description: team match statistics, one entry per team
+          plans:
+            - free
+            - standard
+            - worldcup
+        odds_prematch:
+          description: pre-match odds where match coverage provides them
+          plans:
+            - free
+            - standard
+            - worldcup
+            - odds
+        odds_inplay:
+          description: in-play odds for matches in play
+          plans:
+            - free
+            - standard
+            - worldcup
+            - odds
       x-operations:
         - t: live
           title: Matches in play
@@ -2546,6 +2759,12 @@ paths:
             - page
           schema: MatchListResponse
           paginated: true
+          plans:
+            - free
+            - standard
+            - worldcup
+            - odds
+            - broadcast
           example: include=events,stats
         - t: today
           title: Today's matches
@@ -2559,6 +2778,12 @@ paths:
             - page
           schema: MatchListResponse
           paginated: true
+          plans:
+            - free
+            - standard
+            - worldcup
+            - odds
+            - broadcast
           example: utc=2
         - t: tomorrow
           title: Tomorrow's matches
@@ -2572,6 +2797,12 @@ paths:
             - page
           schema: MatchListResponse
           paginated: true
+          plans:
+            - free
+            - standard
+            - worldcup
+            - odds
+            - broadcast
           example: ''
         - t: yesterday
           title: Yesterday's matches
@@ -2585,6 +2816,12 @@ paths:
             - page
           schema: MatchListResponse
           paginated: true
+          plans:
+            - free
+            - standard
+            - worldcup
+            - odds
+            - broadcast
           example: ''
         - t: notstarted
           title: Today's matches not started
@@ -2598,6 +2835,12 @@ paths:
             - page
           schema: MatchListResponse
           paginated: true
+          plans:
+            - free
+            - standard
+            - worldcup
+            - odds
+            - broadcast
           example: ''
         - t: ended
           title: Today's matches ended
@@ -2611,6 +2854,12 @@ paths:
             - page
           schema: MatchListResponse
           paginated: true
+          plans:
+            - free
+            - standard
+            - worldcup
+            - odds
+            - broadcast
           example: ''
       parameters:
         - $ref: '#/components/parameters/User'
@@ -3890,7 +4139,7 @@ paths:
         '401':
           description: Missing or invalid `user` or `token`.
         '403':
-          description: 'Not included in the account plan. The envelope carries the reason in `meta.msg`: `League not available for your plan.` when the league is outside the plan, or `Endpoint not available for your plan.` for operations reserved to Standard plans.'
+          description: 'Not included in the account plan. The envelope carries the reason in `meta.msg`: `League not available for your plan.` when the league is outside the plan, `Endpoint not available for your plan.` when the operation is not in the plan, or `Include not available for your plan.` when a requested dataset is not in the plan.'
         '429':
           description: Request allowance exhausted.
         4XX:
@@ -3906,35 +4155,35 @@ paths:
 
         ## Operations
 
-        The `t` query parameter selects the operation. Parameters not listed for an operation are ignored.
+        The `t` query parameter selects the operation. Parameters not listed for an operation are ignored. The plans column lists the plans that include the operation for the leagues they cover; Free plans carry the Standard datasets. A plan outside the list receives `403` with `meta.msg` = `Endpoint not available for your plan.`
 
-        | `t` | Operation | Required | Optional |
-        | --- | --- | --- | --- |
-        | `schedule` | Fixtures by date. Matches on a date, optionally narrowed to a country, league, season, stage, group or round. Paginated, 100 items per page. | `d` | `country_id`, `league_id`, `season_id`, `stage_id`, `group_id`, `round_id`, `include`, `utc`, `lang`, `odds_format`, `page` |
-        | `season` | Fixtures by season. Every match of a season in one response, optionally narrowed to a stage, group or team. | `season_id` | `stage_id`, `group_id`, `team_id`, `include`, `utc`, `lang`, `odds_format` |
-        | `round` | Fixtures by round. Every match of a round, optionally narrowed to a team. | `round_id` | `team_id`, `include`, `utc`, `lang`, `odds_format` |
-        | `last_next` | Team last and next fixtures. Recent results (`last`), matches in play (`current`) and upcoming matches (`next`) of a team. Does not accept `include`. | `team_id` | `utc`, `lang` |
-        | `tv` | Fixtures by TV channel. Matches scheduled on a TV channel over the next two weeks. | `tv_id` | `include`, `utc`, `lang` |
-        | `info` | Match by ID. One match with teams, league, venue, scores, status and clock. | `id` | `include`, `utc`, `lang`, `odds_format` |
-        | `sort` | Matches by multiple IDs. Several matches in one request, for example to refresh the matches shown on screen. | `ids` | `include`, `utc`, `lang` |
-        | `match_events` | Match events. Standalone event timeline of one match. | `id` | — |
-        | `match_lineups` | Match lineups. Formations and starting lineups with position and shirt number. | `id` | `lang` |
-        | `match_bench` | Match bench. Substitutes of both teams with shirt number and position. | `id` | — |
-        | `match_comments` | Match commentary. Text commentary of the match where covered. | `id` | `lang` |
-        | `match_sidelined` | Match sidelined players. Injured and suspended players of both teams. | `id` | — |
-        | `match_odds` | Pre-match odds. Pre-match odds by bookmaker and market. | `id` | `odds_format` |
-        | `match_oddsinplay` | In-play odds. Live odds by market and bookmaker, with the score and minute they refer to. | `id` | `odds_format` |
-        | `match_odds_info` | Match odds by bookmaker. Odds history of one bookmaker for the match, by market. | `id`, `bookmaker_id` | `odds_format` |
+        | `t` | Operation | Required | Optional | Plans |
+        | --- | --- | --- | --- | --- |
+        | `schedule` | Fixtures by date. Matches on a date, optionally narrowed to a country, league, season, stage, group or round. Paginated, 100 items per page. | `d` | `country_id`, `league_id`, `season_id`, `stage_id`, `group_id`, `round_id`, `include`, `utc`, `lang`, `odds_format`, `page` | All plans |
+        | `season` | Fixtures by season. Every match of a season in one response, optionally narrowed to a stage, group or team. | `season_id` | `stage_id`, `group_id`, `team_id`, `include`, `utc`, `lang`, `odds_format` | All plans |
+        | `round` | Fixtures by round. Every match of a round, optionally narrowed to a team. | `round_id` | `team_id`, `include`, `utc`, `lang`, `odds_format` | All plans |
+        | `last_next` | Team last and next fixtures. Recent results (`last`), matches in play (`current`) and upcoming matches (`next`) of a team. Does not accept `include`. | `team_id` | `utc`, `lang` | All plans |
+        | `tv` | Fixtures by TV channel. Matches scheduled on a TV channel over the next two weeks. | `tv_id` | `include`, `utc`, `lang` | Standard, World Cup, Broadcast |
+        | `info` | Match by ID. One match with teams, league, venue, scores, status and clock. | `id` | `include`, `utc`, `lang`, `odds_format` | All plans |
+        | `sort` | Matches by multiple IDs. Several matches in one request, for example to refresh the matches shown on screen. | `ids` | `include`, `utc`, `lang` | All plans |
+        | `match_events` | Match events. Standalone event timeline of one match. | `id` | — | Standard, World Cup |
+        | `match_lineups` | Match lineups. Formations and starting lineups with position and shirt number. | `id` | `lang` | Standard, World Cup |
+        | `match_bench` | Match bench. Substitutes of both teams with shirt number and position. | `id` | — | Standard, World Cup |
+        | `match_comments` | Match commentary. Text commentary of the match where covered. | `id` | `lang` | Standard, World Cup |
+        | `match_sidelined` | Match sidelined players. Injured and suspended players of both teams. | `id` | — | Standard, World Cup |
+        | `match_odds` | Pre-match odds. Pre-match odds by bookmaker and market. | `id` | `odds_format` | Standard, World Cup, Odds |
+        | `match_oddsinplay` | In-play odds. Live odds by market and bookmaker, with the score and minute they refer to. | `id` | `odds_format` | Standard, World Cup, Odds |
+        | `match_odds_info` | Match odds by bookmaker. Odds history of one bookmaker for the match, by market. | `id`, `bookmaker_id` | `odds_format` | Standard, World Cup, Odds |
 
         ## Includes
 
         Comma-separated dataset names for `include`, without spaces:
 
-        - `events`: match timeline; supported by `schedule`, `season`, `round`, `info` and `sort`
-        - `stats`: team match statistics, one entry per team
-        - `broadcast`: TV channels showing the match (broadcast theme)
-        - `odds_prematch`: pre-match odds (odds theme)
-        - `odds_inplay`: in-play odds for matches in play (odds theme)
+        - `events`: match timeline; supported by `schedule`, `season`, `round`, `info` and `sort` — Standard, World Cup plans
+        - `stats`: team match statistics, one entry per team — Standard, World Cup plans
+        - `broadcast`: TV channels showing the match — Standard, World Cup, Broadcast plans
+        - `odds_prematch`: pre-match odds — Standard, World Cup, Odds plans
+        - `odds_inplay`: in-play odds for matches in play — Standard, World Cup, Odds plans
 
         The release notes announce `include=stats` on `match_lineups` for per-player statistics; verification on 2026-09-04 returned no extra data, so it is not documented as a parameter. The `order` parameter shown in the public reference has no effect either. The match-detail operation is `t=info`; `match_by_id` is not a valid value and `/v2.2/matches/` is not a v2.2 route. Dataset names such as `events` belong in `include`; `match_events` is an operation, not an include value. IDs can be JSON numbers or numeric strings depending on the operation: treat them as opaque and normalize before strict comparisons.
 
@@ -4029,6 +4278,40 @@ paths:
         ```http
         GET /v2.2/fixtures/?user=USER&token=TOKEN&t=match_odds_info&id=2589310&bookmaker_id=1
         ```
+      x-includes:
+        events:
+          description: match timeline; supported by `schedule`, `season`, `round`, `info` and `sort`
+          plans:
+            - free
+            - standard
+            - worldcup
+        stats:
+          description: team match statistics, one entry per team
+          plans:
+            - free
+            - standard
+            - worldcup
+        broadcast:
+          description: TV channels showing the match
+          plans:
+            - free
+            - standard
+            - worldcup
+            - broadcast
+        odds_prematch:
+          description: pre-match odds
+          plans:
+            - free
+            - standard
+            - worldcup
+            - odds
+        odds_inplay:
+          description: in-play odds for matches in play
+          plans:
+            - free
+            - standard
+            - worldcup
+            - odds
       x-operations:
         - t: schedule
           title: Fixtures by date
@@ -4049,6 +4332,12 @@ paths:
             - page
           schema: MatchListResponse
           paginated: true
+          plans:
+            - free
+            - standard
+            - worldcup
+            - odds
+            - broadcast
           example: d=2026-08-30&include=broadcast&utc=2
         - t: season
           title: Fixtures by season
@@ -4064,6 +4353,12 @@ paths:
             - lang
             - odds_format
           schema: MatchListResponse
+          plans:
+            - free
+            - standard
+            - worldcup
+            - odds
+            - broadcast
           example: season_id=7194&team_id=111&order=asc
         - t: round
           title: Fixtures by round
@@ -4077,6 +4372,12 @@ paths:
             - lang
             - odds_format
           schema: MatchListResponse
+          plans:
+            - free
+            - standard
+            - worldcup
+            - odds
+            - broadcast
           example: round_id=1994
         - t: last_next
           title: Team last and next fixtures
@@ -4087,6 +4388,12 @@ paths:
             - utc
             - lang
           schema: DataResponse
+          plans:
+            - free
+            - standard
+            - worldcup
+            - odds
+            - broadcast
           example: team_id=99
         - t: tv
           title: Fixtures by TV channel
@@ -4098,6 +4405,11 @@ paths:
             - utc
             - lang
           schema: MatchListResponse
+          plans:
+            - free
+            - standard
+            - worldcup
+            - broadcast
           example: tv_id=30
         - t: info
           title: Match by ID
@@ -4110,6 +4422,12 @@ paths:
             - lang
             - odds_format
           schema: MatchDetailResponse
+          plans:
+            - free
+            - standard
+            - worldcup
+            - odds
+            - broadcast
           example: id=2589310&include=events,stats
         - t: sort
           title: Matches by multiple IDs
@@ -4121,6 +4439,12 @@ paths:
             - utc
             - lang
           schema: MatchListResponse
+          plans:
+            - free
+            - standard
+            - worldcup
+            - odds
+            - broadcast
           example: ids=2589310,2589313&include=events
         - t: match_events
           title: Match events
@@ -4129,6 +4453,10 @@ paths:
             - id
           optional: []
           schema: MatchEventsResponse
+          plans:
+            - free
+            - standard
+            - worldcup
           example: id=2589310
         - t: match_lineups
           title: Match lineups
@@ -4138,6 +4466,10 @@ paths:
           optional:
             - lang
           schema: LineupsResponse
+          plans:
+            - free
+            - standard
+            - worldcup
           example: id=2589310&include=stats
         - t: match_bench
           title: Match bench
@@ -4146,6 +4478,10 @@ paths:
             - id
           optional: []
           schema: DataResponse
+          plans:
+            - free
+            - standard
+            - worldcup
           example: id=2589310
         - t: match_comments
           title: Match commentary
@@ -4155,6 +4491,10 @@ paths:
           optional:
             - lang
           schema: DataResponse
+          plans:
+            - free
+            - standard
+            - worldcup
           example: id=2589310
         - t: match_sidelined
           title: Match sidelined players
@@ -4163,6 +4503,10 @@ paths:
             - id
           optional: []
           schema: DataResponse
+          plans:
+            - free
+            - standard
+            - worldcup
           example: id=2589310
         - t: match_odds
           title: Pre-match odds
@@ -4172,6 +4516,11 @@ paths:
           optional:
             - odds_format
           schema: MatchOddsResponse
+          plans:
+            - free
+            - standard
+            - worldcup
+            - odds
           example: id=2589310
         - t: match_oddsinplay
           title: In-play odds
@@ -4181,6 +4530,11 @@ paths:
           optional:
             - odds_format
           schema: MatchOddsResponse
+          plans:
+            - free
+            - standard
+            - worldcup
+            - odds
           example: id=2589310
         - t: match_odds_info
           title: Match odds by bookmaker
@@ -4191,6 +4545,11 @@ paths:
           optional:
             - odds_format
           schema: DataResponse
+          plans:
+            - free
+            - standard
+            - worldcup
+            - odds
           example: id=2589310&bookmaker_id=1
       parameters:
         - $ref: '#/components/parameters/User'
@@ -5824,7 +6183,7 @@ paths:
         '401':
           description: Missing or invalid `user` or `token`.
         '403':
-          description: 'Not included in the account plan. The envelope carries the reason in `meta.msg`: `League not available for your plan.` when the league is outside the plan, or `Endpoint not available for your plan.` for operations reserved to Standard plans.'
+          description: 'Not included in the account plan. The envelope carries the reason in `meta.msg`: `League not available for your plan.` when the league is outside the plan, `Endpoint not available for your plan.` when the operation is not in the plan, or `Include not available for your plan.` when a requested dataset is not in the plan.'
         '429':
           description: Request allowance exhausted.
         4XX:
@@ -5840,15 +6199,15 @@ paths:
 
         ## Operations
 
-        The `t` query parameter selects the operation. Parameters not listed for an operation are ignored.
+        The `t` query parameter selects the operation. Parameters not listed for an operation are ignored. The plans column lists the plans that include the operation for the leagues they cover; Free plans carry the Standard datasets. A plan outside the list receives `403` with `meta.msg` = `Endpoint not available for your plan.`
 
-        | `t` | Operation | Required | Optional |
-        | --- | --- | --- | --- |
-        | `league` | League statistics, current season. Season totals of the current season of a league: matches, goals, cards, clean sheets, goal ranges and goal lines. | `id` | — |
-        | `season` | League statistics by season. Season totals such as goals, cards and goal lines. | `id` | — |
-        | `team` | Team statistics by season. Goals scored and conceded, clean sheets, cards and goal ranges of a team in a season. | `id`, `season_id` | — |
-        | `player` | Player statistics. Season statistics with `id` and `season_id`, or single-match statistics with `player_id` and `match_id`. | — | `id`, `season_id`, `player_id`, `match_id`, `lang` |
-        | `match` | Match statistics. Team statistics of one match, one entry per team. | `id` | — |
+        | `t` | Operation | Required | Optional | Plans |
+        | --- | --- | --- | --- | --- |
+        | `league` | League statistics, current season. Season totals of the current season of a league: matches, goals, cards, clean sheets, goal ranges and goal lines. | `id` | — | Standard, World Cup |
+        | `season` | League statistics by season. Season totals such as goals, cards and goal lines. | `id` | — | Standard, World Cup |
+        | `team` | Team statistics by season. Goals scored and conceded, clean sheets, cards and goal ranges of a team in a season. | `id`, `season_id` | — | Standard, World Cup |
+        | `player` | Player statistics. Season statistics with `id` and `season_id`, or single-match statistics with `player_id` and `match_id`. | — | `id`, `season_id`, `player_id`, `match_id`, `lang` | Standard, World Cup |
+        | `match` | Match statistics. Team statistics of one match, one entry per team. | `id` | — | Standard, World Cup |
 
         ## Examples
 
@@ -5889,6 +6248,10 @@ paths:
             - id
           optional: []
           schema: DataResponse
+          plans:
+            - free
+            - standard
+            - worldcup
           example: id=1005
         - t: season
           title: League statistics by season
@@ -5897,6 +6260,10 @@ paths:
             - id
           optional: []
           schema: DataResponse
+          plans:
+            - free
+            - standard
+            - worldcup
           example: id=12588
         - t: team
           title: Team statistics by season
@@ -5906,6 +6273,10 @@ paths:
             - season_id
           optional: []
           schema: DataResponse
+          plans:
+            - free
+            - standard
+            - worldcup
           example: id=98&season_id=406
         - t: player
           title: Player statistics
@@ -5918,6 +6289,10 @@ paths:
             - match_id
             - lang
           schema: DataResponse
+          plans:
+            - free
+            - standard
+            - worldcup
           example: id=18103&season_id=12516
         - t: match
           title: Match statistics
@@ -5926,6 +6301,10 @@ paths:
             - id
           optional: []
           schema: MatchStatsResponse
+          plans:
+            - free
+            - standard
+            - worldcup
           example: id=2589310
       parameters:
         - $ref: '#/components/parameters/User'
@@ -6618,7 +6997,7 @@ paths:
         '401':
           description: Missing or invalid `user` or `token`.
         '403':
-          description: 'Not included in the account plan. The envelope carries the reason in `meta.msg`: `League not available for your plan.` when the league is outside the plan, or `Endpoint not available for your plan.` for operations reserved to Standard plans.'
+          description: 'Not included in the account plan. The envelope carries the reason in `meta.msg`: `League not available for your plan.` when the league is outside the plan, `Endpoint not available for your plan.` when the operation is not in the plan, or `Include not available for your plan.` when a requested dataset is not in the plan.'
         '429':
           description: Request allowance exhausted.
         4XX:
@@ -6634,12 +7013,12 @@ paths:
 
         ## Operations
 
-        The `t` query parameter selects the operation. Parameters not listed for an operation are ignored.
+        The `t` query parameter selects the operation. Parameters not listed for an operation are ignored. The plans column lists the plans that include the operation for the leagues they cover; Free plans carry the Standard datasets. A plan outside the list receives `403` with `meta.msg` = `Endpoint not available for your plan.`
 
-        | `t` | Operation | Required | Optional |
-        | --- | --- | --- | --- |
-        | `teams` | Team vs team. Previous meetings of two teams with the result and form of each one. | `team1`, `team2` | — |
-        | `match` | Match head to head. Previous meetings of the two teams of a match. | `id` | — |
+        | `t` | Operation | Required | Optional | Plans |
+        | --- | --- | --- | --- | --- |
+        | `teams` | Team vs team. Previous meetings of two teams with the result and form of each one. | `team1`, `team2` | — | Standard, World Cup |
+        | `match` | Match head to head. Previous meetings of the two teams of a match. | `id` | — | Standard, World Cup |
 
         ## Examples
 
@@ -6663,6 +7042,10 @@ paths:
             - team2
           optional: []
           schema: DataResponse
+          plans:
+            - free
+            - standard
+            - worldcup
           example: team1=99&team2=113
         - t: match
           title: Match head to head
@@ -6671,6 +7054,10 @@ paths:
             - id
           optional: []
           schema: DataResponse
+          plans:
+            - free
+            - standard
+            - worldcup
           example: id=2589310
       parameters:
         - $ref: '#/components/parameters/User'
@@ -7174,7 +7561,7 @@ paths:
         '401':
           description: Missing or invalid `user` or `token`.
         '403':
-          description: 'Not included in the account plan. The envelope carries the reason in `meta.msg`: `League not available for your plan.` when the league is outside the plan, or `Endpoint not available for your plan.` for operations reserved to Standard plans.'
+          description: 'Not included in the account plan. The envelope carries the reason in `meta.msg`: `League not available for your plan.` when the league is outside the plan, `Endpoint not available for your plan.` when the operation is not in the plan, or `Include not available for your plan.` when a requested dataset is not in the plan.'
         '429':
           description: Request allowance exhausted.
         4XX:
@@ -7190,13 +7577,13 @@ paths:
 
         ## Operations
 
-        The `t` query parameter selects the operation. Parameters not listed for an operation are ignored. Operations marked *Standard only* are reserved to Standard plans; other plans receive `403` with `meta.msg` = `Endpoint not available for your plan.`
+        The `t` query parameter selects the operation. Parameters not listed for an operation are ignored. The plans column lists the plans that include the operation for the leagues they cover; Free plans carry the Standard datasets. A plan outside the list receives `403` with `meta.msg` = `Endpoint not available for your plan.`
 
         | `t` | Operation | Required | Optional | Plans |
         | --- | --- | --- | --- | --- |
-        | `topscorers` | Top scorers. Players ranked by goals, with home and away split and penalties. | `season_id` | — | Standard only |
-        | `topassists` | Top assists. Players ranked by assists. | `season_id` | — | Standard only |
-        | `topcards` | Most cards. Yellow, yellow-red and red cards per player. | `season_id` | — | Standard only |
+        | `topscorers` | Top scorers. Players ranked by goals, with home and away split and penalties. | `season_id` | — | Standard, World Cup |
+        | `topassists` | Top assists. Players ranked by assists. | `season_id` | — | Standard, World Cup |
+        | `topcards` | Most cards. Yellow, yellow-red and red cards per player. | `season_id` | — | Standard, World Cup |
 
         ## Examples
 
@@ -7226,7 +7613,9 @@ paths:
           optional: []
           schema: DataResponse
           plans:
+            - free
             - standard
+            - worldcup
           example: season_id=12516
         - t: topassists
           title: Top assists
@@ -7236,7 +7625,9 @@ paths:
           optional: []
           schema: DataResponse
           plans:
+            - free
             - standard
+            - worldcup
           example: season_id=12516
         - t: topcards
           title: Most cards
@@ -7246,7 +7637,9 @@ paths:
           optional: []
           schema: DataResponse
           plans:
+            - free
             - standard
+            - worldcup
           example: season_id=12516
       parameters:
         - $ref: '#/components/parameters/User'
@@ -7415,7 +7808,7 @@ paths:
         '401':
           description: Missing or invalid `user` or `token`.
         '403':
-          description: 'Not included in the account plan. The envelope carries the reason in `meta.msg`: `League not available for your plan.` when the league is outside the plan, or `Endpoint not available for your plan.` for operations reserved to Standard plans.'
+          description: 'Not included in the account plan. The envelope carries the reason in `meta.msg`: `League not available for your plan.` when the league is outside the plan, `Endpoint not available for your plan.` when the operation is not in the plan, or `Include not available for your plan.` when a requested dataset is not in the plan.'
         '429':
           description: Request allowance exhausted.
         4XX:
@@ -7431,12 +7824,12 @@ paths:
 
         ## Operations
 
-        The `t` query parameter selects the operation. Parameters not listed for an operation are ignored.
+        The `t` query parameter selects the operation. Parameters not listed for an operation are ignored. The plans column lists the plans that include the operation for the leagues they cover; Free plans carry the Standard datasets. A plan outside the list receives `403` with `meta.msg` = `Endpoint not available for your plan.`
 
-        | `t` | Operation | Required | Optional |
-        | --- | --- | --- | --- |
-        | `list` | All bookmakers. Every bookmaker with its logo. | — | — |
-        | `info` | Bookmaker by ID. One bookmaker. | `id` | — |
+        | `t` | Operation | Required | Optional | Plans |
+        | --- | --- | --- | --- | --- |
+        | `list` | All bookmakers. Every bookmaker with its logo. | — | — | Standard, World Cup, Odds |
+        | `info` | Bookmaker by ID. One bookmaker. | `id` | — | Standard, World Cup, Odds |
 
         ## Examples
 
@@ -7458,6 +7851,11 @@ paths:
           required: []
           optional: []
           schema: DataResponse
+          plans:
+            - free
+            - standard
+            - worldcup
+            - odds
           example: ''
         - t: info
           title: Bookmaker by ID
@@ -7466,6 +7864,11 @@ paths:
             - id
           optional: []
           schema: DataResponse
+          plans:
+            - free
+            - standard
+            - worldcup
+            - odds
           example: id=2
       parameters:
         - $ref: '#/components/parameters/User'
@@ -7538,7 +7941,7 @@ paths:
         '401':
           description: Missing or invalid `user` or `token`.
         '403':
-          description: 'Not included in the account plan. The envelope carries the reason in `meta.msg`: `League not available for your plan.` when the league is outside the plan, or `Endpoint not available for your plan.` for operations reserved to Standard plans.'
+          description: 'Not included in the account plan. The envelope carries the reason in `meta.msg`: `League not available for your plan.` when the league is outside the plan, `Endpoint not available for your plan.` when the operation is not in the plan, or `Include not available for your plan.` when a requested dataset is not in the plan.'
         '429':
           description: Request allowance exhausted.
         4XX:
@@ -7554,12 +7957,12 @@ paths:
 
         ## Operations
 
-        The `t` query parameter selects the operation. Parameters not listed for an operation are ignored.
+        The `t` query parameter selects the operation. Parameters not listed for an operation are ignored. The plans column lists the plans that include the operation for the leagues they cover; Free plans carry the Standard datasets. A plan outside the list receives `403` with `meta.msg` = `Endpoint not available for your plan.`
 
-        | `t` | Operation | Required | Optional |
-        | --- | --- | --- | --- |
-        | `list` | All markets. The eight markets in use: 1X2, over/under goal line, Asian handicap, first-half variants, Asian corners and half-time result. | — | — |
-        | `info` | Market by ID. One betting market. | `id` | — |
+        | `t` | Operation | Required | Optional | Plans |
+        | --- | --- | --- | --- | --- |
+        | `list` | All markets. The eight markets in use: 1X2, over/under goal line, Asian handicap, first-half variants, Asian corners and half-time result. | — | — | Standard, World Cup, Odds |
+        | `info` | Market by ID. One betting market. | `id` | — | Standard, World Cup, Odds |
 
         ## Examples
 
@@ -7581,6 +7984,11 @@ paths:
           required: []
           optional: []
           schema: DataResponse
+          plans:
+            - free
+            - standard
+            - worldcup
+            - odds
           example: ''
         - t: info
           title: Market by ID
@@ -7589,6 +7997,11 @@ paths:
             - id
           optional: []
           schema: DataResponse
+          plans:
+            - free
+            - standard
+            - worldcup
+            - odds
           example: id=1
       parameters:
         - $ref: '#/components/parameters/User'
@@ -7658,7 +8071,7 @@ paths:
         '401':
           description: Missing or invalid `user` or `token`.
         '403':
-          description: 'Not included in the account plan. The envelope carries the reason in `meta.msg`: `League not available for your plan.` when the league is outside the plan, or `Endpoint not available for your plan.` for operations reserved to Standard plans.'
+          description: 'Not included in the account plan. The envelope carries the reason in `meta.msg`: `League not available for your plan.` when the league is outside the plan, `Endpoint not available for your plan.` when the operation is not in the plan, or `Include not available for your plan.` when a requested dataset is not in the plan.'
         '429':
           description: Request allowance exhausted.
         4XX:
@@ -7674,20 +8087,20 @@ paths:
 
         ## Operations
 
-        The `t` query parameter selects the operation. Parameters not listed for an operation are ignored.
+        The `t` query parameter selects the operation. Parameters not listed for an operation are ignored. The plans column lists the plans that include the operation for the leagues they cover; Free plans carry the Standard datasets. A plan outside the list receives `403` with `meta.msg` = `Endpoint not available for your plan.`
 
-        | `t` | Operation | Required | Optional |
-        | --- | --- | --- | --- |
-        | `schedule` | Matches on TV by date. Matches broadcast on a date. Add `include=tvs` to embed the channel details in each match. Paginated, 100 items per page. | `d` | `include`, `utc`, `lang`, `page` |
-        | `match_tvs` | TV channels of a match. Every channel showing the match, with its country. Not paginated. | `id` | — |
-        | `list` | TV channels. All TV channels, optionally filtered by country. Paginated, 100 items per page. | — | `country_id`, `page` |
-        | `info` | TV channel by ID. One TV channel with type, logo, website and country. | `id` | — |
+        | `t` | Operation | Required | Optional | Plans |
+        | --- | --- | --- | --- | --- |
+        | `schedule` | Matches on TV by date. Matches broadcast on a date. Add `include=tvs` to embed the channel details in each match. Paginated, 100 items per page. | `d` | `include`, `utc`, `lang`, `page` | Standard, World Cup, Broadcast |
+        | `match_tvs` | TV channels of a match. Every channel showing the match, with its country. Not paginated. | `id` | — | Standard, World Cup, Broadcast |
+        | `list` | TV channels. All TV channels, optionally filtered by country. Paginated, 100 items per page. | — | `country_id`, `page` | Standard, World Cup, Broadcast |
+        | `info` | TV channel by ID. One TV channel with type, logo, website and country. | `id` | — | Standard, World Cup, Broadcast |
 
         ## Includes
 
         Comma-separated dataset names for `include`, without spaces:
 
-        - `tvs`: channel details embedded in each match of `schedule`
+        - `tvs`: channel details embedded in each match of `schedule` — Standard, World Cup, Broadcast plans
 
         ## Examples
 
@@ -7714,6 +8127,14 @@ paths:
         ```http
         GET /v2.2/broadcast/?user=USER&token=TOKEN&t=info&id=2
         ```
+      x-includes:
+        tvs:
+          description: channel details embedded in each match of `schedule`
+          plans:
+            - free
+            - standard
+            - worldcup
+            - broadcast
       x-operations:
         - t: schedule
           title: Matches on TV by date
@@ -7727,6 +8148,11 @@ paths:
             - page
           schema: MatchListResponse
           paginated: true
+          plans:
+            - free
+            - standard
+            - worldcup
+            - broadcast
           example: d=2026-08-30&include=tvs&utc=2
         - t: match_tvs
           title: TV channels of a match
@@ -7735,6 +8161,11 @@ paths:
             - id
           optional: []
           schema: TvChannelListResponse
+          plans:
+            - free
+            - standard
+            - worldcup
+            - broadcast
           example: id=2589310
         - t: list
           title: TV channels
@@ -7745,6 +8176,11 @@ paths:
             - page
           schema: TvChannelListResponse
           paginated: true
+          plans:
+            - free
+            - standard
+            - worldcup
+            - broadcast
           example: country_id=15
         - t: info
           title: TV channel by ID
@@ -7753,6 +8189,11 @@ paths:
             - id
           optional: []
           schema: TvChannelDetailResponse
+          plans:
+            - free
+            - standard
+            - worldcup
+            - broadcast
           example: id=2
       parameters:
         - $ref: '#/components/parameters/User'
@@ -8129,7 +8570,7 @@ paths:
         '401':
           description: Missing or invalid `user` or `token`.
         '403':
-          description: 'Not included in the account plan. The envelope carries the reason in `meta.msg`: `League not available for your plan.` when the league is outside the plan, or `Endpoint not available for your plan.` for operations reserved to Standard plans.'
+          description: 'Not included in the account plan. The envelope carries the reason in `meta.msg`: `League not available for your plan.` when the league is outside the plan, `Endpoint not available for your plan.` when the operation is not in the plan, or `Include not available for your plan.` when a requested dataset is not in the plan.'
         '429':
           description: Request allowance exhausted.
         4XX:
@@ -8145,12 +8586,12 @@ paths:
 
         ## Operations
 
-        The `t` query parameter selects the operation. Parameters not listed for an operation are ignored.
+        The `t` query parameter selects the operation. Parameters not listed for an operation are ignored. The plans column lists the plans that include the operation for the leagues they cover; Free plans carry the Standard datasets. A plan outside the list receives `403` with `meta.msg` = `Endpoint not available for your plan.`
 
-        | `t` | Operation | Required | Optional |
-        | --- | --- | --- | --- |
-        | `info` | Player by ID. Player profile with biography, current team, market value, leagues and roles by season. | `id` | — |
-        | `list` | All players. All players, or the players of a country. Paginated, 100 items per page. | — | `country_id`, `page` |
+        | `t` | Operation | Required | Optional | Plans |
+        | --- | --- | --- | --- | --- |
+        | `info` | Player by ID. Player profile with biography, current team, market value, leagues and roles by season. | `id` | — | Standard, World Cup |
+        | `list` | All players. All players, or the players of a country. Paginated, 100 items per page. | — | `country_id`, `page` | Standard, World Cup |
 
         ## Examples
 
@@ -8173,6 +8614,10 @@ paths:
             - id
           optional: []
           schema: DataResponse
+          plans:
+            - free
+            - standard
+            - worldcup
           example: id=11306
         - t: list
           title: All players
@@ -8183,6 +8628,10 @@ paths:
             - page
           schema: DataResponse
           paginated: true
+          plans:
+            - free
+            - standard
+            - worldcup
           example: country_id=4
       parameters:
         - $ref: '#/components/parameters/User'
@@ -8340,7 +8789,7 @@ paths:
         '401':
           description: Missing or invalid `user` or `token`.
         '403':
-          description: 'Not included in the account plan. The envelope carries the reason in `meta.msg`: `League not available for your plan.` when the league is outside the plan, or `Endpoint not available for your plan.` for operations reserved to Standard plans.'
+          description: 'Not included in the account plan. The envelope carries the reason in `meta.msg`: `League not available for your plan.` when the league is outside the plan, `Endpoint not available for your plan.` when the operation is not in the plan, or `Include not available for your plan.` when a requested dataset is not in the plan.'
         '429':
           description: Request allowance exhausted.
         4XX:
@@ -8356,12 +8805,12 @@ paths:
 
         ## Operations
 
-        The `t` query parameter selects the operation. Parameters not listed for an operation are ignored.
+        The `t` query parameter selects the operation. Parameters not listed for an operation are ignored. The plans column lists the plans that include the operation for the leagues they cover; Free plans carry the Standard datasets. A plan outside the list receives `403` with `meta.msg` = `Endpoint not available for your plan.`
 
-        | `t` | Operation | Required | Optional |
-        | --- | --- | --- | --- |
-        | `info` | Coach by ID. Coach profile with current team and country. | `id` | — |
-        | `list` | All coaches. All coaches, or the coaches of a country. Paginated, 100 items per page. | — | `country_id`, `page` |
+        | `t` | Operation | Required | Optional | Plans |
+        | --- | --- | --- | --- | --- |
+        | `info` | Coach by ID. Coach profile with current team and country. | `id` | — | Standard, World Cup |
+        | `list` | All coaches. All coaches, or the coaches of a country. Paginated, 100 items per page. | — | `country_id`, `page` | Standard, World Cup |
 
         ## Examples
 
@@ -8384,6 +8833,10 @@ paths:
             - id
           optional: []
           schema: DataResponse
+          plans:
+            - free
+            - standard
+            - worldcup
           example: id=662
         - t: list
           title: All coaches
@@ -8394,6 +8847,10 @@ paths:
             - page
           schema: DataResponse
           paginated: true
+          plans:
+            - free
+            - standard
+            - worldcup
           example: country_id=25
       parameters:
         - $ref: '#/components/parameters/User'
@@ -8507,7 +8964,7 @@ paths:
         '401':
           description: Missing or invalid `user` or `token`.
         '403':
-          description: 'Not included in the account plan. The envelope carries the reason in `meta.msg`: `League not available for your plan.` when the league is outside the plan, or `Endpoint not available for your plan.` for operations reserved to Standard plans.'
+          description: 'Not included in the account plan. The envelope carries the reason in `meta.msg`: `League not available for your plan.` when the league is outside the plan, `Endpoint not available for your plan.` when the operation is not in the plan, or `Include not available for your plan.` when a requested dataset is not in the plan.'
         '429':
           description: Request allowance exhausted.
         4XX:
@@ -8523,12 +8980,12 @@ paths:
 
         ## Operations
 
-        The `t` query parameter selects the operation. Parameters not listed for an operation are ignored.
+        The `t` query parameter selects the operation. Parameters not listed for an operation are ignored. The plans column lists the plans that include the operation for the leagues they cover; Free plans carry the Standard datasets. A plan outside the list receives `403` with `meta.msg` = `Endpoint not available for your plan.`
 
-        | `t` | Operation | Required | Optional |
-        | --- | --- | --- | --- |
-        | `info` | Referee by ID. Referee profile with country. | `id` | — |
-        | `list` | All referees. All referees, or the referees of a country. Paginated, 100 items per page. | — | `country_id`, `page` |
+        | `t` | Operation | Required | Optional | Plans |
+        | --- | --- | --- | --- | --- |
+        | `info` | Referee by ID. Referee profile with country. | `id` | — | Standard, World Cup |
+        | `list` | All referees. All referees, or the referees of a country. Paginated, 100 items per page. | — | `country_id`, `page` | Standard, World Cup |
 
         ## Examples
 
@@ -8551,6 +9008,10 @@ paths:
             - id
           optional: []
           schema: DataResponse
+          plans:
+            - free
+            - standard
+            - worldcup
           example: id=372
         - t: list
           title: All referees
@@ -8561,6 +9022,10 @@ paths:
             - page
           schema: DataResponse
           paginated: true
+          plans:
+            - free
+            - standard
+            - worldcup
           example: country_id=4
       parameters:
         - $ref: '#/components/parameters/User'
@@ -8665,7 +9130,7 @@ paths:
         '401':
           description: Missing or invalid `user` or `token`.
         '403':
-          description: 'Not included in the account plan. The envelope carries the reason in `meta.msg`: `League not available for your plan.` when the league is outside the plan, or `Endpoint not available for your plan.` for operations reserved to Standard plans.'
+          description: 'Not included in the account plan. The envelope carries the reason in `meta.msg`: `League not available for your plan.` when the league is outside the plan, `Endpoint not available for your plan.` when the operation is not in the plan, or `Include not available for your plan.` when a requested dataset is not in the plan.'
         '429':
           description: Request allowance exhausted.
         4XX:
@@ -8681,13 +9146,13 @@ paths:
 
         ## Operations
 
-        The `t` query parameter selects the operation. Parameters not listed for an operation are ignored.
+        The `t` query parameter selects the operation. Parameters not listed for an operation are ignored. The plans column lists the plans that include the operation for the leagues they cover; Free plans carry the Standard datasets. A plan outside the list receives `403` with `meta.msg` = `Endpoint not available for your plan.`
 
-        | `t` | Operation | Required | Optional |
-        | --- | --- | --- | --- |
-        | `list` | All venues. All venues, or the venues of a country. Paginated, 100 items per page. | — | `country_id`, `page` |
-        | `byseason` | Venues by season. Venues of the teams taking part in a season. | `season_id` | — |
-        | `info` | Venue by ID. One venue with capacity, city, coordinates and image. | `id` | — |
+        | `t` | Operation | Required | Optional | Plans |
+        | --- | --- | --- | --- | --- |
+        | `list` | All venues. All venues, or the venues of a country. Paginated, 100 items per page. | — | `country_id`, `page` | Standard, World Cup |
+        | `byseason` | Venues by season. Venues of the teams taking part in a season. | `season_id` | — | Standard, World Cup |
+        | `info` | Venue by ID. One venue with capacity, city, coordinates and image. | `id` | — | Standard, World Cup |
 
         ## Examples
 
@@ -8718,6 +9183,10 @@ paths:
             - page
           schema: DataResponse
           paginated: true
+          plans:
+            - free
+            - standard
+            - worldcup
           example: country_id=15
         - t: byseason
           title: Venues by season
@@ -8726,6 +9195,10 @@ paths:
             - season_id
           optional: []
           schema: DataResponse
+          plans:
+            - free
+            - standard
+            - worldcup
           example: season_id=14192
         - t: info
           title: Venue by ID
@@ -8734,6 +9207,10 @@ paths:
             - id
           optional: []
           schema: DataResponse
+          plans:
+            - free
+            - standard
+            - worldcup
           example: id=191
       parameters:
         - $ref: '#/components/parameters/User'
@@ -8922,7 +9399,7 @@ paths:
         '401':
           description: Missing or invalid `user` or `token`.
         '403':
-          description: 'Not included in the account plan. The envelope carries the reason in `meta.msg`: `League not available for your plan.` when the league is outside the plan, or `Endpoint not available for your plan.` for operations reserved to Standard plans.'
+          description: 'Not included in the account plan. The envelope carries the reason in `meta.msg`: `League not available for your plan.` when the league is outside the plan, `Endpoint not available for your plan.` when the operation is not in the plan, or `Include not available for your plan.` when a requested dataset is not in the plan.'
         '429':
           description: Request allowance exhausted.
         4XX:
@@ -8939,16 +9416,16 @@ paths:
 
         ## Operations
 
-        The `t` query parameter selects the operation. Parameters not listed for an operation are ignored.
+        The `t` query parameter selects the operation. Parameters not listed for an operation are ignored. The plans column lists the plans that include the operation for the leagues they cover; Free plans carry the Standard datasets. A plan outside the list receives `403` with `meta.msg` = `Endpoint not available for your plan.`
 
-        | `t` | Operation | Required | Optional |
-        | --- | --- | --- | --- |
-        | `league` | Highlights by league. Highlight videos of the matches of a league. | `id` | — |
-        | `season` | Highlights by season. Highlight videos of the matches of a season. | `id` | — |
-        | `team` | Highlights by team. Highlight videos of the matches of a team. | `id` | — |
-        | `round` | Highlights by round. Highlight videos of the matches of a round. | `id` | — |
-        | `event` | Highlights by match. Highlight videos of one match. | `id` | — |
-        | `date` | Highlights by date. Highlight videos of the matches of a date. | `d` | — |
+        | `t` | Operation | Required | Optional | Plans |
+        | --- | --- | --- | --- | --- |
+        | `league` | Highlights by league. Highlight videos of the matches of a league. | `id` | — | Standard, World Cup |
+        | `season` | Highlights by season. Highlight videos of the matches of a season. | `id` | — | Standard, World Cup |
+        | `team` | Highlights by team. Highlight videos of the matches of a team. | `id` | — | Standard, World Cup |
+        | `round` | Highlights by round. Highlight videos of the matches of a round. | `id` | — | Standard, World Cup |
+        | `event` | Highlights by match. Highlight videos of one match. | `id` | — | Standard, World Cup |
+        | `date` | Highlights by date. Highlight videos of the matches of a date. | `d` | — | Standard, World Cup |
 
         ## Examples
 
@@ -8996,6 +9473,10 @@ paths:
             - id
           optional: []
           schema: DataResponse
+          plans:
+            - free
+            - standard
+            - worldcup
           example: id=637
         - t: season
           title: Highlights by season
@@ -9004,6 +9485,10 @@ paths:
             - id
           optional: []
           schema: DataResponse
+          plans:
+            - free
+            - standard
+            - worldcup
           example: id=14341
         - t: team
           title: Highlights by team
@@ -9012,6 +9497,10 @@ paths:
             - id
           optional: []
           schema: DataResponse
+          plans:
+            - free
+            - standard
+            - worldcup
           example: id=116
         - t: round
           title: Highlights by round
@@ -9020,6 +9509,10 @@ paths:
             - id
           optional: []
           schema: DataResponse
+          plans:
+            - free
+            - standard
+            - worldcup
           example: id=182349
         - t: event
           title: Highlights by match
@@ -9028,6 +9521,10 @@ paths:
             - id
           optional: []
           schema: DataResponse
+          plans:
+            - free
+            - standard
+            - worldcup
           example: id=1843815
         - t: date
           title: Highlights by date
@@ -9036,6 +9533,10 @@ paths:
             - d
           optional: []
           schema: DataResponse
+          plans:
+            - free
+            - standard
+            - worldcup
           example: d=2026-08-30
       parameters:
         - $ref: '#/components/parameters/User'
@@ -9140,7 +9641,7 @@ paths:
         '401':
           description: Missing or invalid `user` or `token`.
         '403':
-          description: 'Not included in the account plan. The envelope carries the reason in `meta.msg`: `League not available for your plan.` when the league is outside the plan, or `Endpoint not available for your plan.` for operations reserved to Standard plans.'
+          description: 'Not included in the account plan. The envelope carries the reason in `meta.msg`: `League not available for your plan.` when the league is outside the plan, `Endpoint not available for your plan.` when the operation is not in the plan, or `Include not available for your plan.` when a requested dataset is not in the plan.'
         '429':
           description: Request allowance exhausted.
         4XX:

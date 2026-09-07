@@ -77,6 +77,9 @@ const firstParagraph = (md) => (md.replace(/^#.*$/m, '').trim().split(/\n\s*\n/)
 // ---------------------------------------------------------------- load and explode
 const src = yaml.load(readFileSync(resolve(root, 'openapi.yaml'), 'utf8'));
 const resolveParam = (p) => (p.$ref ? src.components.parameters[p.$ref.split('/').pop()] : p);
+const ALL_PLANS = ['free', 'standard', 'worldcup', 'odds', 'broadcast'];
+const PLAN_NAME = { free: 'Free', standard: 'Standard', worldcup: 'World Cup', odds: 'Odds', broadcast: 'Broadcast' };
+const planLabel = (plans) => { if (!plans || plans.length === ALL_PLANS.length) return ''; const themed = plans.filter((p) => ['odds', 'broadcast'].includes(p)).map((p) => PLAN_NAME[p]); return themed.length ? `Standard, World Cup, ${themed.join(', ')}` : 'Standard, World Cup'; };
 const stripConditional = (d) => (d || '').replace(/\s*(Required when `t` is [^.]*\.|Optional for [^.]*\.|Required by every operation\.)/g, '').trim();
 
 const routes = [];
@@ -106,7 +109,7 @@ for (const r of routes) {
   for (const x of r.ops) {
     const lines = [x.purpose || '', '', `Operation selector: ${code(`t=${x.t}`)}${x.required.length ? `. Required: ${x.required.map(code).join(', ')}` : ''}${x.optional.length ? `. Optional: ${x.optional.map(code).join(', ')}` : ''}.`];
     if (x.paginated) lines.push('', 'Paginated: 100 items per page; read `meta.pages` and request the next pages with `page`.');
-    if (x.plans && !x.plans.includes('odds')) lines.push('', '**Standard plans only.** Other plans receive `403` with `meta.msg` = `Endpoint not available for your plan.`');
+    if (planLabel(x.plans)) lines.push('', `**Plans: ${planLabel(x.plans)}.** Free plans carry the Standard datasets. Other plans receive \`403\` with \`meta.msg\` = \`Endpoint not available for your plan.\``);
     lines.push('', '```http', x.request, '```', '', `Permanent link: [${SITE}${x.url}](${SITE}${x.url})`);
     const srcOp = src.paths[r.path].get;
     const responses = { ...srcOp.responses, 200: { description: `${x.schema} envelope. See the example for the exact shape.`, content: { 'application/json': { schema: { $ref: `#/components/schemas/${x.schema}` } } } } };
@@ -285,8 +288,8 @@ for (const r of routes) {
   for (const x of r.ops) {
     const params = x.params.length ? `<h2>Parameters</h2><table><thead><tr><th>Name</th><th>Required</th><th>Description</th><th>Example</th></tr></thead><tbody>${x.params.map((p) => `<tr><td><code>${esc(p.name)}</code></td><td>${p.required ? 'yes' : 'no'}</td><td>${inline(p.description)}</td><td>${p.example !== undefined ? `<code>${esc(p.example)}</code>` : ''}</td></tr>`).join('')}</tbody></table>` : '';
     const example = x.example ? `<h2>Example response</h2><pre><code>${esc(pretty(x.example))}</code></pre>` : '';
-    const notes = [x.paginated ? '<li>Paginated: 100 items per page; read <code>meta.pages</code> and request the next pages with <code>page</code>.</li>' : '', x.plans && !x.plans.includes('odds') ? '<li><strong>Standard plans only.</strong> Other plans receive <code>403</code> with <code>meta.msg</code> = <code>Endpoint not available for your plan.</code></li>' : '', '<li>Every request needs the <code>user</code> and <code>token</code> query parameters of the account.</li>'].filter(Boolean).join('');
-    write(`${r.key}/${x.t}/index.html`, page({ title: `${x.title} · ${r.name}`, description: (x.purpose || `${x.title} on the SoccersAPI ${r.name} route.`).replace(/[`*]/g, '').slice(0, 160), path: x.url, crumbs: [{ label: 'Docs', href: '/' }, { label: 'Reference', href: '/' }, { label: r.name, href: r.url }, { label: x.title }], body: `<h1><span class="badge">GET</span>${esc(x.title)}${r.comingSoon ? ' <span class="badge">coming soon</span>' : ''}${x.plans && !x.plans.includes('odds') ? ' <span class="badge badge-warn">Standard plans only</span>' : ''}</h1><p class="lead">${inline(x.purpose || '')}</p><p><code>${esc(r.path)}</code> with <code>t=${esc(x.t)}</code></p><p class="actions"><a class="btn btn-primary" href="${x.anchor}">Try it in the interactive reference</a><a class="btn btn-secondary" href="${r.url}">All ${esc(r.name)} operations</a></p><h2>Request</h2><pre><code>${esc(x.request)}</code></pre><ul>${notes}</ul>${params}${example}` }));
+    const notes = [x.paginated ? '<li>Paginated: 100 items per page; read <code>meta.pages</code> and request the next pages with <code>page</code>.</li>' : '', planLabel(x.plans) ? `<li><strong>Plans: ${esc(planLabel(x.plans))}.</strong> Free plans carry the Standard datasets. Other plans receive <code>403</code> with <code>meta.msg</code> = <code>Endpoint not available for your plan.</code></li>` : '<li>Available on every plan for the leagues the plan covers.</li>', '<li>Every request needs the <code>user</code> and <code>token</code> query parameters of the account.</li>'].filter(Boolean).join('');
+    write(`${r.key}/${x.t}/index.html`, page({ title: `${x.title} · ${r.name}`, description: (x.purpose || `${x.title} on the SoccersAPI ${r.name} route.`).replace(/[`*]/g, '').slice(0, 160), path: x.url, crumbs: [{ label: 'Docs', href: '/' }, { label: 'Reference', href: '/' }, { label: r.name, href: r.url }, { label: x.title }], body: `<h1><span class="badge">GET</span>${esc(x.title)}${r.comingSoon ? ' <span class="badge">coming soon</span>' : ''}${planLabel(x.plans) ? ` <span class="badge badge-warn">${esc(planLabel(x.plans))}</span>` : ''}</h1><p class="lead">${inline(x.purpose || '')}</p><p><code>${esc(r.path)}</code> with <code>t=${esc(x.t)}</code></p><p class="actions"><a class="btn btn-primary" href="${x.anchor}">Try it in the interactive reference</a><a class="btn btn-secondary" href="${r.url}">All ${esc(r.name)} operations</a></p><h2>Request</h2><pre><code>${esc(x.request)}</code></pre><ul>${notes}</ul>${params}${example}` }));
     sitemap.push({ loc: x.url, priority: '0.9' });
   }
 }

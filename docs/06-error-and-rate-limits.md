@@ -7,8 +7,9 @@
   non-numeric `id` or a search term under 3 characters.
 - **401 Unauthorized** — missing or invalid `user`/`token`.
 - **403 Forbidden** — the league is outside the account plan (`meta.msg` =
-  `League not available for your plan.`) or the operation is reserved to
-  Standard plans (`meta.msg` = `Endpoint not available for your plan.`); see
+  `League not available for your plan.`), the operation is not in the plan
+  (`Endpoint not available for your plan.`) or a requested include is not in
+  the plan (`Include not available for your plan.`); see
   [Plans and Data Access](./10-plans-and-access.md).
 - **404 Not Found** — endpoint or resource does not exist; check the route and
   resource ID.

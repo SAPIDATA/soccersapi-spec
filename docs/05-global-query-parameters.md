@@ -34,14 +34,18 @@ explicitly and check the operations table of the route for the accepted values.
 
 The most common match datasets are:
 
-| Include value | Returned property | Typical support |
-| --- | --- | --- |
-| `events` | `events` | Livescores and `fixtures?t=schedule`, `season`, `round`, `info`, `sort`. |
-| `stats` | `stats` | Livescores and `fixtures?t=schedule`, `season`, `round`, `info`, `sort`. |
-| `odds_prematch` | `odds_prematch` | Livescores and fixture operations where the plan and match coverage provide odds. |
-| `odds_inplay` | `odds_inplay` | Livescores and `fixtures?t=info` for matches in play where the plan and coverage provide in-play odds. |
-| `broadcast` | `broadcast` | `fixtures?t=schedule`, `season`, `round`, `info` and `sort`: TV channels showing the match, each with its country. Not supported by livescores or `last_next`. |
-| `tvs` | `tvs` | `broadcast?t=schedule`: embeds the channel details in each match. |
+| Include value | Returned property | Where | Plans |
+| --- | --- | --- | --- |
+| `events` | `events` | Livescores and `fixtures?t=schedule`, `season`, `round`, `info`, `sort`. | Standard, World Cup |
+| `stats` | `stats` | Livescores and `fixtures?t=schedule`, `season`, `round`, `info`, `sort`. | Standard, World Cup |
+| `odds_prematch` | `odds_prematch` | Livescores and fixture operations where match coverage provides odds. | Standard, World Cup, Odds |
+| `odds_inplay` | `odds_inplay` | Livescores and `fixtures?t=info` for matches in play. | Standard, World Cup, Odds |
+| `broadcast` | `broadcast` | `fixtures?t=schedule`, `season`, `round`, `info` and `sort`: TV channels showing the match. Not supported by livescores or `last_next`. | Standard, World Cup, Broadcast |
+| `tvs` | `tvs` | `broadcast?t=schedule`: embeds the channel details in each match. | Standard, World Cup, Broadcast |
+
+Free plans carry the Standard datasets. An include outside the plan returns
+`403` with `meta.msg` = `Include not available for your plan.`; see
+[Plans and Data Access](./10-plans-and-access.md).
 
 Use dataset names in `include`; do not use standalone operation values. For
 example, `include=events` embeds the timeline, while `t=match_events` calls the
