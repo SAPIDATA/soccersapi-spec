@@ -172,7 +172,7 @@ const css = `
 
 const header = `
   <header class="sapi-header">
-    <a class="sapi-brand" href="${BRAND.site}"><img src="${BRAND.logo}" alt="${BRAND.name}" height="28"><span>Docs</span></a>
+    <a class="sapi-brand" href="${BRAND.site}"><img src="${BRAND.logo}" alt="${BRAND.name}" height="36"><span>Docs</span></a>
     <nav>${BRAND.links.map((l) => `<a href="${l.href}">${l.label}</a>`).join('')}<a class="sapi-cta" href="https://admin.soccersapi.com/register">Start free trial</a></nav>
   </header>`;
 
@@ -187,7 +187,7 @@ const html = `<!doctype html>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700&family=Sora:wght@600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
   <style>
     body { margin: 0; background: ${BRAND.pageBg}; font-family: 'Onest', ui-sans-serif, system-ui, sans-serif; }
-    .sapi-header { position: sticky; top: 0; z-index: 50; display: flex; align-items: center; justify-content: space-between; gap: 16px; height: 60px; padding: 0 24px; background: #ffffff; border-bottom: 1px solid ${BRAND.border}; font: 500 14px/1 'Onest', system-ui, sans-serif; }
+    .sapi-header { position: sticky; top: 0; z-index: 50; display: flex; align-items: center; justify-content: space-between; gap: 16px; height: 64px; padding: 0 24px; background: #ffffff; border-bottom: 1px solid ${BRAND.border}; font: 500 14px/1 'Onest', system-ui, sans-serif; }
     .sapi-brand { display: flex; align-items: center; gap: 12px; color: ${BRAND.text}; text-decoration: none; }
     .sapi-brand span { padding-left: 12px; border-left: 1px solid ${BRAND.border}; color: ${BRAND.muted}; font-weight: 500; }
     .sapi-header nav { display: flex; align-items: center; gap: 22px; }
