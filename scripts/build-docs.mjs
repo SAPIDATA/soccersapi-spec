@@ -9,7 +9,7 @@
 //   sitemap.xml, robots.txt, llms.txt, llms-full.txt, _redirects, _headers, 404.html
 //
 // The canonical contract stays openapi.yaml; everything here derives from it.
-import { readFileSync, writeFileSync, mkdirSync, readdirSync, copyFileSync, existsSync } from 'node:fs';
+import { readFileSync, writeFileSync, mkdirSync, readdirSync, copyFileSync, existsSync, rmSync } from 'node:fs';
 import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { createRequire } from 'node:module';
@@ -134,6 +134,7 @@ const spec = {
   },
   security: [{ user: [], token: [] }],
 };
+rmSync(dist, { recursive: true, force: true });
 mkdirSync(dist, { recursive: true });
 write('openapi.docs.json', JSON.stringify(spec, null, 2));
 copyFileSync(resolve(root, 'openapi.yaml'), resolve(dist, 'openapi.yaml'));
