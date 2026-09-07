@@ -4,8 +4,8 @@ Every SoccersAPI account has a plan. The plan decides three things: which
 leagues the account can read, which operations and datasets it can request,
 and how many requests it can make per hour. Prices and allowances change over
 time; the [pricing page](https://soccersapi.com/pricing) and the account
-dashboard are authoritative. This page is the contract for how the plan model
-shows up in API responses.
+dashboard are authoritative. This page explains how the plan model shows up
+in API responses.
 
 ## Plan families
 
