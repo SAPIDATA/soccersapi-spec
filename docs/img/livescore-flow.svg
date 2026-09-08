@@ -2,9 +2,9 @@
   <style>
     .box { fill: #ffffff; stroke: #cfd9d3; stroke-width: 1.2; rx: 8; }
     .live { fill: #eaf9f0; stroke: #19c96b; stroke-width: 1.4; rx: 8; }
-    .t { font: 600 13px 'IBM Plex Sans', 'Segoe UI', system-ui, sans-serif; fill: #0b1f16; }
+    .t { font: 600 13px 'Inter', 'Segoe UI', system-ui, sans-serif; fill: #0b1f16; }
     .s { font: 11px 'IBM Plex Mono', ui-monospace, monospace; fill: #0f7a44; }
-    .l { font: 11px 'IBM Plex Sans', system-ui, sans-serif; fill: #5b6b63; }
+    .l { font: 11px 'Inter', system-ui, sans-serif; fill: #5b6b63; }
     .a { stroke: #7f958a; stroke-width: 1.4; fill: none; marker-end: url(#m2); }
   </style>
   <defs><marker id="m2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#7f958a"/></marker></defs>

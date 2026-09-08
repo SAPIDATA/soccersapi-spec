@@ -2,8 +2,8 @@
   <style>
     .u { font: 500 15px 'IBM Plex Mono', ui-monospace, monospace; fill: #0b1f16; }
     .h { fill: #19c96b; }
-    .l { font: 11.5px 'IBM Plex Sans', system-ui, sans-serif; fill: #5b6b63; }
-    .k { font: 600 11.5px 'IBM Plex Sans', system-ui, sans-serif; fill: #0f7a44; }
+    .l { font: 11.5px 'Inter', system-ui, sans-serif; fill: #5b6b63; }
+    .k { font: 600 11.5px 'Inter', system-ui, sans-serif; fill: #0f7a44; }
     .a { stroke: #7f958a; stroke-width: 1.2; fill: none; }
   </style>
   <rect x="24" y="52" width="912" height="40" rx="8" fill="#f2f6f4" stroke="#cfd9d3"/>

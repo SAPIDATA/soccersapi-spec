@@ -165,15 +165,15 @@ const analytics = ANALYTICS ? `
   <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','${GA_ID}');gtag('config','${ADS_ID}');</script>` : '';
 const fonts = `
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">`;
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">`;
 const headerHtml = `
   <header class="sapi-header">
     <a class="sapi-brand" href="/"><img src="${BRAND.logo}" alt="${BRAND.name}" height="36"><span>Docs</span></a>
     <nav>${BRAND.links.map((l) => `<a href="${l.href}">${l.label}</a>`).join('')}<a class="sapi-cta" href="https://admin.soccersapi.com/register">Start free trial</a></nav>
   </header>`;
 const headerCss = `
-    body { margin: 0; background: ${BRAND.pageBg}; color: ${BRAND.text}; font-family: 'IBM Plex Sans', ui-sans-serif, system-ui, sans-serif; }
-    .sapi-header { position: sticky; top: 0; z-index: 50; display: flex; align-items: center; justify-content: space-between; gap: 16px; height: 64px; padding: 0 24px; background: #ffffff; border-bottom: 1px solid ${BRAND.border}; font: 500 14px/1 'IBM Plex Sans', system-ui, sans-serif; }
+    body { margin: 0; background: ${BRAND.pageBg}; color: ${BRAND.text}; font-family: 'Inter', ui-sans-serif, system-ui, sans-serif; }
+    .sapi-header { position: sticky; top: 0; z-index: 50; display: flex; align-items: center; justify-content: space-between; gap: 16px; height: 64px; padding: 0 24px; background: #ffffff; border-bottom: 1px solid ${BRAND.border}; font: 500 14px/1 'Inter', system-ui, sans-serif; }
     .sapi-brand { display: flex; align-items: center; gap: 12px; color: ${BRAND.text}; text-decoration: none; }
     .sapi-brand span { padding-left: 12px; border-left: 1px solid ${BRAND.border}; color: ${BRAND.muted}; font-weight: 500; }
     .sapi-header nav { display: flex; align-items: center; gap: 22px; }
@@ -208,7 +208,7 @@ const configuration = {
   metaData: { title: `${BRAND.name} documentation`, description: 'Football data API reference with an interactive client.' },
 };
 const themeCss = `
-:root { --scalar-font: 'IBM Plex Sans', ui-sans-serif, system-ui, sans-serif; --scalar-font-code: 'IBM Plex Mono', ui-monospace, monospace; --scalar-radius: 6px; --scalar-radius-lg: 10px; --scalar-radius-xl: 14px; }
+:root { --scalar-font: 'Inter', ui-sans-serif, system-ui, sans-serif; --scalar-font-code: 'IBM Plex Mono', ui-monospace, monospace; --scalar-radius: 6px; --scalar-radius-lg: 10px; --scalar-radius-xl: 14px; }
 .light-mode {
   --scalar-color-accent: ${BRAND.accent}; --scalar-background-accent: rgba(25, 201, 107, .12); --scalar-color-green: ${BRAND.accent};
   --scalar-background-1: #ffffff; --scalar-background-2: ${BRAND.pageBg}; --scalar-background-3: #eef2f0;
@@ -228,7 +228,7 @@ const themeCss = `
   --scalar-sidebar-item-hover-background: ${BRAND.darkHover}; --scalar-sidebar-item-active-background: ${BRAND.darkHover}; --scalar-sidebar-border-color: #123324;
   --scalar-sidebar-search-background: ${BRAND.darkSoft}; --scalar-sidebar-search-border-color: #1c4431; --scalar-sidebar-search-color: #e8f5ee;
 }
-.scalar-api-reference h1, .scalar-api-reference h2, .section-header, .sidebar-heading-type { font-family: 'IBM Plex Sans', sans-serif; letter-spacing: -0.01em; }`;
+.scalar-api-reference h1, .scalar-api-reference h2, .section-header, .sidebar-heading-type { font-family: 'Inter', sans-serif; letter-spacing: -0.01em; }`;
 write('index.html', `${head({ title: `${BRAND.name} documentation`, description: 'Reference and interactive client for the SoccersAPI football data API: livescores, fixtures, standings, teams, players, odds and TV broadcasts.', path: '/', extra: `\n  <style>${headerCss}\n    #app { min-height: calc(100vh - 64px); }${themeCss}\n  </style>` })}
 <body>${headerHtml}
   <div id="app"></div>
@@ -246,7 +246,7 @@ write('index.html', `${head({ title: `${BRAND.name} documentation`, description:
 const pageCss = `${headerCss}
     main { max-width: 880px; margin: 0 auto; padding: 32px 24px 64px; }
     .crumbs { font-size: 13px; color: ${BRAND.muted}; margin-bottom: 18px; } .crumbs a { color: ${BRAND.muted}; }
-    h1, h2, h3 { font-family: 'IBM Plex Sans', sans-serif; letter-spacing: -0.01em; } h1 { font-size: 34px; margin: 0 0 10px; } h2 { font-size: 22px; margin-top: 36px; }
+    h1, h2, h3 { font-family: 'Inter', sans-serif; letter-spacing: -0.01em; } h1 { font-size: 34px; margin: 0 0 10px; } h2 { font-size: 22px; margin-top: 36px; }
     p, li { line-height: 1.6; } a { color: #0f7a44; }
     .lead { font-size: 17px; color: #3d4a43; }
     .actions { display: flex; flex-wrap: wrap; gap: 12px; margin: 22px 0 30px; }
@@ -259,7 +259,7 @@ const pageCss = `${headerCss}
     pre { background: ${BRAND.dark}; color: #e8f5ee; padding: 14px 16px; border-radius: 8px; overflow-x: auto; font-size: 13px; line-height: 1.5; } pre code { background: none; color: inherit; padding: 0; }
     blockquote { border-left: 3px solid ${BRAND.accent}; margin: 0; padding: 4px 16px; color: #3d4a43; background: #fff; }
     .badge-warn { background: #fff4e5; color: #9a5b00; }
-    .badge { display: inline-block; font: 600 11px/1 'IBM Plex Sans', sans-serif; letter-spacing: .04em; padding: 4px 7px; border-radius: 4px; background: rgba(25,201,107,.14); color: #0f7a44; margin-right: 8px; }
+    .badge { display: inline-block; font: 600 11px/1 'Inter', sans-serif; letter-spacing: .04em; padding: 4px 7px; border-radius: 4px; background: rgba(25,201,107,.14); color: #0f7a44; margin-right: 8px; }
     .ops a { text-decoration: none; } .ops li { margin: 6px 0; }
     footer { max-width: 880px; margin: 0 auto; padding: 0 24px 40px; font-size: 13px; color: ${BRAND.muted}; }`;
 const page = ({ title, description, path, crumbs, body }) => `${head({ title: `${title} · ${BRAND.name} docs`, description, path, extra: `\n  <style>${pageCss}\n  </style>` })}
