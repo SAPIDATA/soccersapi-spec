@@ -208,16 +208,16 @@ const configuration = {
   metaData: { title: `${BRAND.name} documentation`, description: 'Football data API reference with an interactive client.' },
 };
 const themeCss = `
-:root { --scalar-font: 'Inter', ui-sans-serif, system-ui, sans-serif; --scalar-font-code: 'IBM Plex Mono', ui-monospace, monospace; --scalar-radius: 6px; --scalar-radius-lg: 10px; --scalar-radius-xl: 14px; }
+:root { --scalar-font: 'Inter', ui-sans-serif, system-ui, sans-serif; --scalar-font-code: 'IBM Plex Mono', ui-monospace, monospace; --scalar-radius: 4px; --scalar-radius-lg: 6px; --scalar-radius-xl: 8px; }
 .light-mode {
-  --scalar-color-accent: ${BRAND.accent}; --scalar-background-accent: rgba(25, 201, 107, .12); --scalar-color-green: ${BRAND.accent};
+  --scalar-color-accent: ${BRAND.accent}; --scalar-background-accent: #e7f8ee; --scalar-color-green: ${BRAND.accent};
   --scalar-background-1: #ffffff; --scalar-background-2: ${BRAND.pageBg}; --scalar-background-3: #eef2f0;
   --scalar-color-1: ${BRAND.text}; --scalar-color-2: #3d4a43; --scalar-color-3: ${BRAND.muted}; --scalar-border-color: ${BRAND.border};
   --scalar-button-1: ${BRAND.accent}; --scalar-button-1-color: #ffffff; --scalar-button-1-hover: ${BRAND.accentHover};
-  --scalar-sidebar-background-1: ${BRAND.pageBg}; --scalar-sidebar-color-1: ${BRAND.text}; --scalar-sidebar-color-2: ${BRAND.muted}; --scalar-sidebar-color-active: #0f7a44;
-  --scalar-sidebar-item-hover-background: #e9efec; --scalar-sidebar-item-hover-color: ${BRAND.text}; --scalar-sidebar-item-active-background: rgba(25, 201, 107, .14);
+  --scalar-sidebar-background-1: #ffffff; --scalar-sidebar-color-1: ${BRAND.text}; --scalar-sidebar-color-2: ${BRAND.muted}; --scalar-sidebar-color-active: ${BRAND.text};
+  --scalar-sidebar-item-hover-background: ${BRAND.pageBg}; --scalar-sidebar-item-hover-color: ${BRAND.text}; --scalar-sidebar-item-active-background: #eef1ef;
   --scalar-sidebar-border-color: ${BRAND.border}; --scalar-sidebar-search-background: #ffffff; --scalar-sidebar-search-border-color: ${BRAND.border}; --scalar-sidebar-search-color: ${BRAND.text};
-  --scalar-sidebar-indent-border: #dfe6e2; --scalar-sidebar-indent-border-hover: #c9d4ce; --scalar-sidebar-indent-border-active: ${BRAND.accent};
+  --scalar-sidebar-indent-border: #e5e7eb; --scalar-sidebar-indent-border-hover: #cbd5e1; --scalar-sidebar-indent-border-active: #020617;
 }
 .dark-mode {
   --scalar-color-accent: ${BRAND.accent}; --scalar-background-accent: rgba(25, 201, 107, .16); --scalar-color-green: ${BRAND.accent};
@@ -228,7 +228,10 @@ const themeCss = `
   --scalar-sidebar-item-hover-background: ${BRAND.darkHover}; --scalar-sidebar-item-active-background: ${BRAND.darkHover}; --scalar-sidebar-border-color: #123324;
   --scalar-sidebar-search-background: ${BRAND.darkSoft}; --scalar-sidebar-search-border-color: #1c4431; --scalar-sidebar-search-color: #e8f5ee;
 }
-.scalar-api-reference h1, .scalar-api-reference h2, .section-header, .sidebar-heading-type { font-family: 'Inter', sans-serif; letter-spacing: -0.01em; }`;
+.scalar-api-reference h1, .scalar-api-reference h2, .section-header, .sidebar-heading-type { font-family: 'Inter', sans-serif; letter-spacing: -0.02em; font-weight: 600; }
+.scalar-api-reference .sidebar-group-title, .scalar-api-reference .sidebar-heading-type { font-family: 'IBM Plex Mono', ui-monospace, monospace; letter-spacing: .1em; text-transform: uppercase; font-size: 11px; font-weight: 500; }
+.scalar-api-reference .references-classic .section, .scalar-api-reference .section { border-color: ${BRAND.border}; }
+.scalar-api-reference .scalar-card, .scalar-api-reference .scalar-card-header { box-shadow: none; }`;
 write('index.html', `${head({ title: `${BRAND.name} documentation`, description: 'Reference and interactive client for the SoccersAPI football data API: livescores, fixtures, standings, teams, players, odds and TV broadcasts.', path: '/', extra: `\n  <style>${headerCss}\n    #app { min-height: calc(100vh - 64px); }${themeCss}\n  </style>` })}
 <body>${headerHtml}
   <div id="app"></div>
@@ -244,34 +247,54 @@ write('index.html', `${head({ title: `${BRAND.name} documentation`, description:
 
 // ---------------------------------------------------------------- static pages
 const pageCss = `${headerCss}
-    main { max-width: 880px; margin: 0 auto; padding: 32px 24px 64px; }
-    .crumbs { font-size: 13px; color: ${BRAND.muted}; margin-bottom: 18px; } .crumbs a { color: ${BRAND.muted}; }
-    h1, h2, h3 { font-family: 'Inter', sans-serif; letter-spacing: -0.01em; } h1 { font-size: 34px; margin: 0 0 10px; } h2 { font-size: 22px; margin-top: 36px; }
-    p, li { line-height: 1.6; } a { color: #0f7a44; }
-    .lead { font-size: 17px; color: #3d4a43; }
+    body { background: #ffffff; }
+    .page-head { border-bottom: 1px solid ${BRAND.border}; background: #ffffff; }
+    .page-head-inner { max-width: 1120px; margin: 0 auto; padding: 40px 24px 36px; }
+    .crumbs { font: 500 12px/1 'IBM Plex Mono', ui-monospace, monospace; letter-spacing: .14em; text-transform: uppercase; color: ${BRAND.muted}; margin: 0 0 14px; }
+    .crumbs a { color: #0f7a44; text-decoration: none; } .crumbs a:hover { text-decoration: underline; } .crumbs .sep { margin: 0 8px; color: #cbd5e1; }
+    .page-head h1 { font-size: 40px; line-height: 1.05; letter-spacing: -0.03em; font-weight: 600; margin: 0; max-width: 24em; text-wrap: balance; }
+    .page-head .lead { margin: 12px 0 0; max-width: 44em; }
+    .page-head .actions { margin: 22px 0 0; }
+    main { max-width: 1120px; margin: 0 auto; padding: 32px 24px 72px; }
+    h1, h2, h3 { font-family: 'Inter', sans-serif; letter-spacing: -0.02em; font-weight: 600; } h1 { font-size: 34px; margin: 0 0 10px; } h2 { font-size: 22px; margin: 44px 0 12px; padding-top: 24px; border-top: 1px solid ${BRAND.border}; } h3 { font-size: 17px; margin: 28px 0 8px; }
+    main > h2:first-child, .page-head + main > h2:first-of-type { border-top: 0; padding-top: 0; margin-top: 8px; }
+    p, li { line-height: 1.65; } p { max-width: 70ch; } a { color: #0f7a44; }
+    .lead { font-size: 17px; color: #3d4a43; line-height: 1.6; }
     .actions { display: flex; flex-wrap: wrap; gap: 12px; margin: 22px 0 30px; }
-    .btn { display: inline-block; padding: 10px 16px; border-radius: 6px; text-decoration: none; font-weight: 600; font-size: 14px; }
+    .btn { display: inline-block; padding: 11px 18px; border-radius: 6px; text-decoration: none; font-weight: 600; font-size: 14px; line-height: 1; }
     .btn-primary { background: ${BRAND.accent}; color: #fff; } .btn-primary:hover { background: ${BRAND.accentHover}; }
-    .btn-secondary { background: #fff; color: ${BRAND.text}; border: 1px solid ${BRAND.border}; }
-    img { max-width: 100%; height: auto; background: #fff; border: 1px solid ${BRAND.border}; border-radius: 8px; }
-    table { border-collapse: collapse; width: 100%; font-size: 14px; background: #fff; } th, td { text-align: left; padding: 9px 10px; border: 1px solid ${BRAND.border}; vertical-align: top; } th { background: #eef2f0; }
-    code { font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 13px; background: #eef2f0; padding: 1px 5px; border-radius: 4px; }
-    pre { background: ${BRAND.dark}; color: #e8f5ee; padding: 14px 16px; border-radius: 8px; overflow-x: auto; font-size: 13px; line-height: 1.5; } pre code { background: none; color: inherit; padding: 0; }
-    blockquote { border-left: 3px solid ${BRAND.accent}; margin: 0; padding: 4px 16px; color: #3d4a43; background: #fff; }
-    .badge-warn { background: #fff4e5; color: #9a5b00; }
-    .badge { display: inline-block; font: 600 11px/1 'Inter', sans-serif; letter-spacing: .04em; padding: 4px 7px; border-radius: 4px; background: rgba(25,201,107,.14); color: #0f7a44; margin-right: 8px; }
-    .ops a { text-decoration: none; } .ops li { margin: 6px 0; }
-    footer { max-width: 880px; margin: 0 auto; padding: 0 24px 40px; font-size: 13px; color: ${BRAND.muted}; }`;
-const page = ({ title, description, path, crumbs, body }) => `${head({ title: `${title} · ${BRAND.name} docs`, description, path, extra: `\n  <style>${pageCss}\n  </style>` })}
+    .btn-secondary { background: #fff; color: ${BRAND.text}; border: 1px solid ${BRAND.border}; font-weight: 500; } .btn-secondary:hover { border-color: #0f7a44; color: #0f7a44; }
+    main img { max-width: 100%; height: auto; background: #fff; border: 1px solid ${BRAND.border}; border-radius: 6px; }
+    .table-wrap, table { max-width: 100%; } table { border-collapse: collapse; width: 100%; font-size: 13.5px; background: #fff; border: 1px solid ${BRAND.border}; border-radius: 6px; overflow: hidden; }
+    th, td { text-align: left; padding: 10px 12px; border-bottom: 1px solid #f0f2f1; vertical-align: top; } tr:last-child td { border-bottom: 0; }
+    th { font: 500 11px/1.4 'IBM Plex Mono', ui-monospace, monospace; letter-spacing: .1em; text-transform: uppercase; color: ${BRAND.muted}; background: ${BRAND.pageBg}; border-bottom: 1px solid ${BRAND.border}; }
+    code { font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 13px; background: ${BRAND.pageBg}; border: 1px solid ${BRAND.border}; padding: 1px 5px; border-radius: 4px; }
+    pre { background: ${BRAND.pageBg}; color: ${BRAND.text}; border: 1px solid ${BRAND.border}; padding: 14px 16px; border-radius: 6px; overflow-x: auto; font-size: 12.5px; line-height: 1.55; } pre code { background: none; border: 0; color: inherit; padding: 0; }
+    blockquote { border-left: 2px solid #0f7a44; margin: 0; padding: 4px 16px; color: #3d4a43; }
+    .badge { display: inline-block; font: 500 11px/1 'IBM Plex Mono', ui-monospace, monospace; letter-spacing: .08em; text-transform: uppercase; padding: 4px 7px; border-radius: 4px; background: #e7f8ee; color: #0f7a44; margin-right: 8px; vertical-align: middle; }
+    .badge-warn { background: #fdf4e7; color: #9a5b00; }
+    .ops { list-style: none; padding: 0; margin: 0; border-top: 1px solid ${BRAND.border}; border-bottom: 1px solid ${BRAND.border}; }
+    .ops li { margin: 0; padding: 10px 0; border-bottom: 1px solid #f0f2f1; } .ops li:last-child { border-bottom: 0; } .ops a { text-decoration: none; font-weight: 500; } .ops a:hover { text-decoration: underline; }
+    footer { border-top: 1px solid ${BRAND.border}; } footer div { max-width: 1120px; margin: 0 auto; padding: 20px 24px 40px; font: 400 12.5px/1.6 'IBM Plex Mono', ui-monospace, monospace; color: ${BRAND.muted}; }`;
+const page = ({ title, description, path, crumbs, body }) => {
+  // Lift the h1, lead paragraph and first actions row into the page header band.
+  const m = body.match(/^\s*(<h1[^>]*>[\s\S]*?<\/h1>)\s*((?:<p(?: class="lead")?>[\s\S]*?<\/p>)?)\s*((?:<p>(?:(?!<\/p>)[\s\S])*?<code>[\s\S]*?<\/p>)?)\s*((?:<p class="actions">[\s\S]*?<\/p>)?)/);
+  const headBits = m ? m[0].replace(/<p>(?=[\s\S]*?<\/p>)/, '<p class="lead">') : '';
+  const rest = m ? body.slice(m[0].length) : body;
+  return `${head({ title: `${title} · ${BRAND.name} docs`, description, path, extra: `\n  <style>${pageCss}\n  </style>` })}
 <body>${headerHtml}
+  <div class="page-head"><div class="page-head-inner">
+    <div class="crumbs">${crumbs.map((c) => (c.href ? `<a href="${c.href}">${esc(c.label)}</a>` : esc(c.label))).join('<span class="sep">/</span>')}</div>
+    ${headBits}
+  </div></div>
   <main>
-    <div class="crumbs">${crumbs.map((c) => (c.href ? `<a href="${c.href}">${esc(c.label)}</a>` : esc(c.label))).join(' › ')}</div>
-    ${body}
+    ${rest}
   </main>
-  <footer>Built ${BUILD_DATE} from the <a href="/openapi.yaml">OpenAPI contract</a>. <a href="/">Interactive reference</a> · <a href="/llms.txt">llms.txt</a> · <a href="${BRAND.site}">${BRAND.name}</a></footer>
+  <footer><div>Built ${BUILD_DATE} from the <a href="/openapi.yaml">OpenAPI contract</a> · <a href="/">Interactive reference</a> · <a href="/llms.txt">llms.txt</a> · <a href="${BRAND.site}">${BRAND.name}</a></div></footer>
 </body>
 </html>
 `;
+};
 const pretty = (v) => JSON.stringify(v, null, 2);
 const sitemap = [{ loc: '/', priority: '1.0' }];
 
