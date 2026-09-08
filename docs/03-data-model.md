@@ -79,5 +79,5 @@ Coverage differs by competition and by match. Read the flags before showing a
 tab: `coverage.has_lineups`, `coverage.has_tvs` and `coverage.has_standings`
 on a match, `has_standings` and `has_cupdraw` on a stage. A dataset that is
 not covered returns `200` with an empty array or `null` fields, never an
-error; see [Plans and Data Access](./10-plans-and-access.md) for what a `403`
+error; see [Plans and Data Access](./08-plans-and-access.md) for what a `403`
 means instead.

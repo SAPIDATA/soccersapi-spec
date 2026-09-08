@@ -18,7 +18,7 @@
 - Requests outside the plan answer `403` with the reason in `meta.msg`:
   `League not available for your plan.`, `Endpoint not available for your
   plan.` or `Include not available for your plan.`. See
-  [Plans and Data Access](./10-plans-and-access.md).
+  [Plans and Data Access](./08-plans-and-access.md).
 
 ## Documentation verification (2026-09-04)
 

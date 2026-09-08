@@ -77,4 +77,4 @@ Standard and themed plans share the same request tiers (Basic, Advanced,
 Premium) with hourly limits. When the allowance is exhausted the API returns
 `429`. Poll live feeds at a fixed cadence and use `include` to embed related
 datasets instead of issuing separate calls; see
-[Errors and Request Limits](./06-error-and-rate-limits.md) for backoff rules.
+[Errors and Request Limits](./10-errors-and-rate-limits.md) for backoff rules.

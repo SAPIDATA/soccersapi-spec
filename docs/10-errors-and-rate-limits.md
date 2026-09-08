@@ -10,7 +10,7 @@
   `League not available for your plan.`), the operation is not in the plan
   (`Endpoint not available for your plan.`) or a requested include is not in
   the plan (`Include not available for your plan.`); see
-  [Plans and Data Access](./10-plans-and-access.md).
+  [Plans and Data Access](./08-plans-and-access.md).
 - **404 Not Found** — endpoint or resource does not exist; check the route and
   resource ID.
 - **429 Too Many Requests** — request limit exceeded.

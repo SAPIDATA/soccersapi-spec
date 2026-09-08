@@ -2,7 +2,7 @@
 
 Step-by-step call sequences for the products most often built on SoccersAPI.
 Every request needs `user` and `token`; the examples omit them. Times are UTC
-unless you pass `utc`; see [Shared Query Parameters](./05-global-query-parameters.md).
+unless you pass `utc`; see [Shared Query Parameters](./02-shared-query-parameters.md).
 
 Before any recipe, fetch the leagues your plan can read and keep the list:
 
@@ -48,7 +48,7 @@ Cup plan.
 4. **Render state from `status`**, not from the scores: `0` not started, `1` in
    play with `status_period` (`1st Half`, `2nd Half`) and `time.minute`, `11`
    half time, `3` finished, `31` finished after penalties, `4` postponed, `5`
-   cancelled. The full list is in [Statuses](./08-statuses.md).
+   cancelled. The full list is in [Statuses](./06-statuses.md).
 
 5. **Details that make the screen look right**: `teams.home.kit_colors` for
    shirt colours, `coverage.has_lineups` to decide whether to show a lineups

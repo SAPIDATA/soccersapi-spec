@@ -57,7 +57,7 @@ appended to it.
 
 | Field | Meaning |
 | --- | --- |
-| `status`, `status_name` | Lifecycle code and label; see [Statuses](./08-statuses.md). Drive the UI from the code, never from the scores. |
+| `status`, `status_name` | Lifecycle code and label; see [Statuses](./06-statuses.md). Drive the UI from the code, never from the scores. |
 | `status_period` | `1st Half` or `2nd Half` while in play, otherwise `null`. |
 | `time.minute` | Match clock while in play, `null` before and after. |
 | `winner_team_id` | Set once the match is decided, `null` for draws and unfinished matches. |
@@ -103,7 +103,7 @@ Requested with `include`, appended as top-level arrays:
 
 | Key | Include value | Content |
 | --- | --- | --- |
-| `events` | `events` | Timeline of goals, cards, substitutions, corners and shots; see [Match Events](./09-match-events-and-includes.md). |
+| `events` | `events` | Timeline of goals, cards, substitutions, corners and shots; see [Match Events](./07-match-events-and-includes.md). |
 | `stats` | `stats` | One entry per team with possession, shots, passes, fouls, cards and more. |
 | `broadcast` | `broadcast` | TV channels showing the match, each with its country. |
 | `tvs` | `tvs` | Same content on `broadcast?t=schedule`. |

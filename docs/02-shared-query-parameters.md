@@ -45,13 +45,13 @@ The most common match datasets are:
 
 Free plans carry the Standard datasets. An include outside the plan returns
 `403` with `meta.msg` = `Include not available for your plan.`; see
-[Plans and Data Access](./10-plans-and-access.md).
+[Plans and Data Access](./08-plans-and-access.md).
 
 Use dataset names in `include`; do not use standalone operation values. For
 example, `include=events` embeds the timeline, while `t=match_events` calls the
 standalone timeline operation.
 
-See [Match Events and Dataset Includes](./09-match-events-and-includes.md) for
+See [Match Events and Dataset Includes](./07-match-events-and-includes.md) for
 endpoint examples, event fields and live polling guidance.
 
 > Tip: Store times internally from the returned Unix `timestamp` where

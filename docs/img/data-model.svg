@@ -2,9 +2,9 @@
   <style>
     .box { fill: #ffffff; stroke: #cfd9d3; stroke-width: 1.2; rx: 8; }
     .key { fill: #eaf9f0; stroke: #19c96b; stroke-width: 1.4; rx: 8; }
-    .t { font: 600 13px 'Onest', 'Segoe UI', system-ui, sans-serif; fill: #0b1f16; }
+    .t { font: 600 13px 'IBM Plex Sans', 'Segoe UI', system-ui, sans-serif; fill: #0b1f16; }
     .s { font: 11px 'IBM Plex Mono', ui-monospace, monospace; fill: #5b6b63; }
-    .l { font: 11px 'Onest', system-ui, sans-serif; fill: #5b6b63; }
+    .l { font: 11px 'IBM Plex Sans', system-ui, sans-serif; fill: #5b6b63; }
     .a { stroke: #7f958a; stroke-width: 1.4; fill: none; marker-end: url(#m); }
     .ak { stroke: #19c96b; stroke-width: 1.8; fill: none; marker-end: url(#mk); }
   </style>

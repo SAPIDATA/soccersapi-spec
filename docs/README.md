@@ -49,4 +49,4 @@ This spec tracks the **v2.2** API. Endpoint paths are prefixed accordingly
 
 Use `include=events` to embed timelines in livescores or match-returning fixture
 operations. Use `t=match_events&id=MATCH_ID` only for the standalone timeline.
-See [`09-match-events-and-includes.md`](./09-match-events-and-includes.md).
+See [`09-match-events-and-includes.md`](./07-match-events-and-includes.md).
