@@ -34,7 +34,7 @@ const BRAND = {
   logo: 'https://soccersapi.com/assets/images/logo-light.svg',
   favicon: 'https://soccersapi.com/favicon/assets/images/soccersapi-icon.webp',
   accent: '#19c96b', accentHover: '#15b05d', dark: '#06110c', darkSoft: '#0b1a12', darkHover: '#103b2a',
-  text: '#020617', pageBg: '#f6f8f7', border: '#e5e7eb', muted: '#5b6b63',
+  text: '#020617', pageBg: '#f6f8f7', border: '#e5e7eb', muted: '#64748b',
   links: [
     { label: 'Website', href: 'https://soccersapi.com' },
     { label: 'Coverage', href: 'https://soccersapi.com/coverage' },
@@ -71,7 +71,7 @@ const relinkImg = (md) => md.replace(/\]\(\.\/img\//g, '](/img/');
 const relinkSite = (md) => relinkImg(md).replace(/\]\(\.\/(\d{2}-[^)#]+\.md)(#[^)]*)?\)/g, (m, file, hash) => (guideBySlugFile[file] ? `](/guides/${guideBySlugFile[file].slug}/${hash || ''})` : m));
 const relinkHash = (md) => relinkImg(md).replace(/\]\(\.\/(\d{2}-[^)#]+\.md)(#[^)]*)?\)/g, (m, file) => (guideBySlugFile[file] ? `](#description/${guideBySlugFile[file].slug})` : m));
 marked.use({ renderer: { heading({ tokens, depth }) { const text = this.parser.parseInline(tokens); return `<h${depth} id="${slug(text.replace(/<[^>]+>/g, ''))}">${text}</h${depth}>\n`; } } });
-const md2html = (md) => marked.parse(md);
+const md2html = (md) => marked.parse(md).replace(/<table>/g, '<div class="table-wrap"><table>').replace(/<\/table>/g, '</table></div>');
 const inline = (md) => marked.parseInline(md || '');
 const firstParagraph = (md) => (md.replace(/^#.*$/m, '').trim().split(/\n\s*\n/)[0] || '').replace(/[`*_>]/g, '').replace(/\[([^\]]+)\]\([^)]*\)/g, '$1').replace(/\s+/g, ' ').trim();
 
@@ -179,9 +179,9 @@ const headerCss = `
     .sapi-header nav { display: flex; align-items: center; gap: 22px; }
     .sapi-header nav a { color: ${BRAND.text}; text-decoration: none; }
     .sapi-header nav a:hover { color: #0f7a44; }
-    .sapi-header nav a.sapi-cta { background: ${BRAND.accent}; color: #ffffff; padding: 9px 16px; border-radius: 6px; font-weight: 600; }
+    .sapi-header nav a.sapi-cta { background: ${BRAND.accent}; color: #ffffff; padding: 9px 16px; border-radius: 6px; font-weight: 600; white-space: nowrap; }
     .sapi-header nav a.sapi-cta:hover { background: ${BRAND.accentHover}; color: #ffffff; }
-    @media (max-width: 720px) { .sapi-header nav a:not(.sapi-cta) { display: none; } }`;
+    @media (max-width: 720px) { .sapi-header { height: 56px; padding: 0 16px; } .sapi-header img { height: 30px; } .sapi-brand { gap: 10px; } .sapi-brand span { padding-left: 10px; } .sapi-header nav a:not(.sapi-cta) { display: none; } .sapi-header nav a.sapi-cta { padding: 8px 12px; font-size: 13px; } }`;
 const head = ({ title, description, path, extra = '' }) => `<!doctype html>
 <html lang="en">
 <head>
@@ -211,11 +211,11 @@ const themeCss = `
 :root { --scalar-font: 'Inter', ui-sans-serif, system-ui, sans-serif; --scalar-font-code: 'IBM Plex Mono', ui-monospace, monospace; --scalar-radius: 4px; --scalar-radius-lg: 6px; --scalar-radius-xl: 8px; }
 .light-mode {
   --scalar-color-accent: ${BRAND.accent}; --scalar-background-accent: #e7f8ee; --scalar-color-green: ${BRAND.accent};
-  --scalar-background-1: #ffffff; --scalar-background-2: ${BRAND.pageBg}; --scalar-background-3: #eef2f0;
-  --scalar-color-1: ${BRAND.text}; --scalar-color-2: #3d4a43; --scalar-color-3: ${BRAND.muted}; --scalar-border-color: ${BRAND.border};
+  --scalar-background-1: #ffffff; --scalar-background-2: ${BRAND.pageBg}; --scalar-background-3: #f1f5f9;
+  --scalar-color-1: ${BRAND.text}; --scalar-color-2: #475569; --scalar-color-3: ${BRAND.muted}; --scalar-border-color: ${BRAND.border};
   --scalar-button-1: ${BRAND.accent}; --scalar-button-1-color: #ffffff; --scalar-button-1-hover: ${BRAND.accentHover};
-  --scalar-sidebar-background-1: #ffffff; --scalar-sidebar-color-1: ${BRAND.text}; --scalar-sidebar-color-2: ${BRAND.muted}; --scalar-sidebar-color-active: ${BRAND.text};
-  --scalar-sidebar-item-hover-background: ${BRAND.pageBg}; --scalar-sidebar-item-hover-color: ${BRAND.text}; --scalar-sidebar-item-active-background: #eef1ef;
+  --scalar-sidebar-background-1: #ffffff; --scalar-sidebar-color-1: ${BRAND.text}; --scalar-sidebar-color-2: ${BRAND.text}; --scalar-sidebar-color-active: #0f7a44;
+  --scalar-sidebar-item-hover-background: ${BRAND.pageBg}; --scalar-sidebar-item-hover-color: ${BRAND.text}; --scalar-sidebar-item-active-background: #f1f5f9;
   --scalar-sidebar-border-color: ${BRAND.border}; --scalar-sidebar-search-background: #ffffff; --scalar-sidebar-search-border-color: ${BRAND.border}; --scalar-sidebar-search-color: ${BRAND.text};
   --scalar-sidebar-indent-border: #e5e7eb; --scalar-sidebar-indent-border-hover: #cbd5e1; --scalar-sidebar-indent-border-active: #020617;
 }
@@ -231,7 +231,9 @@ const themeCss = `
 .scalar-api-reference h1, .scalar-api-reference h2, .section-header, .sidebar-heading-type { font-family: 'Inter', sans-serif; letter-spacing: -0.02em; font-weight: 600; }
 .scalar-api-reference .sidebar-group-title, .scalar-api-reference .sidebar-heading-type { font-family: 'IBM Plex Mono', ui-monospace, monospace; letter-spacing: .1em; text-transform: uppercase; font-size: 11px; font-weight: 500; }
 .scalar-api-reference .references-classic .section, .scalar-api-reference .section { border-color: ${BRAND.border}; }
-.scalar-api-reference .scalar-card, .scalar-api-reference .scalar-card-header { box-shadow: none; }`;
+.scalar-api-reference .scalar-card, .scalar-api-reference .scalar-card-header { box-shadow: none; }
+.scalar-api-reference .markdown p:has(> img) { overflow-x: auto; }
+@media (max-width: 720px) { .scalar-api-reference .markdown p:has(> img) > img { min-width: 640px; } #app { min-height: calc(100vh - 56px); } }`;
 write('index.html', `${head({ title: `${BRAND.name} documentation`, description: 'Reference and interactive client for the SoccersAPI football data API: livescores, fixtures, standings, teams, players, odds and TV broadcasts.', path: '/', extra: `\n  <style>${headerCss}\n    #app { min-height: calc(100vh - 64px); }${themeCss}\n  </style>` })}
 <body>${headerHtml}
   <div id="app"></div>
@@ -259,23 +261,29 @@ const pageCss = `${headerCss}
     h1, h2, h3 { font-family: 'Inter', sans-serif; letter-spacing: -0.02em; font-weight: 600; } h1 { font-size: 34px; margin: 0 0 10px; } h2 { font-size: 22px; margin: 44px 0 12px; padding-top: 24px; border-top: 1px solid ${BRAND.border}; } h3 { font-size: 17px; margin: 28px 0 8px; }
     main > h2:first-child, .page-head + main > h2:first-of-type { border-top: 0; padding-top: 0; margin-top: 8px; }
     p, li { line-height: 1.65; } p { max-width: 70ch; } a { color: #0f7a44; }
-    .lead { font-size: 17px; color: #3d4a43; line-height: 1.6; }
+    .lead { font-size: 17px; color: #475569; line-height: 1.6; }
     .actions { display: flex; flex-wrap: wrap; gap: 12px; margin: 22px 0 30px; }
     .btn { display: inline-block; padding: 11px 18px; border-radius: 6px; text-decoration: none; font-weight: 600; font-size: 14px; line-height: 1; }
     .btn-primary { background: ${BRAND.accent}; color: #fff; } .btn-primary:hover { background: ${BRAND.accentHover}; }
     .btn-secondary { background: #fff; color: ${BRAND.text}; border: 1px solid ${BRAND.border}; font-weight: 500; } .btn-secondary:hover { border-color: #0f7a44; color: #0f7a44; }
-    main img { max-width: 100%; height: auto; background: #fff; border: 1px solid ${BRAND.border}; border-radius: 6px; }
-    .table-wrap, table { max-width: 100%; } table { border-collapse: collapse; width: 100%; font-size: 13.5px; background: #fff; border: 1px solid ${BRAND.border}; border-radius: 6px; overflow: hidden; }
+    main img { max-width: 100%; height: auto; background: #fff; border: 1px solid ${BRAND.border}; border-radius: 6px; } main p:has(> img) { max-width: none; overflow-x: auto; }
+    .table-wrap { overflow-x: auto; margin: 0 0 16px; } table { border-collapse: collapse; width: 100%; font-size: 13.5px; background: #fff; border: 1px solid ${BRAND.border}; border-radius: 6px; overflow: hidden; }
     th, td { text-align: left; padding: 10px 12px; border-bottom: 1px solid #f0f2f1; vertical-align: top; } tr:last-child td { border-bottom: 0; }
     th { font: 500 11px/1.4 'IBM Plex Mono', ui-monospace, monospace; letter-spacing: .1em; text-transform: uppercase; color: ${BRAND.muted}; background: ${BRAND.pageBg}; border-bottom: 1px solid ${BRAND.border}; }
     code { font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 13px; background: ${BRAND.pageBg}; border: 1px solid ${BRAND.border}; padding: 1px 5px; border-radius: 4px; }
     pre { background: ${BRAND.pageBg}; color: ${BRAND.text}; border: 1px solid ${BRAND.border}; padding: 14px 16px; border-radius: 6px; overflow-x: auto; font-size: 12.5px; line-height: 1.55; } pre code { background: none; border: 0; color: inherit; padding: 0; }
-    blockquote { border-left: 2px solid #0f7a44; margin: 0; padding: 4px 16px; color: #3d4a43; }
+    blockquote { border-left: 2px solid #0f7a44; margin: 0; padding: 4px 16px; color: #475569; }
     .badge { display: inline-block; font: 500 11px/1 'IBM Plex Mono', ui-monospace, monospace; letter-spacing: .08em; text-transform: uppercase; padding: 4px 7px; border-radius: 4px; background: #e7f8ee; color: #0f7a44; margin-right: 8px; vertical-align: middle; }
     .badge-warn { background: #fdf4e7; color: #9a5b00; }
     .ops { list-style: none; padding: 0; margin: 0; border-top: 1px solid ${BRAND.border}; border-bottom: 1px solid ${BRAND.border}; }
     .ops li { margin: 0; padding: 10px 0; border-bottom: 1px solid #f0f2f1; } .ops li:last-child { border-bottom: 0; } .ops a { text-decoration: none; font-weight: 500; } .ops a:hover { text-decoration: underline; }
-    footer { border-top: 1px solid ${BRAND.border}; } footer div { max-width: 1120px; margin: 0 auto; padding: 20px 24px 40px; font: 400 12.5px/1.6 'IBM Plex Mono', ui-monospace, monospace; color: ${BRAND.muted}; }`;
+    footer { border-top: 1px solid ${BRAND.border}; } footer div { max-width: 1120px; margin: 0 auto; padding: 20px 24px 40px; font: 400 12.5px/1.6 'IBM Plex Mono', ui-monospace, monospace; color: ${BRAND.muted}; }
+    @media (max-width: 720px) {
+      .page-head-inner { padding: 28px 16px 26px; } main { padding: 24px 16px 56px; } footer div { padding: 18px 16px 32px; }
+      .crumbs { letter-spacing: .08em; line-height: 1.6; margin-bottom: 10px; } .page-head h1 { font-size: 30px; } h1 { font-size: 28px; } h2 { font-size: 20px; margin-top: 36px; } .lead { font-size: 16px; }
+      .actions .btn { flex: 1 1 auto; text-align: center; }
+      .table-wrap table { min-width: 560px; } main p:has(> img) > img { min-width: 640px; }
+    }`;
 const page = ({ title, description, path, crumbs, body }) => {
   // Lift the h1, lead paragraph and first actions row into the page header band.
   const m = body.match(/^\s*(<h1[^>]*>[\s\S]*?<\/h1>)\s*((?:<p(?: class="lead")?>[\s\S]*?<\/p>)?)\s*((?:<p>(?:(?!<\/p>)[\s\S])*?<code>[\s\S]*?<\/p>)?)\s*((?:<p class="actions">[\s\S]*?<\/p>)?)/);
@@ -312,7 +320,7 @@ for (const r of routes) {
   write(`${r.key}/index.html`, page({ title: r.name, description: firstParagraph(r.intro).slice(0, 160), path: r.url, crumbs: [{ label: 'Docs', href: '/' }, { label: 'Reference', href: '/' }, { label: r.name }], body: `<h1>${esc(r.name)}${r.comingSoon ? ' <span class="badge">coming soon</span>' : ''}</h1><p class="lead">${inline(r.intro.replace(/^\*\*Coming soon\.\*\*[^\n]*\n*/, ''))}</p><p class="actions"><a class="btn btn-primary" href="${r.anchor}">Open in the interactive reference</a></p><h2>Operations</h2>${opsList}<h2>Route reference</h2>${md2html(r.description.split('\n## ').slice(1).map((s) => '## ' + s).join('\n'))}` }));
   sitemap.push({ loc: r.url, priority: '0.8' });
   for (const x of r.ops) {
-    const params = x.params.length ? `<h2>Parameters</h2><table><thead><tr><th>Name</th><th>Required</th><th>Description</th><th>Example</th></tr></thead><tbody>${x.params.map((p) => `<tr><td><code>${esc(p.name)}</code></td><td>${p.required ? 'yes' : 'no'}</td><td>${inline(p.description)}</td><td>${p.example !== undefined ? `<code>${esc(p.example)}</code>` : ''}</td></tr>`).join('')}</tbody></table>` : '';
+    const params = x.params.length ? `<h2>Parameters</h2><div class="table-wrap"><table><thead><tr><th>Name</th><th>Required</th><th>Description</th><th>Example</th></tr></thead><tbody>${x.params.map((p) => `<tr><td><code>${esc(p.name)}</code></td><td>${p.required ? 'yes' : 'no'}</td><td>${inline(p.description)}</td><td>${p.example !== undefined ? `<code>${esc(p.example)}</code>` : ''}</td></tr>`).join('')}</tbody></table></div>` : '';
     const example = x.example ? `<h2>Example response</h2><pre><code>${esc(pretty(x.example))}</code></pre>` : '';
     const notes = [x.paginated ? '<li>Paginated: 100 items per page; read <code>meta.pages</code> and request the next pages with <code>page</code>.</li>' : '', planLabel(x.plans) ? `<li><strong>Plans: ${esc(planLabel(x.plans))}.</strong> Free plans carry the Standard datasets. Other plans receive <code>403</code> with <code>meta.msg</code> = <code>Endpoint not available for your plan.</code></li>` : '<li>Available on every plan for the leagues the plan covers.</li>', '<li>Every request needs the <code>user</code> and <code>token</code> query parameters of the account.</li>'].filter(Boolean).join('');
     write(`${r.key}/${x.t}/index.html`, page({ title: `${x.title} · ${r.name}`, description: (x.purpose || `${x.title} on the SoccersAPI ${r.name} route.`).replace(/[`*]/g, '').slice(0, 160), path: x.url, crumbs: [{ label: 'Docs', href: '/' }, { label: 'Reference', href: '/' }, { label: r.name, href: r.url }, { label: x.title }], body: `<h1><span class="badge">GET</span>${esc(x.title)}${r.comingSoon ? ' <span class="badge">coming soon</span>' : ''}${planLabel(x.plans) ? ` <span class="badge badge-warn">${esc(planLabel(x.plans))}</span>` : ''}</h1><p class="lead">${inline(x.purpose || '')}</p><p><code>${esc(r.path)}</code> with <code>t=${esc(x.t)}</code></p><p class="actions"><a class="btn btn-primary" href="${x.anchor}">Try it in the interactive reference</a><a class="btn btn-secondary" href="${r.url}">All ${esc(r.name)} operations</a></p><h2>Request</h2><pre><code>${esc(x.request)}</code></pre><ul>${notes}</ul>${params}${example}` }));
