@@ -4,6 +4,17 @@
 > Use the `include` parameter to embed related datasets in one call (for example `include=events,stats`) and reduce round trips. Dataset include names are different from standalone operation selectors such as `t=match_events`.
 > Use the `utc` parameter to get date/time values in your preferred timezone (for example `utc=4` or `utc=4.5`).
 
+## Bookmaker filtering for odds includes (2026-09-11)
+
+- Documented `bookmaker_ids` on livescores and fixture operations that accept
+  `include=odds_prematch`, `include=odds_inplay` or both, including match details
+  with `fixtures?t=info`.
+- Pass comma-separated IDs without spaces to return only those bookmakers in
+  the requested order within each market: `bookmaker_ids=9,2`,
+  `bookmaker_ids=9,3,1` or a single ID such as `bookmaker_ids=2`.
+- `bookmaker_id` remains required for the separate `fixtures?t=match_odds_info`
+  operation. See [Match Events and Dataset Includes](./07-match-events-and-includes.md).
+
 ## Plan datasets (2026-09-07)
 
 - Every plan reads the catalogue (search, geography, leagues, seasons, stages,

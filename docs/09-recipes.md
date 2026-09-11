@@ -144,9 +144,10 @@ Plans: Standard, World Cup and Odds. Odds are strings in the format selected
 with `odds_format` (`decimal` by default, `fractional`, `american`).
 
 1. **Pre-match odds for a list of matches**: embed them in the fixture list.
+   Add `bookmaker_ids=9,2` to return only bookmakers 9 and 2, in that order.
 
    ```http
-   GET /v2.2/fixtures/?t=schedule&d=2026-09-07&include=odds_prematch
+   GET /v2.2/fixtures/?t=schedule&d=2026-09-07&include=odds_prematch&bookmaker_ids=9,2
    ```
 
    `odds_prematch[]` has one entry per market (`1X2, Full Time Result`,
@@ -164,12 +165,18 @@ with `odds_format` (`decimal` by default, `fractional`, `american`).
 
 3. **In-play odds** on the live feed or on a match detail. Each entry reports
    the `score` and `minute` the price refers to, so you can discard stale
-   quotes.
+   quotes. Use `bookmaker_ids=9,3,1` to select that bookmaker order, or
+   `bookmaker_ids=2` to select one bookmaker.
 
    ```http
-   GET /v2.2/livescores/?t=live&include=odds_inplay
+   GET /v2.2/livescores/?t=live&include=odds_inplay&bookmaker_ids=9,3,1
+   GET /v2.2/fixtures/?t=info&id=2589310&include=odds_inplay&bookmaker_ids=2
    GET /v2.2/fixtures/?t=match_oddsinplay&id=2589310
    ```
+
+   The same filter applies to `include=odds_prematch` on supported feeds and
+   fixture operations. With `include=odds_prematch,odds_inplay`, it filters
+   and orders the `bookmakers[]` entries in both datasets.
 
 4. **Catalogues** for logos and market names.
 

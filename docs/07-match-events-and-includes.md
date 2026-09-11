@@ -72,6 +72,39 @@ adds the TV channels showing each match; on livescores and fixtures
 `odds_prematch` and `odds_inplay` add odds by market and bookmaker where the
 plan and coverage provide them. Livescores feeds do not support `broadcast`.
 
+## Filter and order included odds
+
+On livescores, fixture lists and match detail (`fixtures?t=info`) that support
+`include=odds_prematch` or `include=odds_inplay`, add `bookmaker_ids` to return
+only the selected bookmakers in the order you specify. Use comma-separated
+IDs with no spaces; a single ID is also accepted.
+
+| Value | Returned bookmaker order |
+| --- | --- |
+| `bookmaker_ids=9,2` | Only 9, then 2. |
+| `bookmaker_ids=9,3,1` | Only 9, then 3, then 1. |
+| `bookmaker_ids=2` | Only 2. |
+
+The order applies to the `bookmakers[]` entries within each included odds
+market, subject to available coverage. When both odds datasets are requested,
+the filter and order apply to both.
+
+One match with pre-match and in-play odds for bookmakers 9 and 2:
+
+```bash
+curl -G "https://api.soccersapi.com/v2.2/fixtures/" \
+  --data-urlencode "user={{USERNAME}}" \
+  --data-urlencode "token={{TOKEN}}" \
+  --data-urlencode "t=info" \
+  --data-urlencode "id=2589310" \
+  --data-urlencode "include=odds_prematch,odds_inplay" \
+  --data-urlencode "bookmaker_ids=9,2"
+```
+
+Use `bookmaker_id` (singular) for the existing
+`fixtures?t=match_odds_info` bookmaker-history operation. See
+[Odds recipes](./09-recipes.md#odds) for live-feed and fixture-list examples.
+
 ## Included response
 
 With `include=events`, each match has an `events` array:

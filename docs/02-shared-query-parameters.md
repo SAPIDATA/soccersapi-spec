@@ -12,6 +12,7 @@ apply only where the endpoint reference lists them.
 | `include` | string | No | `events,stats` | Comma-separated datasets, with no spaces. Values and support depend on the operation. |
 | `page` | integer | No | `1` | Page number on paginated operations. Pages hold 100 items; the response reports `meta.page`, `meta.pages`, `meta.count` and `meta.total`. |
 | `odds_format` | string | No | `decimal` | Odds format on odds datasets: `decimal` (default), `fractional` or `american`. |
+| `bookmaker_ids` | string | No | `9,2` | Comma-separated bookmaker IDs, with no spaces. Filters `include=odds_prematch` and `include=odds_inplay` to these bookmakers and returns their odds in the requested order on supported livescores and fixture operations, including match detail (`fixtures?t=info`). A single ID such as `2` is also valid. |
 
 ## Pagination
 
@@ -50,6 +51,12 @@ Free plans carry the Standard datasets. An include outside the plan returns
 Use dataset names in `include`; do not use standalone operation values. For
 example, `include=events` embeds the timeline, while `t=match_events` calls the
 standalone timeline operation.
+
+For included odds, `bookmaker_ids=9,2` returns only bookmakers 9 and 2, in
+that order. Use `bookmaker_ids=9,3,1` for the order 9, 3, 1, or
+`bookmaker_ids=2` for one bookmaker. The filter applies to both odds datasets
+when both are included. Match and bookmaker coverage still determine which
+odds are available.
 
 See [Match Events and Dataset Includes](./07-match-events-and-includes.md) for
 endpoint examples, event fields and live polling guidance.

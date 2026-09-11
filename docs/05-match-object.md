@@ -107,8 +107,15 @@ Requested with `include`, appended as top-level arrays:
 | `stats` | `stats` | One entry per team with possession, shots, passes, fouls, cards and more. |
 | `broadcast` | `broadcast` | TV channels showing the match, each with its country. |
 | `tvs` | `tvs` | Same content on `broadcast?t=schedule`. |
-| `odds_prematch` | `odds_prematch` | Pre-match markets with the odds of every bookmaker. |
+| `odds_prematch` | `odds_prematch` | Pre-match markets with odds grouped by bookmaker. |
 | `odds_inplay` | `odds_inplay` | In-play markets, each price tagged with the score and minute it refers to. |
+
+On supported livescores and fixture operations, including match detail
+(`fixtures?t=info`), add `bookmaker_ids` to filter either odds include and order
+the returned `bookmakers[]` entries. For example, `bookmaker_ids=9,2` returns
+only bookmakers 9 and 2, in that order; `bookmaker_ids=2` selects just one.
+When both odds datasets are included, the same selection and order apply to
+both. See [Odds recipes](./09-recipes.md#odds) for request examples.
 
 An included key can be an empty array or `null` when the dataset is not
 covered for the match; the request still succeeds.

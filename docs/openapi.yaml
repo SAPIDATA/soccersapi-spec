@@ -16,6 +16,17 @@ info:
     > Use the `include` parameter to embed related datasets in one call (for example `include=events,stats`) and reduce round trips. Dataset include names are different from standalone operation selectors such as `t=match_events`.
     > Use the `utc` parameter to get date/time values in your preferred timezone (for example `utc=4` or `utc=4.5`).
 
+    ## Bookmaker filtering for odds includes (2026-09-11)
+
+    - Documented `bookmaker_ids` on livescores and fixture operations that accept
+      `include=odds_prematch`, `include=odds_inplay` or both, including match details
+      with `fixtures?t=info`.
+    - Pass comma-separated IDs without spaces to return only those bookmakers in
+      the requested order within each market: `bookmaker_ids=9,2`,
+      `bookmaker_ids=9,3,1` or a single ID such as `bookmaker_ids=2`.
+    - `bookmaker_id` remains required for the separate `fixtures?t=match_odds_info`
+      operation. See [Match Events and Dataset Includes](./07-match-events-and-includes.md).
+
     ## Plan datasets (2026-09-07)
 
     - Every plan reads the catalogue (search, geography, leagues, seasons, stages,
@@ -2678,12 +2689,12 @@ paths:
 
         | `t` | Operation | Required | Optional |
         | --- | --- | --- | --- |
-        | `live` | Matches in play. Paginated, 100 items per page. | — | `include`, `utc`, `lang`, `odds_format`, `page` |
-        | `today` | Today's matches. Paginated, 100 items per page. | — | `include`, `utc`, `lang`, `odds_format`, `page` |
-        | `tomorrow` | Tomorrow's matches. Paginated, 100 items per page. | — | `include`, `utc`, `lang`, `odds_format`, `page` |
-        | `yesterday` | Yesterday's matches. Paginated, 100 items per page. | — | `include`, `utc`, `lang`, `odds_format`, `page` |
-        | `notstarted` | Today's matches not started. Paginated, 100 items per page. | — | `include`, `utc`, `lang`, `odds_format`, `page` |
-        | `ended` | Today's matches ended. Paginated, 100 items per page. | — | `include`, `utc`, `lang`, `odds_format`, `page` |
+        | `live` | Matches in play. Paginated, 100 items per page. | — | `include`, `bookmaker_ids`, `utc`, `lang`, `odds_format`, `page` |
+        | `today` | Today's matches. Paginated, 100 items per page. | — | `include`, `bookmaker_ids`, `utc`, `lang`, `odds_format`, `page` |
+        | `tomorrow` | Tomorrow's matches. Paginated, 100 items per page. | — | `include`, `bookmaker_ids`, `utc`, `lang`, `odds_format`, `page` |
+        | `yesterday` | Yesterday's matches. Paginated, 100 items per page. | — | `include`, `bookmaker_ids`, `utc`, `lang`, `odds_format`, `page` |
+        | `notstarted` | Today's matches not started. Paginated, 100 items per page. | — | `include`, `bookmaker_ids`, `utc`, `lang`, `odds_format`, `page` |
+        | `ended` | Today's matches ended. Paginated, 100 items per page. | — | `include`, `bookmaker_ids`, `utc`, `lang`, `odds_format`, `page` |
 
         ## Includes
 
@@ -2693,6 +2704,8 @@ paths:
         - `stats`: team match statistics, one entry per team — Standard, World Cup plans
         - `odds_prematch`: pre-match odds where match coverage provides them — Standard, World Cup, Odds plans
         - `odds_inplay`: in-play odds for matches in play — Standard, World Cup, Odds plans
+
+        With `include=odds_prematch`, `include=odds_inplay` or both, use `bookmaker_ids` to select bookmakers and control their order within each market's `bookmakers` array. Pass comma-separated IDs without spaces: `bookmaker_ids=9,2` returns only bookmakers 9 and 2, in that order; `bookmaker_ids=9,3,1` uses the order 9, 3, 1; `bookmaker_ids=2` selects just bookmaker 2. Returned odds remain subject to match and market coverage.
 
         ## Live publication behavior
 
@@ -2704,6 +2717,12 @@ paths:
 
         ```http
         GET /v2.2/livescores/?user=USER&token=TOKEN&t=live&include=events,stats
+        ```
+
+        In-play odds from bookmakers 9 and 2, in that order:
+
+        ```http
+        GET /v2.2/livescores/?user=USER&token=TOKEN&t=live&include=odds_inplay&bookmaker_ids=9,2
         ```
 
         Today's matches:
@@ -2749,14 +2768,14 @@ paths:
             - standard
             - worldcup
         odds_prematch:
-          description: pre-match odds where match coverage provides them
+          description: pre-match odds where match coverage provides them; use `bookmaker_ids` to filter and order bookmakers within each market
           plans:
             - free
             - standard
             - worldcup
             - odds
         odds_inplay:
-          description: in-play odds for matches in play
+          description: in-play odds for matches in play; use `bookmaker_ids` to filter and order bookmakers within each market
           plans:
             - free
             - standard
@@ -2769,6 +2788,7 @@ paths:
           required: []
           optional:
             - include
+            - bookmaker_ids
             - utc
             - lang
             - odds_format
@@ -2788,6 +2808,7 @@ paths:
           required: []
           optional:
             - include
+            - bookmaker_ids
             - utc
             - lang
             - odds_format
@@ -2807,6 +2828,7 @@ paths:
           required: []
           optional:
             - include
+            - bookmaker_ids
             - utc
             - lang
             - odds_format
@@ -2826,6 +2848,7 @@ paths:
           required: []
           optional:
             - include
+            - bookmaker_ids
             - utc
             - lang
             - odds_format
@@ -2845,6 +2868,7 @@ paths:
           required: []
           optional:
             - include
+            - bookmaker_ids
             - utc
             - lang
             - odds_format
@@ -2864,6 +2888,7 @@ paths:
           required: []
           optional:
             - include
+            - bookmaker_ids
             - utc
             - lang
             - odds_format
@@ -2908,6 +2933,7 @@ paths:
           example: events,stats
           schema:
             type: string
+        - $ref: '#/components/parameters/BookmakerIds'
         - $ref: '#/components/parameters/Utc'
         - $ref: '#/components/parameters/Lang'
         - $ref: '#/components/parameters/OddsFormat'
@@ -4175,13 +4201,13 @@ paths:
 
         | `t` | Operation | Required | Optional | Plans |
         | --- | --- | --- | --- | --- |
-        | `schedule` | Fixtures by date. Matches on a date, optionally narrowed to a country, league, season, stage, group or round. Paginated, 100 items per page. | `d` | `country_id`, `league_id`, `season_id`, `stage_id`, `group_id`, `round_id`, `include`, `utc`, `lang`, `odds_format`, `page` | All plans |
-        | `season` | Fixtures by season. Every match of a season in one response, optionally narrowed to a stage, group or team. | `season_id` | `stage_id`, `group_id`, `team_id`, `include`, `utc`, `lang`, `odds_format` | All plans |
-        | `round` | Fixtures by round. Every match of a round, optionally narrowed to a team. | `round_id` | `team_id`, `include`, `utc`, `lang`, `odds_format` | All plans |
+        | `schedule` | Fixtures by date. Matches on a date, optionally narrowed to a country, league, season, stage, group or round. Paginated, 100 items per page. | `d` | `country_id`, `league_id`, `season_id`, `stage_id`, `group_id`, `round_id`, `include`, `bookmaker_ids`, `utc`, `lang`, `odds_format`, `page` | All plans |
+        | `season` | Fixtures by season. Every match of a season in one response, optionally narrowed to a stage, group or team. | `season_id` | `stage_id`, `group_id`, `team_id`, `include`, `bookmaker_ids`, `utc`, `lang`, `odds_format` | All plans |
+        | `round` | Fixtures by round. Every match of a round, optionally narrowed to a team. | `round_id` | `team_id`, `include`, `bookmaker_ids`, `utc`, `lang`, `odds_format` | All plans |
         | `last_next` | Team last and next fixtures. Recent results (`last`), matches in play (`current`) and upcoming matches (`next`) of a team. Does not accept `include`. | `team_id` | `utc`, `lang` | All plans |
-        | `tv` | Fixtures by TV channel. Matches scheduled on a TV channel over the next two weeks. | `tv_id` | `include`, `utc`, `lang` | Standard, World Cup, Broadcast |
-        | `info` | Match by ID. One match with teams, league, venue, scores, status and clock. | `id` | `include`, `utc`, `lang`, `odds_format` | All plans |
-        | `sort` | Matches by multiple IDs. Several matches in one request, for example to refresh the matches shown on screen. | `ids` | `include`, `utc`, `lang` | All plans |
+        | `tv` | Fixtures by TV channel. Matches scheduled on a TV channel over the next two weeks. | `tv_id` | `include`, `bookmaker_ids`, `utc`, `lang` | Standard, World Cup, Broadcast |
+        | `info` | Match by ID. One match with teams, league, venue, scores, status and clock. | `id` | `include`, `bookmaker_ids`, `utc`, `lang`, `odds_format` | All plans |
+        | `sort` | Matches by multiple IDs. Several matches in one request, for example to refresh the matches shown on screen. | `ids` | `include`, `bookmaker_ids`, `utc`, `lang` | All plans |
         | `match_events` | Match events. Standalone event timeline of one match. | `id` | — | Standard, World Cup |
         | `match_lineups` | Match lineups. Formations and starting lineups with position and shirt number. | `id` | `lang` | Standard, World Cup |
         | `match_bench` | Match bench. Substitutes of both teams with shirt number and position. | `id` | — | Standard, World Cup |
@@ -4201,6 +4227,8 @@ paths:
         - `odds_prematch`: pre-match odds — Standard, World Cup, Odds plans
         - `odds_inplay`: in-play odds for matches in play — Standard, World Cup, Odds plans
 
+        With `include=odds_prematch`, `include=odds_inplay` or both, use `bookmaker_ids` to select bookmakers and control their order within each market's `bookmakers` array. Pass comma-separated IDs without spaces: `bookmaker_ids=9,2` returns only bookmakers 9 and 2, in that order; `bookmaker_ids=9,3,1` uses the order 9, 3, 1; `bookmaker_ids=2` selects just bookmaker 2. Returned odds remain subject to match and market coverage.
+
         The release notes announce `include=stats` on `match_lineups` for per-player statistics; verification on 2026-09-04 returned no extra data, so it is not documented as a parameter. The `order` parameter shown in the public reference has no effect either. The match-detail operation is `t=info`; `match_by_id` is not a valid value and `/v2.2/matches/` is not a v2.2 route. Dataset names such as `events` belong in `include`; `match_events` is an operation, not an include value. IDs can be JSON numbers or numeric strings depending on the operation: treat them as opaque and normalize before strict comparisons.
 
         ## Examples
@@ -4209,6 +4237,12 @@ paths:
 
         ```http
         GET /v2.2/fixtures/?user=USER&token=TOKEN&t=schedule&d=2026-08-30&include=broadcast&utc=2
+        ```
+
+        Fixtures by date with pre-match odds from bookmakers 9, 3 and 1, in that order:
+
+        ```http
+        GET /v2.2/fixtures/?user=USER&token=TOKEN&t=schedule&d=2026-08-30&include=odds_prematch&bookmaker_ids=9,3,1
         ```
 
         Fixtures by season:
@@ -4239,6 +4273,12 @@ paths:
 
         ```http
         GET /v2.2/fixtures/?user=USER&token=TOKEN&t=info&id=2589310&include=events,stats
+        ```
+
+        Match by ID with pre-match and in-play odds from bookmaker 2 only:
+
+        ```http
+        GET /v2.2/fixtures/?user=USER&token=TOKEN&t=info&id=2589310&include=odds_prematch,odds_inplay&bookmaker_ids=2
         ```
 
         Matches by multiple IDs:
@@ -4315,14 +4355,14 @@ paths:
             - worldcup
             - broadcast
         odds_prematch:
-          description: pre-match odds
+          description: pre-match odds; use `bookmaker_ids` to filter and order bookmakers within each market
           plans:
             - free
             - standard
             - worldcup
             - odds
         odds_inplay:
-          description: in-play odds for matches in play
+          description: in-play odds for matches in play; use `bookmaker_ids` to filter and order bookmakers within each market
           plans:
             - free
             - standard
@@ -4342,6 +4382,7 @@ paths:
             - group_id
             - round_id
             - include
+            - bookmaker_ids
             - utc
             - lang
             - odds_format
@@ -4365,6 +4406,7 @@ paths:
             - group_id
             - team_id
             - include
+            - bookmaker_ids
             - utc
             - lang
             - odds_format
@@ -4384,6 +4426,7 @@ paths:
           optional:
             - team_id
             - include
+            - bookmaker_ids
             - utc
             - lang
             - odds_format
@@ -4418,6 +4461,7 @@ paths:
             - tv_id
           optional:
             - include
+            - bookmaker_ids
             - utc
             - lang
           schema: MatchListResponse
@@ -4434,6 +4478,7 @@ paths:
             - id
           optional:
             - include
+            - bookmaker_ids
             - utc
             - lang
             - odds_format
@@ -4452,6 +4497,7 @@ paths:
             - ids
           optional:
             - include
+            - bookmaker_ids
             - utc
             - lang
           schema: MatchListResponse
@@ -4701,6 +4747,7 @@ paths:
           example: events,stats
           schema:
             type: string
+        - $ref: '#/components/parameters/BookmakerIds'
         - $ref: '#/components/parameters/Utc'
         - $ref: '#/components/parameters/Lang'
         - $ref: '#/components/parameters/OddsFormat'
@@ -9708,6 +9755,14 @@ components:
       schema:
         type: integer
         minimum: 1
+    BookmakerIds:
+      name: bookmaker_ids
+      in: query
+      required: false
+      description: 'Comma-separated bookmaker IDs, without spaces, for `include=odds_prematch`, `include=odds_inplay` or both on livescores and fixture operations that accept these includes. Only the requested bookmakers are returned, in the supplied order within each market’s `bookmakers` array, where odds are available. For example, `9,2` selects bookmakers 9 then 2; `9,3,1` selects 9 then 3 then 1; `2` selects only bookmaker 2.'
+      example: '9,2'
+      schema:
+        type: string
     OddsFormat:
       name: odds_format
       in: query
@@ -10078,14 +10133,14 @@ components:
           type:
             - array
             - 'null'
-          description: Present when `include` contains `odds_prematch`.
+          description: Present when `include` contains `odds_prematch`. When `bookmaker_ids` is supplied, each market contains only the requested bookmakers, in the supplied order, where odds are available.
           items:
             $ref: '#/components/schemas/OddsMarket'
         odds_inplay:
           type:
             - array
             - 'null'
-          description: Present when `include` contains `odds_inplay`.
+          description: Present when `include` contains `odds_inplay`. When `bookmaker_ids` is supplied, each market contains only the requested bookmakers, in the supplied order, where odds are available.
           items:
             $ref: '#/components/schemas/OddsMarket'
       additionalProperties: true
@@ -10198,7 +10253,7 @@ components:
       additionalProperties: true
     OddsMarket:
       type: object
-      description: One betting market with the odds of every bookmaker that prices it.
+      description: One betting market with bookmaker odds. For odds includes, `bookmaker_ids` filters and orders the `bookmakers` array when supplied.
       properties:
         id:
           $ref: '#/components/schemas/FlexibleId'
