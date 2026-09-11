@@ -44,16 +44,16 @@ function buildDescription(changelog) {
 
 function syncOpenapiDescription(filePath, descriptionBlock) {
     const original = fs.readFileSync(filePath, 'utf8');
-    const updated = original.replace(
-        /  description: [>|]-\n[\s\S]*?\n  version:/u,
-        `${descriptionBlock}\n  version:`,
-    );
+    const descriptionPattern = /  description: [>|]-\n[\s\S]*?\n  version:/u;
 
-    if (updated === original) {
+    if (!descriptionPattern.test(original)) {
         throw new Error(`Could not find info.description block in ${path.relative(repoRoot, filePath)}`);
     }
 
-    fs.writeFileSync(filePath, updated);
+    const updated = original.replace(descriptionPattern, `${descriptionBlock}\n  version:`);
+    if (updated !== original) {
+        fs.writeFileSync(filePath, updated);
+    }
 }
 
 const changelog = fs.readFileSync(changelogPath, 'utf8');
