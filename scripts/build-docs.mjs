@@ -208,7 +208,10 @@ const configuration = {
   metaData: { title: `${BRAND.name} documentation`, description: 'Football data API reference with an interactive client.' },
 };
 const themeCss = `
-:root { --scalar-font: 'Inter', ui-sans-serif, system-ui, sans-serif; --scalar-font-code: 'IBM Plex Mono', ui-monospace, monospace; --scalar-radius: 4px; --scalar-radius-lg: 6px; --scalar-radius-xl: 8px; }
+:root { --scalar-font: 'Inter', ui-sans-serif, system-ui, sans-serif; --scalar-font-code: 'IBM Plex Mono', ui-monospace, monospace; --scalar-radius: 4px; --scalar-radius-lg: 6px; --scalar-radius-xl: 8px;
+  /* Height of .sapi-header (64px + its 1px rule). Scalar offsets the sidebar, the
+     sticky example cards and every scroll anchor by this, so nothing hides under it. */
+  --scalar-custom-header-height: 65px; }
 .light-mode {
   --scalar-color-accent: ${BRAND.accent}; --scalar-background-accent: #e7f8ee; --scalar-color-green: ${BRAND.accent};
   --scalar-background-1: #ffffff; --scalar-background-2: ${BRAND.pageBg}; --scalar-background-3: #f1f5f9;
@@ -233,8 +236,8 @@ const themeCss = `
 .scalar-api-reference .references-classic .section, .scalar-api-reference .section { border-color: ${BRAND.border}; }
 .scalar-api-reference .scalar-card, .scalar-api-reference .scalar-card-header { box-shadow: none; }
 .scalar-api-reference .markdown p:has(> img) { overflow-x: auto; }
-@media (max-width: 720px) { .scalar-api-reference .markdown p:has(> img) > img { min-width: 640px; } #app { min-height: calc(100vh - 56px); } }`;
-write('index.html', `${head({ title: `${BRAND.name} documentation`, description: 'Reference and interactive client for the SoccersAPI football data API: livescores, fixtures, standings, teams, players, odds and TV broadcasts.', path: '/', extra: `\n  <style>${headerCss}\n    #app { min-height: calc(100vh - 64px); }${themeCss}\n  </style>` })}
+@media (max-width: 720px) { :root { --scalar-custom-header-height: 57px; } .scalar-api-reference .markdown p:has(> img) > img { min-width: 640px; } #app { min-height: calc(100vh - 57px); } }`;
+write('index.html', `${head({ title: `${BRAND.name} documentation`, description: 'Reference and interactive client for the SoccersAPI football data API: livescores, fixtures, standings, teams, players, odds and TV broadcasts.', path: '/', extra: `\n  <style>${headerCss}\n    #app { min-height: calc(100vh - 65px); }${themeCss}\n  </style>` })}
 <body>${headerHtml}
   <div id="app"></div>
   <script id="sapi-spec" type="application/json">${JSON.stringify(spec).replace(/<\//g, '<\\/')}</script>
@@ -249,6 +252,7 @@ write('index.html', `${head({ title: `${BRAND.name} documentation`, description:
 
 // ---------------------------------------------------------------- static pages
 const pageCss = `${headerCss}
+    html { scroll-padding-top: 80px; }
     body { background: #ffffff; }
     .page-head { border-bottom: 1px solid ${BRAND.border}; background: #ffffff; }
     .page-head-inner { max-width: 1120px; margin: 0 auto; padding: 40px 24px 36px; }
